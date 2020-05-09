@@ -9,7 +9,7 @@ AlwaysBreakTemplateDeclarations:  true
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 FixNamespaceComments: false
-Standard: Cpp17
+Standard: Auto
 ColumnLimit: 80
 AllowAllParametersOfDeclarationOnNextLine: true
 AlignEscapedNewlines: Right
