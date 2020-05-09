@@ -31,7 +31,7 @@ remote_upstream=""
 echo "Checking SSH access to host " ${git_host} " for user " ${git_username}
 ssh -o ConnectTimeout=10 -T git@${git_host} 2>/dev/null
 
-if [ $? -eq 0 ]
+if [ $? -eq 1 ]
 then
   echo "SSH success."
   remote_origin=git@${git_host}:${git_username}/${git_project}.git

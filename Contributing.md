@@ -37,7 +37,7 @@ To setup your local repository for development (requires a GitHub account):
     $ git clone https://github.com/ORNL/ncio.git
     ```
     
-3. Run the `scripts/development/setup.sh` script.  The script will configure an `upstream` remote and link your local master branch to the `upstream` repo.
+3. Run the `scripts/development/setup.sh` script.  The script will configure an `upstream` remote and link your local master branch to the `upstream` repo. IMPORTANT: check you system ssh public keys are registered to use ssh, otherwise http would be used to set the repos.
     
     ```
     $ cd ncio
