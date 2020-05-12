@@ -4,7 +4,7 @@
 
 # Define project information
 project('ncio',
-        list_of_languages: ['cpp'],
+        ['cpp'],
         license: 'BSD 3-Clause',
         version: '0.0.1',
         meson_version: '>=0.52.0',

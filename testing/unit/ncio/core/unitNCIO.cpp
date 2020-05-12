@@ -12,7 +12,7 @@
 
 TEST_CASE("Unit test for core::NCIO class")
 {
-    ncio::core::NCIO ncio;
+    ncio::core::NCIO ncio("");
     ncio.SetParameter("key", "value");
     SUBCASE("GetParameter") { REQUIRE(ncio.GetParameter("key") == "value"); }
     SUBCASE("GetConfigFile") { CHECK(ncio.m_ConfigFile == ""); }
