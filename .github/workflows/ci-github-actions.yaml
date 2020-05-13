@@ -16,32 +16,61 @@ jobs:
     env:
       GH_YML_JOBNAME: ${{ matrix.jobname }}
       GH_YML_OS: Linux
-      
     strategy:
       fail-fast: false
       matrix:
         jobname: [
-          ubuntu
+          ubuntu18-gcc7
         ]
-    
+
     steps:
-    - name: Update System Repos
-      run: /bin/sh -c "sudo apt-get update"
-
-    - name: Setup Dependencies
-      run: /bin/sh -c "sudo apt-get install ninja-build python3-pip python3-setuptools -y && sudo pip3 install meson"
-
     - name: Checkout Action
       uses: actions/checkout@v1
+      
+    - name: Setup Dependencies
+      run: scripts/ci/github-actions/bash/setup_debian.sh
 
     - name: Configure
-      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/.. && mkdir ncio-build && cd ncio-build && meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}"
+      run: scripts/ci/github-actions/bash/run_step.sh configure
 
     - name: Build
-      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/../ncio-build && ninja"
+      run: scripts/ci/github-actions/bash/run_step.sh build
 
     - name: Test
-      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/../ncio-build && ninja test"
+      run: scripts/ci/github-actions/bash/run_step.sh test
 
     - name: Install
-      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/../ncio-build && ninja install"
+      run: scripts/ci/github-actions/bash/run_step.sh install
+
+
+#   macos:
+#     runs-on: macos-latest
+#     env:
+#       GH_YML_JOBNAME: ${{ matrix.jobname }}
+#       GH_YML_OS: macOS
+# 
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         jobname: [
+#           macos1015-xcode11 
+#         ]
+# 
+#     steps:
+#     - name: Checkout Action
+#       uses: actions/checkout@v1
+# 
+#     - name: Setup Dependencies
+#       run: scripts/ci/github-actions/bash/setup_macos.sh
+# 
+#     - name: Configure
+#       run: scripts/ci/github-actions/bash/run_step.sh configure
+# 
+#     - name: Build
+#       run: scripts/ci/github-actions/bash/run_step.sh build
+# 
+#     - name: Test
+#       run: scripts/ci/github-actions/bash/run_step.sh test
+# 
+#     - name: Install
+#       run: scripts/ci/github-actions/bash/run_step.sh install
