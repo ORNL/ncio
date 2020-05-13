@@ -1,0 +1,53 @@
+
+name: GitHub Actions
+
+on: 
+  push: 
+    branches: 
+    - master 
+  pull_request: 
+    branches: 
+    - master 
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    env:
+      GH_YML_JOBNAME: ${{ matrix.jobname }}
+      GH_YML_OS: Linux
+      
+    strategy:
+      fail-fast: false
+      matrix:
+        jobname: [
+          ubuntu
+        ]
+    
+    steps:
+    - name: Setup dependencies
+      run: /bin/sh -c "apt-get update &&\
+                       apt-get dist-upgrade -y &&\
+                       apt-get install -y git ninja cmake python3 pip3 &&\
+                       pip3 install meson"
+
+    - name: Checkout Action
+      uses: actions/checkout@v1
+
+    - name: Configure
+      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/.. &&\
+                       mkdir ncio-build &&\
+                       cd ncio-build &&\
+                       meson --prefix=${GITHUB_WORKSPACE}/../ncio-install .."
+
+    - name: Build
+      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/../ncio-build &&\
+                       ninja"
+
+    - name: Test
+      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/../ncio-build &&\
+                       ninja test"
+
+    - name: Install
+      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/../ncio-build &&\
+                       ninja install"
