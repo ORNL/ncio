@@ -29,13 +29,13 @@ jobs:
       run: /bin/sh -c "sudo apt-get update"
 
     - name: Setup Dependencies
-      run: /bin/sh -c "sudo apt-get install ninja-build meson -y"
+      run: /bin/sh -c "sudo apt-get install ninja-build python3-pip python3-setuptools -y && sudo pip3 install meson"
 
     - name: Checkout Action
       uses: actions/checkout@v1
 
     - name: Configure
-      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/.. && mkdir ncio-build && cd ncio-build && meson --prefix=${GITHUB_WORKSPACE}/../ncio-install .."
+      run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/.. && mkdir ncio-build && cd ncio-build && meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}"
 
     - name: Build
       run: /bin/sh -c "cd ${GITHUB_WORKSPACE}/../ncio-build && ninja"
