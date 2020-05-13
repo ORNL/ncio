@@ -28,7 +28,18 @@ public:
      * (yaml?)
      */
     NCIO(const std::string &configFile = "");
-    ~NCIO() = default;
+
+    /**
+     * Can't use default destructor since std::unique_ptr private implementation
+     * can't have incomplete types
+     */
+    ~NCIO();
+
+    /**
+     * Get configuration file name passed in constructor
+     * @return configuration file name
+     */
+    std::string GetConfigFile() const noexcept;
 
     /**
      * Set a specific configuration parameter, meant to be equivalent to values
@@ -45,7 +56,7 @@ public:
      * @param key input parameter key to search in existing set parameters.
      * @return parameter value, if key not found returns an empty string.
      */
-    std::string GetParameter(const std::string key) noexcept;
+    std::string GetParameter(const std::string key) const noexcept;
 
 private:
     /** private implementation pointer */

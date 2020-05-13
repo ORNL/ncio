@@ -22,3 +22,14 @@ if get_option('build-tests')
   doctest_dep = dependency('doctest', fallback: ['doctest', 'doctest_dep'])
   subdir('testing')
 endif
+
+# pkg-config generation
+# Meson uses pkg-config for library consumption.
+# This module sets libraries (private and public) to link against
+# pkg-config is supported by CMake based products
+pkg = import('pkgconfig')
+pkg.generate(libraries : ncio_cxx17_lib,
+             version : '0.0.1',
+             filebase : 'ncio',
+             name : 'ncio',
+             description : 'NCIO library')

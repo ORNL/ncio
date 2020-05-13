@@ -8,12 +8,14 @@
 
 #include "ncio-doctest.h"
 
+#include <iostream>
+
 #include "ncio/core/NCIO.h"
 
 TEST_CASE("Unit test for core::NCIO class")
 {
     ncio::core::NCIO ncio("");
     ncio.SetParameter("key", "value");
-    SUBCASE("GetParameter") { REQUIRE(ncio.GetParameter("key") == "value"); }
-    SUBCASE("GetConfigFile") { CHECK(ncio.m_ConfigFile == ""); }
+    SUBCASE("GetParameter") { CHECK(ncio.GetParameter("key") == "value"); }
+    SUBCASE("GetConfigFile") { CHECK(ncio.GetConfigFile() == ""); }
 }

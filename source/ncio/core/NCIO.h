@@ -28,6 +28,12 @@ public:
     ~NCIO() = default;
 
     /**
+     * Get configuration file name passed in constructor
+     * @return configuration file name
+     */
+    std::string GetConfigFile() const noexcept;
+
+    /**
      * Set a specific configuration parameter, meant to be equivalent to values
      * in constructor's configFile Using small string optimization SSO (passing
      * by value) as parameters are expected to be small strings. If key exists
@@ -42,7 +48,7 @@ public:
      * @param key input parameter key to search in existing set parameters.
      * @return parameter value, if key not found returns an empty string.
      */
-    std::string GetParameter(const std::string key) noexcept;
+    std::string GetParameter(const std::string key) const noexcept;
 
 private:
     /** input config file passed at constructor */
