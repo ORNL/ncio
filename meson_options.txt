@@ -1,0 +1,5 @@
+# File provides accepted options for ncio build configuration
+#  Created on: May 11, 2020
+#      Author: William F Godoy godoywf@ornl.gov
+
+option('build-tests', type : 'boolean', value : true)

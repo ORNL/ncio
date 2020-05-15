@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://github.com/onqtam/doctest.git
+revision = 2.3.6
+depth = 1

@@ -51,4 +51,6 @@ CMakeSettings.json
 *.gch
 *.pch
 
+# Meson subprojects
+subprojects/doctest
 
