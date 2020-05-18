@@ -1,24 +1,35 @@
+param(
+  [string]$step=""
+)
+
 # Run specific steps based on input
 
 If($step -eq "configure")
 {
-  cd ${GITHUB_WORKSPACE}\..
+  # Configure ncio using meson using out-of-source builds
+  Write-Host "Start configuration"
+  cd $Env:GITHUB_WORKSPACE\..
   mkdir ncio-build
   cd ncio-build
-  meson --prefix=${GITHUB_WORKSPACE}\..\ncio-install --default-library=static ${GITHUB_WORKSPACE}
+  C:\hostedtoolcache\windows\Python\3.8.2\x64\Scripts\meson.exe --prefix=$Env:GITHUB_WORKSPACE\..\ncio-install --default-library=static $Env:GITHUB_WORKSPACE
+  Write-Host "End configuration"
 }
 ElseIf($step -eq "build")
 {
-  cd ${GITHUB_WORKSPACE}/../ncio-build
+  # Build using ninja
+  cd $Env:GITHUB_WORKSPACE/../ncio-build
   ninja
 }
 ElseIf($step -eq "test")
 {
-  cd ${GITHUB_WORKSPACE}/../ncio-build
-  ninja test
+  # Run all tests
+  cd $Env:GITHUB_WORKSPACE/../ncio-build
+  ninja -v test
+  type D:\a\ncio\ncio-build\meson-logs\testlog.txt
 }
 ElseIf($step -eq "install")
 {
-  cd ${GITHUB_WORKSPACE}/../ncio-build
+  # Install the library
+  cd $Env:GITHUB_WORKSPACE/../ncio-build
   ninja install
 }

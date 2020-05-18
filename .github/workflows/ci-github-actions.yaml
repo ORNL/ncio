@@ -86,7 +86,7 @@ jobs:
       run: scripts/ci/github-actions/bash/run_step.sh install
   
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2016
     env:
       GH_YML_JOBNAME: ${{ matrix.jobname }}
       GH_YML_OS: windows
@@ -95,15 +95,18 @@ jobs:
       fail-fast: false
       matrix:
         jobname: [
-          windows-vs2019
+          windows-vs2017-clang
         ]
 
     steps:
     - name: Checkout Action
       uses: actions/checkout@v1
-
+    
     - name: Setup Dependencies
       run: scripts/ci/github-actions/powershell/setup_windows.ps1
+      
+    - name: Set MSVC
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Configure
       run: scripts/ci/github-actions/powershell/run_step.ps1 -step configure
