@@ -84,3 +84,35 @@ jobs:
 
     - name: Install
       run: scripts/ci/github-actions/bash/run_step.sh install
+  
+  windows:
+    runs-on: windows-latest
+    env:
+      GH_YML_JOBNAME: ${{ matrix.jobname }}
+      GH_YML_OS: windows
+
+    strategy:
+      fail-fast: false
+      matrix:
+        jobname: [
+          windows-vs2019
+        ]
+
+    steps:
+    - name: Checkout Action
+      uses: actions/checkout@v1
+
+    - name: Setup Dependencies
+      run: scripts/ci/github-actions/powershell/setup_windows.ps1
+
+    - name: Configure
+      run: scripts/ci/github-actions/powershell/run_step.ps1 -step configure
+
+    - name: Build
+      run: scripts/ci/github-actions/powershell/run_step.ps1 -step build
+
+    - name: Test
+      run: scripts/ci/github-actions/powershell/run_step.ps1 -step test
+
+    - name: Install
+      run: scripts/ci/github-actions/powershell/run_step.ps1 -step install
