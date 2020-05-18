@@ -4,13 +4,19 @@
 
 
 ncio_cxx17_src = ['ncio/cxx17/cxx17NCIO.cpp']
-ncio_cxx17_inc = include_directories(['ncio/cxx17'])
 
+# private directories for target compilation
+ncio_cxx17_inc = include_directories(['ncio/cxx17'])
 ncio_cxx17_lib = library('ncio-cxx17', 
                          sources: ncio_cxx17_src,
                          include_directories: ncio_cxx17_inc,
                          dependencies : [ncio_dep],
                          install: true)
+
+# public include current headers location for linking externally with tests
+# and source for common headers
+ncio_cxx17_dep = declare_dependency(link_with: ncio_cxx17_lib, 
+                                    include_directories: ['.','../../source'])
 
 # installation headers
 # only public header that should be included in projects using ncio

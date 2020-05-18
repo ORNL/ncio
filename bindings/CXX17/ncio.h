@@ -8,5 +8,6 @@
 
 #pragma once
 
+#include "ncio/common/ncioMacros.h"
 #include "ncio/common/ncioTypes.h"
 #include "ncio/cxx17/cxx17NCIO.h"

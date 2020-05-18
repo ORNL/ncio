@@ -14,5 +14,6 @@ ncio_dep = declare_dependency( link_with: ncio_lib,
                                include_directories: ['../'] )
 
 # -> include/ncio/common/header.h
+install_headers('common/ncioMacros.h', subdir : 'ncio/common')
 install_headers('common/ncioTypes.h', subdir : 'ncio/common') 
 install_headers('common/ncioTypesNexus.h', subdir: 'ncio/common')
