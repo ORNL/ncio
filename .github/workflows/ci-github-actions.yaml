@@ -95,7 +95,7 @@ jobs:
       fail-fast: false
       matrix:
         jobname: [
-          windows-vs2017-clang
+          windows-vs2017
         ]
 
     steps:
@@ -105,7 +105,7 @@ jobs:
     - name: Setup Dependencies
       run: scripts/ci/github-actions/powershell/setup_windows.ps1
       
-    - name: Set MSVC
+    - name: Set MSVC Compiler
       uses: ilammy/msvc-dev-cmd@v1
 
     - name: Configure
