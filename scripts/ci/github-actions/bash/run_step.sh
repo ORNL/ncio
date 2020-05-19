@@ -24,7 +24,7 @@ case "$1" in
     ninja test
     ;;
 
-  # Install the library (
+  # Install the library
   install)
     cd ${GITHUB_WORKSPACE}/../ncio-build
     ninja test
