@@ -1,4 +1,4 @@
-/*
+/**
  * ncio.h : unique public header. Projects using ncio should only include this
  * header
  *
@@ -10,4 +10,5 @@
 
 #include "ncio/common/ncioMacros.h"
 #include "ncio/common/ncioTypes.h"
+#include "ncio/cxx17/cxx17DataDescriptor.h"
 #include "ncio/cxx17/cxx17NCIO.h"

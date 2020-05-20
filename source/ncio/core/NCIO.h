@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include "ncio/common/ncioTypes.h"
+#include "ncio/core/DataDescriptor.h"
+
 #include <map>
 #include <string>
 
@@ -20,7 +23,6 @@ public:
      * NCIO constructor, it's the starting point of contact within the NCIO
      * library and an application
      * @param configFile optional input runtime configuration
-     * TODO config file format (yaml?)
      */
     NCIO(const std::string &configFile);
 
@@ -50,6 +52,15 @@ public:
      */
     std::string GetParameter(const std::string key) const noexcept;
 
+    /**
+     * Open, factory of core::DataDescriptor
+     * @param fileName
+     * @param openMode
+     * @return internal handler
+     */
+    core::DataDescriptor &Open(const std::string &fileName,
+                               const ncio::openmode openMode);
+
 private:
     /** input config file passed at constructor */
     const std::string m_ConfigFile;
@@ -59,6 +70,10 @@ private:
      * interact through SetParameter/GetParameter
      */
     std::map<std::string, std::string> m_Parameters;
+
+    // TODO: might need to be a multimap or key might need to be a
+    // std::map<unsigned int, core::DataDescriptor> to allow multiple handlers
+    std::map<std::string, core::DataDescriptor> m_DataDescriptors;
 };
 
 } // end namespace ncio

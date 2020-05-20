@@ -16,4 +16,13 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
     ncio.SetParameter("key", "value");
     SUBCASE("GetParameter") { CHECK(ncio.GetParameter("key") == "value"); }
     SUBCASE("GetConfigFile") { CHECK(ncio.GetConfigFile() == ""); }
+
+    SUBCASE("DataDescriptor_Get")
+    {
+        ncio::DataDescriptor fh = ncio.Open("dummy", ncio::openmode::read);
+
+        std::uint64_t total_counts = 0;
+        fh.Get<ncio::nexus::bank_1::total_counts>(&total_counts);
+        CHECK(total_counts == 1);
+    }
 }

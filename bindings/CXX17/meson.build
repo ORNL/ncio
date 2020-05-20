@@ -1,15 +1,21 @@
-# MESON file to build the ncio-cxx17 bindings library
+# MESON file to build the ncio-cxx17 bindings library and public headers
 #  Created on: May 11, 2020
 #      Author: William F Godoy godoywf@ornl.gov  
 
+ncio_cxx17_names = ['NCIO',
+                    'DataDescriptor']
 
-ncio_cxx17_src = ['ncio/cxx17/cxx17NCIO.cpp']
+# meson is not Turing-complete, so user-defined functions are not possible
+# list += loop is a great and clean workaround
+ncio_cxx17_sources = []
+foreach ncio_cxx17_name : ncio_cxx17_names
+  ncio_cxx17_sources += ['ncio/cxx17/cxx17' + ncio_cxx17_name + '.cpp']
+endforeach
 
-# private directories for target compilation
-ncio_cxx17_inc = include_directories(['ncio/cxx17'])
+# DEFINE LIBRARY
 ncio_cxx17_lib = library('ncio-cxx17', 
-                         sources: ncio_cxx17_src,
-                         include_directories: ncio_cxx17_inc,
+                         sources: ncio_cxx17_sources,
+                         include_directories: include_directories(['ncio/cxx17','../../source']),
                          dependencies : [ncio_dep],
                          install: true)
 
@@ -17,17 +23,14 @@ ncio_cxx17_lib = library('ncio-cxx17',
 # and source for common headers
 ncio_cxx17_dep = declare_dependency(link_with: ncio_cxx17_lib, 
                                     include_directories: ['.','../../source'])
+                                    
+# INSTALL PUBLIC HEADERS
 
-# installation headers
 # only public header that should be included in projects using ncio
 install_headers('ncio.h')
 
-# other CXX17 headers 
-headers_cxx17 = ['cxx17NCIO.h']
-
-# meson is not Turing-complete, so user-defined functions are not possible
-# list + loop is a great and clean workaround
-# install in -> include/ncio/cxx17/header.h
-foreach header_cxx17 : headers_cxx17
-  install_headers('ncio/cxx17/'+header_cxx17, subdir:'ncio/cxx17')
+# ncio/cxx17 headers 
+# install in -> include/ncio/cxx17/cxx17.h
+foreach ncio_cxx17_name : ncio_cxx17_names
+  install_headers('ncio/cxx17/cxx17'+ncio_cxx17_name+'.h', subdir:'ncio/cxx17')
 endforeach

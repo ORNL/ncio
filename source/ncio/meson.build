@@ -1,19 +1,23 @@
+# MESON libncio compilation and install common headers
+#  Created on: May 11, 2020
+#      Author: William F Godoy godoywf@ornl.gov
 
+# EXPECT THIS TO GROW
+ncio_sources = ['core/NCIO.cpp',
+                'core/DataDescriptor.cpp']
 
-ncio_src = ['core/NCIO.cpp']
-ncio_inc = include_directories(['common','core'])
-
+ncio_inc = include_directories(['..'])
 ncio_lib = library('ncio', 
-                   sources: ncio_src,
+                   sources: ncio_sources,
                    include_directories: ncio_inc,
                    install: true)
 
-# creating a dependency to make it easy to integrate
-# using '../' as headers are included from the ncio prefix
+# CREATE A DEPENDENCY FOR BINDINGS and TESTS
+# using '../' as headers are included from the upper-level ncio directory
 ncio_dep = declare_dependency( link_with: ncio_lib, 
-                               include_directories: ['../'] )
+                               include_directories: ncio_inc )
 
-# -> include/ncio/common/header.h
-install_headers('common/ncioMacros.h', subdir : 'ncio/common')
+# INSTALL COMMON PUBLIC HEADERS
+install_headers('common/ncioMacros.h', subdir : 'ncio/common') 
 install_headers('common/ncioTypes.h', subdir : 'ncio/common') 
 install_headers('common/ncioTypesNexus.h', subdir: 'ncio/common')

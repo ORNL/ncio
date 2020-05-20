@@ -27,4 +27,12 @@ std::string NCIO::GetParameter(const std::string key) const noexcept
     return value;
 }
 
+core::DataDescriptor &NCIO::Open(const std::string &fileName,
+                                 const ncio::openmode openMode)
+{
+    auto pair = m_DataDescriptors.emplace(
+        fileName, core::DataDescriptor(fileName, openMode));
+    return pair.first->second;
+}
+
 } // end namespace ncio::core
