@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/ORNL/ncio/workflows/.github/workflows/GitHub%20Actions/badge.svg)](https://github.com/ORNL/ncio/actions)
+![GitHub Actions](https://github.com/ORNL/ncio/workflows/GitHub%20Actions/badge.svg?branch=master)
 
 # ncio
 Neutrons Common Input Output, SNS/HFIR neutrons data management framework
