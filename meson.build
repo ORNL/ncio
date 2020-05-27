@@ -4,20 +4,31 @@
 
 # Define project information
 project('ncio',
-        ['cpp'],
-        license: ['BSD 3-Clause'],
+        ['cpp', 'c'],
+        license: 'BSD 3-Clause',
         version: '0.0.1',
         meson_version: '>=0.52.0',
         default_options: ['cpp_std=c++17', 'buildtype=release', 'layout=flat']
 )
 
-# private ncio library
+# Private external dependencies to ncio
+threads_dep = dependency('threads', 
+                        required: true)
+                        
+hdf5_dep = dependency('hdf5',
+                      required: true,
+                      version: [],
+                      not_found_message: 'NCIO Mandatory dependency HDF5 not found')
+                      
+ncio_dependencies = [hdf5_dep, threads_dep]
+
+# Private ncio library
 subdir('source')
 
-# bindings depend on ncio library
+# Public bindings which depend on private ncio library
 subdir('bindings')
 
-# tests
+# Tests
 if get_option('build-tests')
   doctest_dep = dependency('doctest', fallback: ['doctest', 'doctest_dep'])
   subdir('testing')

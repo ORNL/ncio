@@ -2,7 +2,7 @@
 #  Created on: May 11, 2020
 #      Author: William F Godoy godoywf@ornl.gov
 
-unit_tests = ['unitNCIO.cpp']
+unit_tests = ['unitTest_NCIO.cpp']
 
 foreach unit_test : unit_tests
   exe = executable('unittest-ncio-core-NCIO', 

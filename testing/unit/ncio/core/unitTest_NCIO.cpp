@@ -8,8 +8,6 @@
 
 #include "ncio-doctest.h"
 
-#include <iostream>
-
 #include "ncio/core/NCIO.h"
 
 TEST_CASE("Unit test for core::NCIO class")

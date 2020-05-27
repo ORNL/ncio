@@ -3,4 +3,4 @@
 ncio_doctest_inc = include_directories('.')
 
 subdir('unit')
-# TODO subdir('functional')
+subdir('functional')

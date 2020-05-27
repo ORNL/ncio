@@ -1,20 +1,32 @@
+# MESON libncio compilation and install common headers
+#  Created on: May 11, 2020
+#      Author: William F Godoy godoywf@ornl.gov
 
-ncio_src = ['core/NCIO.cpp']
-ncio_inc = include_directories(['common','core'])
+# EXPECT THIS TO GROW
+ncio_sources = ['core/NCIO.cpp',
+                'core/DataDescriptor.cpp',
+                
+                'transport/Transport.cpp',
+                'transport/TransportHDF5.cpp',
+                
+                'schema/ncioNexus.cpp']
+                
+ncio_inc = include_directories(['..'])
 
 ncio_lib = library('ncio', 
-                   sources: ncio_src,
+                   sources: ncio_sources,
                    include_directories: ncio_inc,
-                   install: true)
+                   install: true, 
+                   dependencies: ncio_dependencies)
 
-# creating a dependency to make it easy to integrate
-# using '../' as headers are included from the ncio prefix
+# CREATE A DEPENDENCY FOR BINDINGS and TESTS
+# using '../' as headers are included from the upper-level ncio directory
 ncio_dep = declare_dependency( link_with: ncio_lib, 
-                               include_directories: ['../'] )
+                               include_directories: ncio_inc )
 
-# setup configuration file ncioConfig.h from ncioConfig,h.input
-# using semver 2.0 versioning https://semver.org/                              
+# CONFIGURATION FILE ncioConfig.h from ncioConfig,h.in
 config_data = configuration_data()
+# using semver 2.0 versioning https://semver.org/
 version = meson.project_version()
 config_data.set('NCIO_VERSION', version)
 version_array = version.split('.')
@@ -40,6 +52,5 @@ ncio_config_header = configure_file(input:  'common/ncioConfig.h.in',
 ncio_common_headers=['common/ncioTypes.h', 
                      'common/ncioTypesNexus.h']                
 ncio_common_headers += ncio_config_header
-
-# -> include/ncio/common/header.h
+# INSTALL COMMON PUBLIC HEADERS
 install_headers(ncio_common_headers, subdir : 'ncio/common') 

@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include "ncio/common/ncioTypes.h"
+#include "ncio/core/DataDescriptor.h"
+
 #include <map>
 #include <string>
 
@@ -20,7 +23,6 @@ public:
      * NCIO constructor, it's the starting point of contact within the NCIO
      * library and an application
      * @param configFile optional input runtime configuration
-     * TODO config file format (yaml?)
      */
     NCIO(const std::string &configFile);
 
@@ -44,21 +46,38 @@ public:
     void SetParameter(const std::string key, const std::string value) noexcept;
 
     /**
+     * TODO: use std::optional instead
      * Returns the value of a parameter found by key.
      * @param key input parameter key to search in existing set parameters.
      * @return parameter value, if key not found returns an empty string.
      */
     std::string GetParameter(const std::string key) const noexcept;
 
+    /**
+     * Open, factory of core::DataDescriptor
+     * @param fileName
+     * @param openMode
+     * @return internal handler
+     */
+    core::DataDescriptor &Open(const std::string &name,
+                               const openmode openMode);
+
 private:
     /** input config file passed at constructor */
-    const std::string m_ConfigFile;
+    std::string m_ConfigFile;
 
     /**
      * Parameter key/value container
      * interact through SetParameter/GetParameter
      */
     std::map<std::string, std::string> m_Parameters;
+
+    // TODO: might need to be a multimap or key might need to be a
+    // std::map<unsigned int, core::DataDescriptor> to allow multiple handlers
+    // needs a unique_ptr since object doesn't have a copy constructor (owns a
+    // member unique_ptr) and can't be constructed with a std::pair
+    std::map<std::string, std::unique_ptr<core::DataDescriptor>>
+        m_DataDescriptors;
 };
 
 } // end namespace ncio
