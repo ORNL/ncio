@@ -20,13 +20,13 @@ jobs:
       fail-fast: false
       matrix:
         jobname: [
-          ubuntu18-gcc7,
+          ubuntu18-gcc8,
           centos7-gcc7
         ]
         include:
-        - jobname: ubuntu18-gcc7
+        - jobname: ubuntu18-gcc8
           container: 
-            image: devcafe/ubuntu18.04-gcc7.3.0-openmpi2.1.0
+            image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
             options: -u root
         - jobname: centos7-gcc7
           container: 
