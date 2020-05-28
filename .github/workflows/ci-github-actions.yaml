@@ -36,9 +36,6 @@ jobs:
     steps:
     - name: Checkout Action
       uses: actions/checkout@v1
-      
-    - name: Setup Dependencies
-      run: scripts/ci/github-actions/bash/setup_linux.sh
 
     - name: Configure
       run: scripts/ci/github-actions/bash/run_step.sh configure

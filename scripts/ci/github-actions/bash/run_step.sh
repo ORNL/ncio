@@ -1,6 +1,11 @@
 #!/bin/bash
 
 # Run specific steps based on input
+if test -f /root/.bash_profile; then
+  echo "Enabling gcc and clang compilers"	
+  source /root/.bash_profile
+  gcc --version
+fi
 
 case "$1" in 
 
