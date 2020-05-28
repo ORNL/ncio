@@ -7,7 +7,4 @@ case "${GH_JOBNAME}" in
     ${GITHUB_WORKSPACE}/scripts/ci/github-actions/bash/setup_centos7.sh
     ;;
     
-  *"ubuntu"*)
-    ${GITHUB_WORKSPACE}/scripts/ci/github-actions/bash/setup_debian.sh
-    ;;
 esac
