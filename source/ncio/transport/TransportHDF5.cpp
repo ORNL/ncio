@@ -12,22 +12,23 @@
 
 #include <hdf5.h>
 
-static_assert(std::is_same_v<hid_t, std::int64_t>,
-              "This version of HDF5 didn't compile with hid_t = int64_t");
-
 namespace ncio::transport
 {
 
 TransportHDF5::TransportHDF5(const std::string &name, const openmode openMode,
                              const Parameters &parameters)
-: Transport("HDF5", name, openMode, parameters)
+: Transport("HDF5", name, openMode, parameters), m_File(hid_t(-1))
 {
-
-    //    hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
+    // TODO: enable actual write and read
+    // hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
     //    H5Pset_fclose_degree(fapl, H5F_CLOSE_STRONG);
-    //    m_File = H5Fopen(name.c_str(), H5F_ACC_RDONLY, fapl);
     //
-    //    if (m_File < 0)
+    //    if (openMode == openmode::read)
+    //    {
+    //        m_File = H5Fopen(name.c_str(), H5F_ACC_RDONLY, fapl);
+    //    }
+    //
+    //    if (std::any_cast<hid_t>(m_File) < 0)
     //    {
     //        throw std::invalid_argument("NCIO ERROR: couldn't open HDF5 file "
     //        +
@@ -74,9 +75,6 @@ if (status < 0)
     m_IsOpen = false;
 }
 
-std::any TransportHDF5::DoGetNativeHandler() noexcept
-{
-    return std::any(m_File);
-}
+std::any TransportHDF5::DoGetNativeHandler() noexcept { return m_File; }
 
 } // end namespace ncio::io
