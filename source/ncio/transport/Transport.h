@@ -46,8 +46,8 @@ public:
     T GetMetadata();
 
     /** Write a variable entry by name */
-    //    template <class T>
-    //    void Put(const std::string &entryName, const T *data);
+    template <class T>
+    void Put(const std::string &entryName, const T *data);
 
     /** Read a variable entry by name */
     template <class T>
@@ -84,9 +84,8 @@ protected:
     virtual void
     DoGetMetadata(std::map<std::string, std::set<std::string>> &index) = 0;
 
-    // virtual void DoPut(const std::string &entryName, const float *data) = 0;
-
 #define declare_ncio_nexus_bank_entries(T)                                     \
+    virtual void DoPut(const std::string &entryName, const T *data) = 0;       \
     virtual void DoGet(const std::string &entryName, T *data) = 0;
 
     NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)

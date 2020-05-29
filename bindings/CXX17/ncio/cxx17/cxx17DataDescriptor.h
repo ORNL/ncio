@@ -52,8 +52,8 @@ public:
      * - std::invalid_argument:
      *   - if data is nullptr
      */
-    //    template <class T, class U>
-    //    void Put(const U *data);
+    template <auto enumValue, class T>
+    void Put(const T *data);
 
     /**
      * Read prefetch operation. Cheap lazy evaluation function.
@@ -66,7 +66,7 @@ public:
      * - std::invalid_argument:
      *   - if data is nullptr
      */
-    template <auto EnumValue, class T>
+    template <auto enumValue, class T>
     void Get(T *data);
 
     /**

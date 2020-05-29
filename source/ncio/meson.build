@@ -8,6 +8,7 @@ ncio_sources = ['core/NCIO.cpp',
                 
                 'transport/Transport.cpp',
                 'transport/TransportHDF5.cpp',
+                'transport/TransportNull.cpp',
                 
                 'schema/ncioNexus.cpp']
                 

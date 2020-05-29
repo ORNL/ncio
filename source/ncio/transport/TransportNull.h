@@ -1,36 +1,26 @@
 /**
- * TransportHDF5.h: class that defines and unifies interactions to the HDF5 file
- * I/O library.
+ * TransportNull.h: class that defines a null transport to help measure overhead
+ * of real transports
  *
  *  Created on: May 15, 2020
  *      Author: William F Godoy godoywf@ornl.gov
  */
-
 #pragma once
 
-#include "ncio/common/ncioMacros.h"
 #include "ncio/transport/Transport.h"
-
-#include <memory>
 
 namespace ncio::transport
 {
 
-class TransportHDF5 : public Transport
+class TransportNull : public Transport
 {
 public:
-    TransportHDF5(const std::string &name, const openmode openMode,
+    TransportNull(const std::string &name, const openmode openMode,
                   const Parameters &parameters);
 
-    ~TransportHDF5();
+    ~TransportNull() = default;
 
 private:
-    /**
-     * HDF5 file handler.
-     * Using alias to hid_t to keep HDF5 dependency private
-     */
-    std::int64_t m_File = -1;
-
     void
     DoGetMetadata(std::map<std::string, std::set<std::string>> &index) final;
 
@@ -46,4 +36,4 @@ private:
     std::any DoGetNativeHandler() noexcept final;
 };
 
-} // end namespace nexus::io
+}

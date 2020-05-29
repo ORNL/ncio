@@ -20,11 +20,11 @@ T Transport::GetMetadata()
     return index;
 }
 
-// template <class T>
-// void Transport::Put(const std::string &entryName, const T *data)
-//{
-//    DoPut(entryName, data);
-//}
+template <class T>
+void Transport::Put(const std::string &entryName, const T *data)
+{
+    DoPut(entryName, data);
+}
 
 template <class T>
 void Transport::Get(const std::string &entryName, T *data)
@@ -33,6 +33,7 @@ void Transport::Get(const std::string &entryName, T *data)
 }
 
 #define declare_ncio_nexus_bank_entries(T)                                     \
+    template void Transport::Put(const std::string &entryName, const T *data); \
     template void Transport::Get(const std::string &entryName, T *data);
 
 NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)

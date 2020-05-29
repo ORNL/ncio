@@ -20,15 +20,22 @@ namespace ncio::core
 class DataDescriptor
 {
 public:
+    /**
+     * Implementation of DataDescriptor pointing a file/stream
+     * @param descriptorName file name
+     * @param openMode write or read
+     * @param parameters particular configuration parameters for constructing a
+     * data descriptor
+     */
     DataDescriptor(const std::string &descriptorName,
                    const ncio::openmode openMode, const Parameters &parameters);
 
     ~DataDescriptor() = default;
 
-    //    template <class T, class U>
-    //    void Put(const U *data);
+    template <class Enum, Enum enumValue, class T>
+    void Put(const T *data);
 
-    template <class Enum, Enum EnumValue, class T>
+    template <class Enum, Enum enumValue, class T>
     void Get(T *data);
 
     /** Executes all Put or Get deferred tasks */

@@ -1,7 +1,7 @@
 ![GitHub Actions](https://github.com/ORNL/ncio/workflows/GitHub%20Actions/badge.svg?branch=master)
 
 # ncio
-Neutrons Common Input Output, SNS/HFIR neutrons data management framework
+No Cost Input Output data management framework
 
 
 ## Installing ncio from source with [Meson](https://mesonbuild.com/)

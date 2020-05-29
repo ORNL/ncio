@@ -50,9 +50,10 @@ void TransportHDF5::DoGetMetadata(
 {
 }
 
-// void TransportHDF5::DoPut(const std::string &entryName, const float *data) {}
-
+// will need to specialize for each HDF5 type
 #define declare_ncio_nexus_bank_entries(T)                                     \
+    void TransportHDF5::DoPut(const std::string &entryName, const T *data) {}  \
+                                                                               \
     void TransportHDF5::DoGet(const std::string &entryName, T *data)           \
     {                                                                          \
         *data = 1;                                                             \

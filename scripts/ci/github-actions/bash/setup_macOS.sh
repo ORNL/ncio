@@ -1,4 +1,3 @@
 #!/bin/bash
 
-brew install ninja
-brew install meson
+brew install ninja meson hdf5

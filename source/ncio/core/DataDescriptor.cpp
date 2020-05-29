@@ -10,6 +10,7 @@
 #include "DataDescriptor.tcc"
 
 #include "ncio/transport/TransportHDF5.h"
+#include "ncio/transport/TransportNull.h"
 
 namespace ncio::core
 {
@@ -55,21 +56,31 @@ void DataDescriptor::InitTransport(const std::string &descriptorName,
                 m_Transport = std::make_unique<transport::TransportHDF5>(
                     descriptorName, openMode, parameters);
             }
+            else if (value == "null" || value == "NULL")
+            {
+                m_Transport = std::make_unique<transport::TransportNull>(
+                    descriptorName, openMode, parameters);
+            }
             else
             {
-                // TODO : update error message
+                // TODO : update error message as new transports are added
                 throw std::invalid_argument(
                     "NCIO ERROR: for parameters key=transport value=" + value +
-                    " is not valid. Only hdf5 is supported\n");
+                    " is not valid. Only hdf5 and null is supported\n");
             }
         }
     }
 
+    // defaults
     if (!foundTransport)
     {
-        // default
+#ifndef _WIN32
         m_Transport = std::make_unique<transport::TransportHDF5>(
             descriptorName, openMode, parameters);
+#else
+        m_Transport = std::make_unique<transport::TransportNull>(
+            descriptorName, openMode, parameters);
+#endif
     }
 }
 
