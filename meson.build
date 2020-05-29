@@ -11,16 +11,21 @@ project('ncio',
         default_options: ['cpp_std=c++17', 'buildtype=release', 'layout=flat']
 )
 
+# Just test if cmake can be found
+
+
 # Private external dependencies to ncio
 threads_dep = dependency('threads', 
-                        required: true)
-                        
+                         required: true)
+ncio_dependencies = [threads_dep]
+
 hdf5_dep = dependency('hdf5',
-                      required: true,
-                      version: [],
-                      not_found_message: 'NCIO Mandatory dependency HDF5 not found')
-                      
-ncio_dependencies = [hdf5_dep, threads_dep]
+                      required: false,
+                      not_found_message: 'NCIO dependency HDF5 not found')
+
+if hdf5_dep.found()
+  ncio_dependencies += [hdf5_dep]
+endif
 
 # Private ncio library
 subdir('source')

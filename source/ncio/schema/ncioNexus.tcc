@@ -1,8 +1,9 @@
-/*
- * nexus.tcc
+/**
+ * ncioNexus.tcc : implementation of public interface for template functions
+ * inside the ncio::nexus workspace targeting the Nexus schema
  *
  *  Created on: May 26, 2020
- *      Author: wgodoy
+ *      Author: William F Godoy godoywf@ornl.gov
  */
 
 #pragma once

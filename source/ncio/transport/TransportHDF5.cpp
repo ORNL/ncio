@@ -57,7 +57,7 @@ void TransportHDF5::DoGetMetadata(
                                                                                \
     void TransportHDF5::DoGet(const std::string &entryName, T *data)           \
     {                                                                          \
-        *data = 1;                                                             \
+        *data = 0;                                                             \
     }
 
 NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)

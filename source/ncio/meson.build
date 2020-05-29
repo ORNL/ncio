@@ -1,4 +1,4 @@
-# MESON libncio compilation and install common headers
+# MESON private libncio configuration and installation of common headers
 #  Created on: May 11, 2020
 #      Author: William F Godoy godoywf@ornl.gov
 
@@ -7,11 +7,15 @@ ncio_sources = ['core/NCIO.cpp',
                 'core/DataDescriptor.cpp',
                 
                 'transport/Transport.cpp',
-                'transport/TransportHDF5.cpp',
                 'transport/TransportNull.cpp',
                 
                 'schema/ncioNexus.cpp']
-                
+
+# OPTIONAL EXTERNAL DEPENDENCIES SOURCES 
+if hdf5_dep.found()
+  ncio_sources += ['transport/TransportHDF5.cpp']  
+endif
+
 ncio_inc = include_directories(['..'])
 
 ncio_lib = library('ncio', 
@@ -45,6 +49,12 @@ config_data.set('NCIO_BUILD_TYPE', get_option('buildtype') )
 config_data.set('NCIO_BUILD_SYSTEM', build_machine.system() )
 config_data.set('NCIO_BUILD_CPU_INFO', build_machine.cpu() )
 config_data.set('NCIO_BUILD_ENDIANNESS', build_machine.endian() )
+
+if hdf5_dep.found()
+  config_data.set('NCIO_HAVE_HDF5', true )
+else
+  config_data.set('NCIO_HAVE_HDF5', false )
+endif
 
 ncio_config_header = configure_file(input:  'common/ncioConfig.h.in',
                                     output: 'ncioConfig.h',

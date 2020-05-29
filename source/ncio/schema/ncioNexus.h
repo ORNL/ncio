@@ -1,5 +1,5 @@
 /**
- * cxx17nexus.h : public interface for functions inside the ncio::nexus
+ * ncioNexus.h : public interface for functions inside the ncio::nexus
  * workspace targeting the Nexus schema
  *
  *  Created on: May 26, 2020

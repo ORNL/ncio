@@ -9,7 +9,12 @@
 #include "DataDescriptor.h"
 #include "DataDescriptor.tcc"
 
+#include <ncioConfig.h>
+
+#ifdef NCIO_HAVE_HDF5
 #include "ncio/transport/TransportHDF5.h"
+#endif
+
 #include "ncio/transport/TransportNull.h"
 
 namespace ncio::core
@@ -53,8 +58,15 @@ void DataDescriptor::InitTransport(const std::string &descriptorName,
             foundTransport = true;
             if (value == "hdf5" || value == "HDF5")
             {
+#ifdef NCIO_HAVE_HDF5
                 m_Transport = std::make_unique<transport::TransportHDF5>(
                     descriptorName, openMode, parameters);
+#else
+                std::invalid_argument("NCIO ERROR: this version of NCIO didn't "
+                                      "compile with the HDF5 dependency, can't "
+                                      "use transport (key) hdf5 (value) in "
+                                      "configuration parameters\n");
+#endif
             }
             else if (value == "null" || value == "NULL")
             {
@@ -74,7 +86,7 @@ void DataDescriptor::InitTransport(const std::string &descriptorName,
     // defaults
     if (!foundTransport)
     {
-#ifndef _WIN32
+#ifdef NCIO_HAVE_HDF5
         m_Transport = std::make_unique<transport::TransportHDF5>(
             descriptorName, openMode, parameters);
 #else
