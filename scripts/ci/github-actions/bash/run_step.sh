@@ -16,6 +16,13 @@ case "$1" in
     cd ncio-build
     
     case "${GH_JOBNAME}" in
+      # Sanitize with clang compilers
+      *"asan"*)
+        CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=address --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+      ;;
+      *"ubsan"*)
+        CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=undefined --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+      ;;
       # Test with clang compilers
       *"clang"*)
         CC=clang CXX=clang++ meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}

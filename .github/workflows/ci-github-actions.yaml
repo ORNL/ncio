@@ -11,27 +11,6 @@ on:
 
 jobs:
 
-  checks:
-    runs-on: ubuntu-latest
-    container: ${{ matrix.container }}
-    env:
-      GH_JOBNAME: ${{ matrix.jobname }}
-    strategy:
-      fail-fast: false
-      matrix:
-        jobname: [
-          clang-format
-        ]
-    
-    steps:
-    - name: Checkout Action
-      uses: actions/checkout@v1
-    
-    - name: clang-format
-      if: contains(matrix.jobname, 'clang-format')
-      run: scripts/ci/github-actions/bash/check_clang-format.sh
-        
-     
   linux:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
@@ -113,9 +92,10 @@ jobs:
 
     - name: Install
       run: scripts/ci/github-actions/bash/run_step.sh install
-  
+
+
   windows:
-    runs-on: windows-2016
+    runs-on: windows-2019
     env:
       GH_YML_JOBNAME: ${{ matrix.jobname }}
       GH_YML_OS: windows
@@ -124,7 +104,7 @@ jobs:
       fail-fast: false
       matrix:
         jobname: [
-          windows-vs2017
+          windows-vs2019
         ]
 
     steps:
@@ -148,3 +128,62 @@ jobs:
 
     - name: Install
       run: scripts/ci/github-actions/powershell/run_step.ps1 -step install
+
+
+  dynamic:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    env:
+      GH_JOBNAME: ${{ matrix.jobname }}
+    strategy:
+      fail-fast: false
+      matrix:
+        jobname: [
+          clang-asan, # address sanitizer
+          clang-ubsan # undefined behavior sanitizer
+        ]
+        include:
+        - jobname: clang-asan
+          container: 
+            image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
+            options: -u root
+
+        - jobname: clang-ubsan
+          container: 
+            image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
+            options: -u root
+    
+    steps:
+    - name: Checkout Action
+      uses: actions/checkout@v1
+    
+    - name: Configure
+      run: scripts/ci/github-actions/bash/run_step.sh configure
+
+    - name: Build
+      run: scripts/ci/github-actions/bash/run_step.sh build
+
+    - name: Test
+      run: scripts/ci/github-actions/bash/run_step.sh test
+
+
+  static:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    env:
+      GH_JOBNAME: ${{ matrix.jobname }}
+    strategy:
+      fail-fast: false
+      matrix:
+        jobname: [
+          clang-format
+        ]
+    
+    steps:
+    - name: Checkout Action
+      uses: actions/checkout@v1
+    
+    - name: clang-format
+      if: contains(matrix.jobname, 'clang-format')
+      run: scripts/ci/github-actions/bash/check_clang-format.sh
+      
