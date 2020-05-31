@@ -10,6 +10,28 @@ on:
     - master 
 
 jobs:
+
+  checks:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    env:
+      GH_JOBNAME: ${{ matrix.jobname }}
+    strategy:
+      fail-fast: false
+      matrix:
+        jobname: [
+          clang-format
+        ]
+    
+    steps:
+    - name: Checkout Action
+      uses: actions/checkout@v1
+    
+    - name: clang-format
+      if: contains(matrix.jobname, 'clang-format')
+      run: scripts/ci/github-actions/bash/check_clang-format.sh
+        
+     
   linux:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
