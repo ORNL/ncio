@@ -21,14 +21,24 @@ jobs:
       matrix:
         jobname: [
           ubuntu18-gcc8,
-          centos7-gcc8
+          ubuntu18-clang6,
+          centos7-gcc8,
+          centos7-clang5
         ]
         include:
         - jobname: ubuntu18-gcc8
           container: 
             image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
             options: -u root
+        - jobname: ubuntu18-clang6
+          container: 
+            image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
+            options: -u root
         - jobname: centos7-gcc8
+          container: 
+            image: williamfgc/ncio-ci:centos7-gcc8-clang5
+            options: -u root
+        - jobname: centos7-clang5
           container: 
             image: williamfgc/ncio-ci:centos7-gcc8-clang5
             options: -u root

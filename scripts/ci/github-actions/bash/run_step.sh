@@ -14,7 +14,18 @@ case "$1" in
     cd ${GITHUB_WORKSPACE}/..
     mkdir ncio-build
     cd ncio-build
-    meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+    
+    case "${GH_JOBNAME}" in
+      # Test with clang compilers
+      *"clang"*)
+        CC=clang CXX=clang++ meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+      ;;
+      # Test with default compilers
+      *)
+        meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+      ;;
+    esac
+   
     ;;
 
   # Build using ninja
