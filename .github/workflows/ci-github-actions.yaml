@@ -140,7 +140,9 @@ jobs:
       matrix:
         jobname: [
           clang-asan, # address sanitizer
-          clang-ubsan # undefined behavior sanitizer
+          clang-ubsan, # undefined behavior sanitizer
+          clang-tsan,  # thread race sanitizer (expensive)
+          clang-msan   # unintialize memory sanitizer (expensive)
         ]
         include:
         - jobname: clang-asan
@@ -149,6 +151,16 @@ jobs:
             options: -u root
 
         - jobname: clang-ubsan
+          container: 
+            image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
+            options: -u root
+
+        - jobname: clang-tsan
+          container: 
+            image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
+            options: -u root
+
+        - jobname: clang-msan
           container: 
             image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
             options: -u root
