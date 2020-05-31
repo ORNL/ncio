@@ -18,17 +18,29 @@ case "$1" in
     case "${GH_JOBNAME}" in
       # Sanitize with clang compilers
       *"asan"*)
+        echo 'Configure for address sanitizer asan'
         CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=address --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       *"ubsan"*)
+        echo 'Configure for undefined behavior sanitizer ubsan'
         CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=undefined --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+      ;;
+      *"tsan"*)
+        echo 'Configure for thread sanitizer tsan'
+        CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=thread --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+      ;;
+      *"msan"*)
+        echo 'Configure for unintialized memory sanitizer msan'
+        CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=memory --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with clang compilers
       *"clang"*)
+        echo 'Configure for clang compilers'
         CC=clang CXX=clang++ meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with default compilers
       *)
+        echo 'Configure for default system compilers'
         meson --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
     esac
