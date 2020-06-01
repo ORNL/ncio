@@ -190,12 +190,10 @@ jobs:
     
     - name: Upload Coverage
       if: contains(matrix.jobname, 'coverage')
-      uses: codecov/codecov-action@v1
-      with:
-        file:  ../ncio-build/meson-logs/coverage.txt
-        flags: alltests # optional
-        name: codecov-ncio # optional
-        fail_ci_if_error: true # optional (default = false)
+      run: |
+        curl -s https://codecov.io/bash > .codecov &&\
+        chmod +x .codecov &&\
+        ./.codecov -f ../ncio-build/meson-logs/coverage.txt -X fix
 
   static:
     runs-on: ubuntu-latest
