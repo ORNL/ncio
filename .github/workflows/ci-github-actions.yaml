@@ -142,7 +142,8 @@ jobs:
           clang-asan, # address sanitizer
           clang-ubsan, # undefined behavior sanitizer
           clang-tsan,  # thread race sanitizer (expensive)
-          clang-msan   # unintialize memory sanitizer (expensive)
+          clang-msan,  # unintialize memory sanitizer (expensive)
+          coverage
         ]
         include:
         - jobname: clang-asan
@@ -164,6 +165,11 @@ jobs:
           container: 
             image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
             options: -u root
+        
+        - jobname: coverage
+          container: 
+            image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
+            options: -u root
     
     steps:
     - name: Checkout Action
@@ -177,7 +183,19 @@ jobs:
 
     - name: Test
       run: scripts/ci/github-actions/bash/run_step.sh test
-
+    
+    - name: Coverage
+      if: contains(matrix.jobname, 'coverage')
+      run: scripts/ci/github-actions/bash/run_step.sh coverage
+    
+    - name: Upload Coverage
+      if: contains(matrix.jobname, 'coverage')
+      uses: codecov/codecov-action@v1
+      with:
+        file:  ../ncio-build/meson-logs/coverage.xml 
+        flags: alltests # optional
+        name: codecov-ncio # optional
+        fail_ci_if_error: true # optional (default = false)
 
   static:
     runs-on: ubuntu-latest

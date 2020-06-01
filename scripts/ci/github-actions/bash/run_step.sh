@@ -33,6 +33,11 @@ case "$1" in
         echo 'Configure for unintialized memory sanitizer msan'
         CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=memory --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
+      *"coverage"*)
+        echo 'Configure for code coverage'
+        apt-get install gcovr curl -y
+        meson -Db_coverage=true --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+      ;;
       # Test with clang compilers
       *"clang"*)
         echo 'Configure for clang compilers'
@@ -64,7 +69,13 @@ case "$1" in
     cd ${GITHUB_WORKSPACE}/../ncio-build
     ninja test
     ;;
-
+  
+  # Generate coverage reports
+  coverage)
+    cd ${GITHUB_WORKSPACE}/../ncio-build
+    ninja coverage
+    ;;
+    
   *)
     echo " Invalid step" "$1"
     exit -1
