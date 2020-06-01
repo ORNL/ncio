@@ -182,6 +182,7 @@ jobs:
       run: scripts/ci/github-actions/bash/run_step.sh build
 
     - name: Test
+      if: contains(matrix.jobname, 'san')
       run: scripts/ci/github-actions/bash/run_step.sh test
     
     - name: Coverage
@@ -192,7 +193,6 @@ jobs:
       if: contains(matrix.jobname, 'coverage')
       uses: codecov/codecov-action@v1
       with:
-        file:  ../ncio-build/meson-logs/coverage.xml 
         flags: alltests # optional
         name: codecov-ncio # optional
         fail_ci_if_error: true # optional (default = false)

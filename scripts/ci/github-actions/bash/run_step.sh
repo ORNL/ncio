@@ -73,7 +73,8 @@ case "$1" in
   # Generate coverage reports
   coverage)
     cd ${GITHUB_WORKSPACE}/../ncio-build
-    ninja coverage
+    ninja test coverage-xml
+    du -hs meson-logs/coverage.xml
     ;;
     
   *)
