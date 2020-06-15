@@ -1,4 +1,4 @@
-# MESON build main file
+# meson build main file
 #  Created on: May 11, 2020
 #      Author: William F Godoy godoywf@ornl.gov
 
@@ -11,13 +11,22 @@ project('ncio',
         default_options: ['cpp_std=c++17', 'buildtype=release', 'layout=flat']
 )
 
-# Just test if cmake can be found
+# SCHEMAS
+# Supported schemas for compile time checks
+ncio_supported_schemas = ['Nexus']
+ncio_schemas = []
+foreach ncio_supported_schema : ncio_supported_schemas 
+  if get_option('NCIO_USE_SCHEMA_'+ ncio_supported_schema.to_upper())
+    ncio_schemas += [ncio_supported_schema]
+  endif
+endforeach
 
-
+# DEPENDENCIES
 # Private external dependencies to ncio
+ncio_dependencies = []
 threads_dep = dependency('threads', 
                          required: true)
-ncio_dependencies = [threads_dep]
+ncio_dependencies += [threads_dep]
 
 hdf5_dep = dependency('hdf5',
                       required: false,
@@ -39,6 +48,7 @@ if get_option('build-tests')
   subdir('testing')
 endif
 
+# Packaging
 # pkg-config generation
 # Meson uses pkg-config for library consumption.
 # This module sets libraries (private and public) to link against

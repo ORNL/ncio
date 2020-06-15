@@ -52,7 +52,7 @@ void TransportHDF5::DoGetMetadata(
 }
 
 // will need to specialize for each HDF5 type
-#define declare_ncio_nexus_bank_entries(T)                                     \
+#define declare_ncio_type(T)                                                   \
     void TransportHDF5::DoPut(const std::string &entryName, const T *data) {}  \
                                                                                \
     void TransportHDF5::DoGet(const std::string &entryName, T *data)           \
@@ -60,8 +60,8 @@ void TransportHDF5::DoGetMetadata(
         *data = 0;                                                             \
     }
 
-NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)
-#undef declare_ncio_nexus_bank_entries
+NCIO_PRIMITIVE_TYPES(declare_ncio_type)
+#undef declare_ncio_type
 
 void TransportHDF5::DoClose()
 {

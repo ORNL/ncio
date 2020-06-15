@@ -84,12 +84,12 @@ protected:
     virtual void
     DoGetMetadata(std::map<std::string, std::set<std::string>> &index) = 0;
 
-#define declare_ncio_nexus_bank_entries(T)                                     \
+#define declare_ncio_type(T)                                                   \
     virtual void DoPut(const std::string &entryName, const T *data) = 0;       \
     virtual void DoGet(const std::string &entryName, T *data) = 0;
 
-    NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)
-#undef declare_ncio_nexus_bank_entries
+    NCIO_PRIMITIVE_TYPES(declare_ncio_type)
+#undef declare_ncio_type
 
     virtual void DoClose() = 0;
 

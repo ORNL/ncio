@@ -10,42 +10,30 @@
 
 #include "cxx17DataDescriptor.h"
 
-#include "ncio/common/ncioTypesNexus.h"
 #include "ncio/core/DataDescriptor.h"
+#include "ncio/ncioConfig.h" // #ifdef NCIO_HAVE_SCHEMA_XXX
 
 #include <cassert> //assert
 
 namespace ncio
 {
-
-#define NCIO_DATADESCRIPTOR_PUTGET_NEXUS(entry, T)                             \
+#define NCIO_CXX17_DATADESCRIPTOR_PUT_ENTRY(entry, T)                          \
     template <>                                                                \
     void DataDescriptor::Put<entry>(const T *data)                             \
     {                                                                          \
         assert(m_ImplDataDescriptor != nullptr);                               \
         m_ImplDataDescriptor->Put<decltype(entry), entry>(data);               \
-    }                                                                          \
-                                                                               \
+    }
+
+#define NCIO_CXX17_DATADESCRIPTOR_GET_ENTRY(entry, T)                          \
     template <>                                                                \
     void DataDescriptor::Get<entry>(T * data)                                  \
     {                                                                          \
         assert(m_ImplDataDescriptor != nullptr);                               \
         m_ImplDataDescriptor->Get<decltype(entry), entry>(data);               \
     }
-
-#define declare_ncio_nexus_bank_entries(T)                                     \
-    NCIO_DATADESCRIPTOR_PUTGET_NEXUS(nexus::bank##T::event_id, std::uint64_t)  \
-                                                                               \
-    NCIO_DATADESCRIPTOR_PUTGET_NEXUS(nexus::bank##T::event_index,              \
-                                     std::uint32_t)                            \
-                                                                               \
-    NCIO_DATADESCRIPTOR_PUTGET_NEXUS(nexus::bank##T::event_time_offset, float) \
-                                                                               \
-    NCIO_DATADESCRIPTOR_PUTGET_NEXUS(nexus::bank##T::event_time_zero, double)  \
-                                                                               \
-    NCIO_DATADESCRIPTOR_PUTGET_NEXUS(nexus::bank##T::total_counts, float)
-
-NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_nexus_bank_entries)
-#undef declare_ncio_nexus_bank_entries
-
 } // end namespace ncio
+
+#ifdef NCIO_HAVE_SCHEMA_NEXUS
+#include "schema/nexus/cxx17ncioNexusDataDescriptor.tcc"
+#endif

@@ -17,16 +17,17 @@ TEST_CASE("Function test for ncio:: common functionality")
     SUBCASE("CheckEnumBanks")
     {
         // this will unroll to check each enum type bank_*
-#define declare_ncio_nexus_banks_entries(T)                                    \
-    CHECK(std::is_enum<ncio::nexus::bank##T>::value);
+#define declare_ncio_type(T)                                                   \
+    CHECK(std::is_enum<ncio::schema::nexus::bank##T>::value);
 
-        NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_nexus_banks_entries)
-#undef declare_ncio_nexus_banks_entries
+        NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_type)
+#undef declare_ncio_type
     }
 
     SUBCASE("CheckNexusEnumToString")
     {
-        CHECK(ncio::nexus::ToString<ncio::nexus::bank1::event_id>() ==
+        CHECK(ncio::schema::nexus::ToString<
+                  ncio::schema::nexus::bank1::event_id>() ==
               "/entry/bank1/event_id");
     }
 }

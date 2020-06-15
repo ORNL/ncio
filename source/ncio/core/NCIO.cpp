@@ -1,5 +1,5 @@
 /**
- * NCIO.h : private C++17 implementation to the core::NCIO class
+ * NCIO.cpp : private C++17 implementation to the core::NCIO class
  *
  *  Created on: May 8, 2020
  *      Author: William F Godoy godoywf@ornl.gov

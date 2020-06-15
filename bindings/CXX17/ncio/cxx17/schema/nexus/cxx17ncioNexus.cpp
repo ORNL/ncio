@@ -1,5 +1,5 @@
 /**
- * cxx17nexus.cpp : implementations functions inside the ncio::nexus
+ * cxx17ncioNexus.cpp : implementations functions inside the ncio::schema::nexus
  * workspace targeting the Nexus schema
  *
  *  Created on: May 26, 2020
@@ -9,5 +9,5 @@
 #include "cxx17ncioNexus.h"
 #include "cxx17ncioNexus.tcc"
 
-namespace ncio::nexus
+namespace ncio::schema::nexus
 {}

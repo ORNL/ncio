@@ -1,4 +1,4 @@
-/*
+/**
  * ncioTypes.h : define public types in the ncio library.
  *
  *  Created on: May 9, 2020
@@ -7,13 +7,9 @@
 
 #pragma once
 
-#include <cstddef> //std::size_t
 #include <cstdint> //fixed-width types e.g. std::uint64_t
-#include <limits>  //std::numeric_limits
 #include <map>
 #include <string>
-
-#include "ncioTypesNexus.h"
 
 namespace ncio
 {

@@ -1,5 +1,5 @@
 /**
- * cxx17NCIO.cpp : implementation of the NCIO class
+ * cxx17NCIO.cpp : public C++17 implementation of the NCIO class
  *
  *  Created on: May 19, 2020
  *      Author: William F Godoy godoywf@ornl.gov

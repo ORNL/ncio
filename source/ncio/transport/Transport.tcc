@@ -36,7 +36,7 @@ void Transport::Get(const std::string &entryName, T *data)
     template void Transport::Put(const std::string &entryName, const T *data); \
     template void Transport::Get(const std::string &entryName, T *data);
 
-NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)
+NCIO_PRIMITIVE_TYPES(declare_ncio_nexus_bank_entries)
 #undef declare_ncio_nexus_bank_entries
 
 } // end namespace ncio::io

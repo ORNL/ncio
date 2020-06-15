@@ -1,5 +1,5 @@
 /**
- * DataDescriptor.h : private C++17 implementation to the core::DataDescriptor
+ * DataDescriptor.cpp : private C++17 implementation to the core::DataDescriptor
  * class
  *
  *  Created on: May 15, 2020

@@ -3,3 +3,5 @@
 #      Author: William F Godoy godoywf@ornl.gov
 
 option('build-tests', type : 'boolean', value : true)
+# options to build application specific schemas
+option('NCIO_USE_SCHEMA_NEXUS', type : 'boolean', value : true)

@@ -23,12 +23,12 @@ void TransportNull::DoGetMetadata(
 {
 }
 
-#define declare_ncio_nexus_bank_entries(T)                                     \
+#define declare_ncio_types(T)                                                  \
     void TransportNull::DoPut(const std::string &entryName, const T *data) {}  \
     void TransportNull::DoGet(const std::string &entryName, T *data) {}
 
-NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)
-#undef declare_ncio_nexus_bank_entries
+NCIO_PRIMITIVE_TYPES(declare_ncio_types)
+#undef declare_ncio_types
 
 void TransportNull::DoClose() {}
 

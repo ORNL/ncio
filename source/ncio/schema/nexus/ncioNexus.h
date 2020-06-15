@@ -10,7 +10,7 @@
 
 #include <string>
 
-namespace ncio::nexus::impl
+namespace ncio::schema::nexus
 {
 
 template <class Enum, Enum enumValue>

@@ -34,12 +34,12 @@ private:
     void
     DoGetMetadata(std::map<std::string, std::set<std::string>> &index) final;
 
-#define declare_ncio_nexus_bank_entries(T)                                     \
+#define declare_ncio_type(T)                                                   \
     void DoPut(const std::string &entryName, const T *data) final;             \
     void DoGet(const std::string &entryName, T *data) final;
 
-    NCIO_MACRO_NEXUS_TYPES(declare_ncio_nexus_bank_entries)
-#undef declare_ncio_nexus_bank_entries
+    NCIO_PRIMITIVE_TYPES(declare_ncio_type)
+#undef declare_ncio_type
 
     void DoClose() final;
 
