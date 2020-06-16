@@ -2,7 +2,7 @@
 [![Coverage](https://codecov.io/gh/ORNL/ncio/branch/master/graph/badge.svg)](https://codecov.io/gh/ORNL/ncio)
 
 # ncio
-Neutrons Common Input Output, SNS/HFIR neutrons data management framework
+No Cost Input Output data management framework
 
 
 ## Installing ncio from source with [Meson](https://mesonbuild.com/)

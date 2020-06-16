@@ -1,4 +1,4 @@
-
+/** ncioConfig.h generated public header */
 
 #pragma once
 
@@ -13,3 +13,11 @@
 #define NCIO_INFO_BUILD_TYPE     "@NCIO_BUILD_TYPE@"
 #define NCIO_INFO_BUILD_PLATFORM "@NCIO_BUILD_SYSTEM@ @NCIO_BUILD_CPU_INFO@"
 #define NCIO_INFO_BUILD_PLATFORM_ENDIANNESS "@NCIO_BUILD_ENDIANNESS@"
+
+
+// NCIO DEPENDENCIES
+#mesondefine NCIO_HAVE_THREADS
+#mesondefine NCIO_HAVE_HDF5
+
+// NCIO SCHEMA DEFINITIONS
+#mesondefine NCIO_HAVE_SCHEMA_NEXUS

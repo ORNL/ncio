@@ -1,5 +1,5 @@
 /**
- * NCIO.h : private C++17 implementation to the core::NCIO class
+ * NCIO.cpp : private C++17 implementation to the core::NCIO class
  *
  *  Created on: May 8, 2020
  *      Author: William F Godoy godoywf@ornl.gov
@@ -25,6 +25,15 @@ std::string NCIO::GetParameter(const std::string key) const noexcept
     const std::string value =
         (itKey == m_Parameters.end()) ? "" : itKey->second;
     return value;
+}
+
+core::DataDescriptor &NCIO::Open(const std::string &name,
+                                 const ncio::openmode openMode)
+{
+    auto pair = m_DataDescriptors.emplace(
+        name,
+        std::make_unique<core::DataDescriptor>(name, openMode, m_Parameters));
+    return *pair.first->second.get();
 }
 
 } // end namespace ncio::core

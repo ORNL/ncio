@@ -111,11 +111,11 @@ jobs:
     - name: Checkout Action
       uses: actions/checkout@v1
     
-    - name: Setup Dependencies
-      run: scripts/ci/github-actions/powershell/setup_windows.ps1
-      
     - name: Set MSVC Compiler
       uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Setup Dependencies
+      run: scripts/ci/github-actions/powershell/setup_windows.ps1
 
     - name: Configure
       run: scripts/ci/github-actions/powershell/run_step.ps1 -step configure
