@@ -13,7 +13,7 @@
 #include "ncio/cxx17/cxx17NCIO.h"
 #include "ncio/ncioConfig.h"
 
+// MAKE SCHEMA TYPES PUBLICLY ACCESSIBLE
 #ifdef NCIO_HAVE_SCHEMA_NEXUS
-#include "ncio/cxx17/schema/nexus/cxx17ncioNexus.h"
-#include "ncio/schema/nexus/ncioTypesNexus.h"
+#include "ncio/schema/nexus/ncioTypesSchemaNexus.h"
 #endif

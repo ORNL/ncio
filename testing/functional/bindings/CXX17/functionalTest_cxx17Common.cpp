@@ -12,9 +12,10 @@
 
 #include <ncio.h>
 
-TEST_CASE("Function test for ncio:: common functionality")
+TEST_CASE("Function test for schema entries")
 {
-    SUBCASE("CheckEnumBanks")
+#ifdef NCIO_HAVE_SCHEMA_NEXUS
+    SUBCASE("Check Nexus entries")
     {
         // this will unroll to check each enum type bank_*
 #define declare_ncio_type(T)                                                   \
@@ -23,11 +24,5 @@ TEST_CASE("Function test for ncio:: common functionality")
         NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_type)
 #undef declare_ncio_type
     }
-
-    SUBCASE("CheckNexusEnumToString")
-    {
-        CHECK(ncio::schema::nexus::ToString<
-                  ncio::schema::nexus::bank1::event_id>() ==
-              "/entry/bank1/event_id");
-    }
+#endif
 }

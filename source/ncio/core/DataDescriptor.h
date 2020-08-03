@@ -32,8 +32,14 @@ public:
 
     ~DataDescriptor() = default;
 
+    template <class T>
+    void Put(const std::string &entryName, const T *data);
+
     template <class Enum, Enum enumValue, class T>
     void Put(const T *data);
+
+    template <class T>
+    void Get(const std::string &entryName, T *data);
 
     template <class Enum, Enum enumValue, class T>
     void Get(T *data);
@@ -82,6 +88,15 @@ private:
      */
     void InitTransport(const std::string &descriptorName,
                        const openmode openMode, const Parameters &parameters);
+
+    /**
+     * Must be overloaded by a plugin
+     * @tparam Enum
+     * @tparam enumValue
+     * @return
+     */
+    template <class Enum, Enum enumValue>
+    std::string ToString() noexcept;
 };
 
 } // end namespace ncio::core
