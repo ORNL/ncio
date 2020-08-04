@@ -100,3 +100,5 @@ private:
 };
 
 } // end namespace ncio::core
+
+#include "DataDescriptor.inl"
