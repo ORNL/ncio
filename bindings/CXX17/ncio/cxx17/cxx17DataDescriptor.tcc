@@ -17,23 +17,23 @@
 
 namespace ncio
 {
-#define NCIO_CXX17_DATADESCRIPTOR_PUT_ENTRY(entry, T)                          \
-    template <>                                                                \
-    void DataDescriptor::Put<entry>(const T *data)                             \
-    {                                                                          \
-        assert(m_ImplDataDescriptor != nullptr);                               \
-        m_ImplDataDescriptor->Put<decltype(entry), entry>(data);               \
-    }
 
-#define NCIO_CXX17_DATADESCRIPTOR_GET_ENTRY(entry, T)                          \
-    template <>                                                                \
-    void DataDescriptor::Get<entry>(T * data)                                  \
-    {                                                                          \
-        assert(m_ImplDataDescriptor != nullptr);                               \
-        m_ImplDataDescriptor->Get<decltype(entry), entry>(data);               \
-    }
+template <auto entry, class T>
+void DataDescriptor::Put(const T *data)
+{
+    assert(m_ImplDataDescriptor != nullptr);
+    m_ImplDataDescriptor->Put<decltype(entry), entry>(data);
+}
+
+template <auto entry, class T>
+void DataDescriptor::Get(T *data)
+{
+    assert(m_ImplDataDescriptor != nullptr);
+    m_ImplDataDescriptor->Get<decltype(entry), entry>(data);
+}
+
 } // end namespace ncio
 
 #ifdef NCIO_HAVE_SCHEMA_NEXUS
-#include "schema/nexus/cxx17ncioNexusDataDescriptor.tcc"
+#include "schema/nexus/cxx17DataDescriptorNexus.tcc"
 #endif

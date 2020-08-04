@@ -52,7 +52,7 @@ public:
      * - std::invalid_argument:
      *   - if data is nullptr
      */
-    template <auto enumValue, class T>
+    template <auto entry, class T>
     void Put(const T *data);
 
     /**
@@ -66,7 +66,7 @@ public:
      * - std::invalid_argument:
      *   - if data is nullptr
      */
-    template <auto enumValue, class T>
+    template <auto entry, class T>
     void Get(T *data);
 
     /**

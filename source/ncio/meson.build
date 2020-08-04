@@ -30,7 +30,7 @@ foreach ncio_dependency : ncio_dependencies
   config_data.set('NCIO_HAVE_' + ncio_dependency.name().to_upper(), true)
 endforeach
 
-# Schema definitions
+# Schema definitions in config file
 foreach ncio_schema : ncio_schemas
   config_data.set('NCIO_HAVE_SCHEMA_' + ncio_schema.to_upper(), true)
 endforeach
@@ -47,11 +47,6 @@ ncio_sources = ['core/NCIO.cpp',
                 
                 'transport/Transport.cpp',
                 'transport/TransportNull.cpp']
-
-# SCHEMA SOURCES
-foreach ncio_schema : ncio_schemas
-  ncio_sources += ['schema/' + ncio_schema.to_lower() + '/ncio' + ncio_schema + '.cpp']
-endforeach
 
 # OPTIONAL EXTERNAL DEPENDENCIES SOURCES 
 if config_data.has('NCIO_HAVE_HDF5')
@@ -83,10 +78,9 @@ ncio_common_headers=['common/ncioTypes.h',
                     ]
 install_headers(ncio_common_headers, subdir : 'ncio/common')
 
-
 foreach ncio_schema : ncio_schemas
   ncio_schema_dir = 'schema/' + ncio_schema.to_lower() 
-  ncio_schema_types_header = ncio_schema_dir + '/ncioTypes' + ncio_schema + '.h'
+  ncio_schema_types_header = ncio_schema_dir + '/ncioTypesSchema' + ncio_schema + '.h'
   install_headers(ncio_schema_types_header, subdir: 'ncio/'+ncio_schema_dir)
 endforeach                
 

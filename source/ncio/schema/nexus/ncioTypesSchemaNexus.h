@@ -24,10 +24,6 @@ namespace ncio::schema::nexus
     MACRO(float)                                                               \
     MACRO(double)
 
-#define NCIO_MACRO_FUNCTION_NEXUS_BANK_MAKE_ENUM(id)                           \
-    enum class bank##id{event_id, event_index, event_time_offset,              \
-                        event_time_zero, total_counts};
-
 #define NCIO_MACRO_NEXUS_FOREACH_BANK_ID(MACRO)                                \
     MACRO(1)                                                                   \
     MACRO(2)                                                                   \
@@ -289,7 +285,8 @@ namespace ncio::schema::nexus
     MACRO(_unmapped)
 
 #define declare_nexus_banks_enum_entries(T)                                    \
-    NCIO_MACRO_FUNCTION_NEXUS_BANK_MAKE_ENUM(T)
+    enum class bank##T{event_id, event_index, event_time_offset,               \
+                       event_time_zero, total_counts};
 
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_nexus_banks_enum_entries)
 #undef declare_nexus_banks_enum_entries
