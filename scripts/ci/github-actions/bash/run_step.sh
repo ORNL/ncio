@@ -35,6 +35,7 @@ case "$1" in
       ;;
       *"coverage"*)
         echo 'Configure for code coverage'
+        apt-get update
         update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-8 800 && \
         apt-get install curl -y &&\
         pip3 install gcovr &&\
