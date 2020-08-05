@@ -10,21 +10,30 @@
 namespace ncio::core
 {
 
-NCIO::NCIO(const std::string &configFile) : m_ConfigFile(configFile) {}
+NCIO::NCIO(const std::optional<std::string> &configFile)
+: m_ConfigFile(configFile)
+{
+}
 
-std::string NCIO::GetConfigFile() const noexcept { return m_ConfigFile; }
+std::optional<std::string> NCIO::GetConfigFile() const noexcept
+{
+    return m_ConfigFile;
+}
 
 void NCIO::SetParameter(const std::string key, const std::string value) noexcept
 {
     m_Parameters[key] = value;
 }
 
-std::string NCIO::GetParameter(const std::string key) const noexcept
+std::optional<std::string> NCIO::GetParameter(const std::string key) const
+    noexcept
 {
     auto itKey = m_Parameters.find(key);
-    const std::string value =
-        (itKey == m_Parameters.end()) ? "" : itKey->second;
-    return value;
+    if (itKey == m_Parameters.end())
+    {
+        return std::nullopt;
+    }
+    return itKey->second;
 }
 
 core::DataDescriptor &NCIO::Open(const std::string &name,

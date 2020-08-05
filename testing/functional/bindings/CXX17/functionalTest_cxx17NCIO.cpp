@@ -12,10 +12,14 @@
 
 TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
 {
-    ncio::NCIO ncio("");
+    ncio::NCIO ncio;
     ncio.SetParameter("key", "value");
     SUBCASE("GetParameter") { CHECK(ncio.GetParameter("key") == "value"); }
-    SUBCASE("GetConfigFile") { CHECK(ncio.GetConfigFile() == ""); }
+    SUBCASE("GetNullParameter")
+    {
+        CHECK(ncio.GetParameter("null") == std::nullopt);
+    }
+    SUBCASE("GetConfigFile") { CHECK(ncio.GetConfigFile() == std::nullopt); }
 
     SUBCASE("DataDescriptor_Get")
     {

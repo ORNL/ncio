@@ -11,6 +11,7 @@
 #include "ncio/core/DataDescriptor.h"
 
 #include <map>
+#include <optional>
 #include <string>
 
 namespace ncio::core
@@ -24,7 +25,7 @@ public:
      * library and an application
      * @param configFile optional input runtime configuration
      */
-    NCIO(const std::string &configFile);
+    NCIO(const std::optional<std::string> &configFile = std::nullopt);
 
     /** Using RAII for all members */
     ~NCIO() = default;
@@ -33,7 +34,7 @@ public:
      * Get configuration file name passed in constructor
      * @return configuration file name
      */
-    std::string GetConfigFile() const noexcept;
+    std::optional<std::string> GetConfigFile() const noexcept;
 
     /**
      * Set a specific configuration parameter, meant to be equivalent to values
@@ -51,7 +52,8 @@ public:
      * @param key input parameter key to search in existing set parameters.
      * @return parameter value, if key not found returns an empty string.
      */
-    std::string GetParameter(const std::string key) const noexcept;
+    std::optional<std::string> GetParameter(const std::string key) const
+        noexcept;
 
     /**
      * Open, factory of core::DataDescriptor
@@ -64,7 +66,7 @@ public:
 
 private:
     /** input config file passed at constructor */
-    std::string m_ConfigFile;
+    std::optional<std::string> m_ConfigFile;
 
     /**
      * Parameter key/value container
