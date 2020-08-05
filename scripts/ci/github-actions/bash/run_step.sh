@@ -35,10 +35,6 @@ case "$1" in
       ;;
       *"coverage"*)
         echo 'Configure for code coverage'
-        apt-get update
-        update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-8 800 && \
-        apt-get install curl -y &&\
-        pip3 install gcovr &&\
         meson -Dbuildtype=debugoptimized -Db_coverage=true --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with clang compilers
@@ -76,7 +72,7 @@ case "$1" in
   # Generate coverage reports
   coverage)
     cd ${GITHUB_WORKSPACE}/../ncio-build
-    ninja test coverage-xml
+    ninja coverage-xml
     du -hs meson-logs/coverage.xml
     cat meson-logs/coverage.xml
     ;;
