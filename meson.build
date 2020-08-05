@@ -29,8 +29,10 @@ threads_dep = dependency('threads',
 ncio_dependencies += [threads_dep]
 
 hdf5_dep = dependency('hdf5',
+                      language: 'c',
                       required: false,
-                      not_found_message: 'NCIO dependency HDF5 not found')
+                      static: false,
+                      not_found_message: 'ncio dependency HDF5 not found')
 
 if hdf5_dep.found()
   ncio_dependencies += [hdf5_dep]
@@ -58,4 +60,4 @@ pkg.generate(libraries : ncio_cxx17_lib,
              version : '0.0.1',
              filebase : 'ncio',
              name : 'ncio',
-             description : 'NCIO library')
+             description : 'ncio library')
