@@ -13,14 +13,14 @@
 namespace ncio
 {
 
-NCIO::NCIO(const std::string &configFile)
+NCIO::NCIO(const std::optional<std::string> &configFile)
 : m_ImplNCIO(std::make_unique<core::NCIO>(configFile))
 {
 }
 
 NCIO::~NCIO() {}
 
-std::string NCIO::GetConfigFile() const noexcept
+std::optional<std::string> NCIO::GetConfigFile() const noexcept
 {
     return m_ImplNCIO->GetConfigFile();
 }
@@ -30,7 +30,8 @@ void NCIO::SetParameter(const std::string key, const std::string value) noexcept
     m_ImplNCIO->SetParameter(key, value);
 }
 
-std::string NCIO::GetParameter(const std::string key) const noexcept
+std::optional<std::string> NCIO::GetParameter(const std::string key) const
+    noexcept
 {
     return m_ImplNCIO->GetParameter(key);
 }

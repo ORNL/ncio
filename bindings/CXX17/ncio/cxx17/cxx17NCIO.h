@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory> //std::unique_ptr
+#include <optional>
 #include <string>
 
 #include "cxx17DataDescriptor.h"
@@ -35,7 +36,7 @@ public:
      *  yaml : popular, allows commenting out pieces
      *  json : popular, subset of yaml that doesn't allow commenting
      */
-    NCIO(const std::string &configFile = "");
+    NCIO(const std::optional<std::string> &configFile = std::nullopt);
 
     /**
      * Can't use default destructor since std::unique_ptr private implementation
@@ -47,7 +48,7 @@ public:
      * Get configuration file name passed in constructor
      * @return configuration file name
      */
-    std::string GetConfigFile() const noexcept;
+    std::optional<std::string> GetConfigFile() const noexcept;
 
     /**
      * Set a specific configuration parameter, meant to be equivalent to values
@@ -64,7 +65,8 @@ public:
      * @param key input parameter key to search in existing set parameters.
      * @return parameter value, if key not found returns an empty string.
      */
-    std::string GetParameter(const std::string key) const noexcept;
+    std::optional<std::string> GetParameter(const std::string key) const
+        noexcept;
 
     /**
      * Creates a DataDescriptor object
