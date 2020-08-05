@@ -35,6 +35,7 @@ case "$1" in
       ;;
       *"coverage"*)
         echo 'Configure for code coverage'
+        pip3 install meson==0.54.2
         meson -Dbuildtype=debugoptimized -Db_coverage=true --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with clang compilers
