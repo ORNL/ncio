@@ -21,14 +21,25 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
     }
     SUBCASE("GetConfigFile") { CHECK(ncio.GetConfigFile() == std::nullopt); }
 
-    SUBCASE("DataDescriptor_Get")
+    SUBCASE("OpenDataDescriptorWriteHDF5")
     {
-        ncio::DataDescriptor fh = ncio.Open("dummy", ncio::openmode::read);
+        ncio::DataDescriptor fh = ncio.Open("empty.h5", ncio::openmode::write);
+    }
 
-        float total_counts = 0;
-        fh.Get<ncio::schema::nexus::bank1::total_counts>(&total_counts);
-        fh.Execute();
+    SUBCASE("OpenDataDescriptorReadHDF5")
+    {
+        ncio::DataDescriptor fh = ncio.Open("empty.h5", ncio::openmode::read);
+    }
 
-        CHECK(total_counts == 0.f);
+    ncio.SetParameter("Transport", "Null");
+
+    SUBCASE("OpenDataDescriptorWriteNull")
+    {
+        ncio::DataDescriptor fh = ncio.Open("null", ncio::openmode::write);
+    }
+
+    SUBCASE("OpenDataDescriptorReadNull")
+    {
+        ncio::DataDescriptor fh = ncio.Open("null", ncio::openmode::read);
     }
 }

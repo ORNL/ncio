@@ -1,9 +1,9 @@
 /**
- * testNCIO.cpp : unit tests for the ncio::NCIO C++17 bindings class using the
- * doctest framework
+ * functionalTest_cxx17DataDescriptorNexus.cpp: tests for using the Nexus schema
  *
- *  Created on: May 18, 2020
+ *  Created on: Aug 5, 2020
  *      Author: William F Godoy godoywf@ornl.gov
+ *     License: BSD-3-Clause
  */
 
 #include "ncio-doctest.h"
@@ -12,10 +12,10 @@
 
 #include <ncio.h>
 
-TEST_CASE("Function test for schema entries")
+TEST_CASE("Test Nexus schema entries")
 {
 #ifdef NCIO_HAVE_SCHEMA_NEXUS
-    SUBCASE("Check Nexus entries")
+    SUBCASE("Check Nexus bank entries")
     {
         // this will unroll to check each enum type bank_*
 #define declare_ncio_type(T)                                                   \

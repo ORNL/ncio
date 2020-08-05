@@ -9,13 +9,17 @@
 #include "DataDescriptor.h"
 #include "DataDescriptor.tcc"
 
-#include <ncioConfig.h>
+#include <ncioConfig.h> // for #define NCIO_HAVE_XXX
+
+// Helpers
+#include "ncio/helper/ncioHelperString.h" // ToLower
+
+// Transports
+#include "ncio/transport/TransportNull.h"
 
 #ifdef NCIO_HAVE_HDF5
 #include "ncio/transport/TransportHDF5.h"
 #endif
-
-#include "ncio/transport/TransportNull.h"
 
 namespace ncio::core
 {
@@ -50,13 +54,13 @@ void DataDescriptor::InitTransport(const std::string &descriptorName,
     for (const auto &parameter : parameters)
     {
         // using copies as these are supposed to be small string using SSO
-        const std::string key = parameter.first;
-        const std::string value = parameter.second;
+        const std::string key = helper::string::ToLower(parameter.first);
+        const std::string value = helper::string::ToLower(parameter.second);
 
         if (key == "transport")
         {
             foundTransport = true;
-            if (value == "hdf5" || value == "HDF5")
+            if (value == "hdf5")
             {
 #ifdef NCIO_HAVE_HDF5
                 m_Transport = std::make_unique<transport::TransportHDF5>(
@@ -68,7 +72,7 @@ void DataDescriptor::InitTransport(const std::string &descriptorName,
                                       "configuration parameters\n");
 #endif
             }
-            else if (value == "null" || value == "NULL")
+            else if (value == "null")
             {
                 m_Transport = std::make_unique<transport::TransportNull>(
                     descriptorName, openMode, parameters);
