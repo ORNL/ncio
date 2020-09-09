@@ -19,17 +19,17 @@ namespace ncio
 {
 
 template <auto entry, class T>
-void DataDescriptor::Put(const T *data)
+void DataDescriptor::Put(const T *data, const int threadID)
 {
     assert(m_ImplDataDescriptor != nullptr);
-    m_ImplDataDescriptor->Put<decltype(entry), entry>(data);
+    m_ImplDataDescriptor->Put<decltype(entry), entry>(data, threadID);
 }
 
 template <auto entry, class T>
-void DataDescriptor::Get(T *data)
+void DataDescriptor::Get(T *data, const int threadID)
 {
     assert(m_ImplDataDescriptor != nullptr);
-    m_ImplDataDescriptor->Get<decltype(entry), entry>(data);
+    m_ImplDataDescriptor->Get<decltype(entry), entry>(data, threadID);
 }
 
 } // end namespace ncio

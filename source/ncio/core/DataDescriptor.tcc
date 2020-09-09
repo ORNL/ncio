@@ -10,35 +10,45 @@
 
 #include "DataDescriptor.h"
 
+#include "ncio/common/ncioTypes.h" // Dimensions
 #include "ncio/ncioConfig.h"
 
 namespace ncio::core
 {
 
+std::mutex DataDescriptor::m_Mutex;
+
 template <class T>
-void DataDescriptor::Put(const std::string &entryName, const T *data)
+void DataDescriptor::Put(const std::string &entryName, const T *data,
+                         const int threadID)
 {
-    m_Transport->Put(entryName, data);
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    m_Entries[threadID][entryName].emplace_back(data, Dimensions());
+
+    // Call transport at Exec
+    // m_Transport->Put(entryName, data, threadID);
 }
 
 template <class Enum, Enum enumValue, class T>
-void DataDescriptor::Put(const T *data)
+void DataDescriptor::Put(const T *data, const int threadID)
 {
     const std::string entryName = ToString<Enum, enumValue>();
-    Put(entryName, data);
+    Put(entryName, data, threadID);
 }
 
 template <class T>
-void DataDescriptor::Get(const std::string &entryName, T *data)
+void DataDescriptor::Get(const std::string &entryName, T *data,
+                         const int threadID)
 {
+    // TODO
     m_Transport->Get(entryName, data);
 }
 
 template <class Enum, Enum enumValue, class T>
-void DataDescriptor::Get(T *data)
+void DataDescriptor::Get(T *data, const int threadID)
 {
     const std::string entryName = ToString<Enum, enumValue>();
-    Get(entryName, data);
+    Get(entryName, data, threadID);
 }
 
 } // end namespace ncio::core

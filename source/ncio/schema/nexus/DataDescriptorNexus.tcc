@@ -36,23 +36,23 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_type)
 #define declare_ncio_types(T)                                                  \
     template void DataDescriptor::Put<schema::nexus::bank##T,                  \
                                       schema::nexus::bank##T::event_id>(       \
-        const std::uint64_t *);                                                \
+        const std::uint64_t *, const int);                                     \
                                                                                \
     template void DataDescriptor::Put<schema::nexus::bank##T,                  \
                                       schema::nexus::bank##T::event_index>(    \
-        const std::uint32_t *);                                                \
+        const std::uint32_t *, const int);                                     \
                                                                                \
     template void DataDescriptor::Put<                                         \
         schema::nexus::bank##T, schema::nexus::bank##T::event_time_offset>(    \
-        const float *);                                                        \
+        const float *, const int);                                             \
                                                                                \
     template void DataDescriptor::Put<                                         \
         schema::nexus::bank##T, schema::nexus::bank##T::event_time_zero>(      \
-        const double *);                                                       \
+        const double *, const int);                                            \
                                                                                \
     template void DataDescriptor::Put<schema::nexus::bank##T,                  \
                                       schema::nexus::bank##T::total_counts>(   \
-        const float *);
+        const float *, const int);
 
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
 #undef declare_ncio_types
@@ -60,23 +60,23 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
 #define declare_ncio_types(T)                                                  \
     template void DataDescriptor::Get<schema::nexus::bank##T,                  \
                                       schema::nexus::bank##T::event_id>(       \
-        std::uint64_t *);                                                      \
+        std::uint64_t *, const int);                                           \
                                                                                \
     template void DataDescriptor::Get<schema::nexus::bank##T,                  \
                                       schema::nexus::bank##T::event_index>(    \
-        std::uint32_t *);                                                      \
+        std::uint32_t *, const int);                                           \
                                                                                \
     template void DataDescriptor::Get<                                         \
         schema::nexus::bank##T, schema::nexus::bank##T::event_time_offset>(    \
-        float *);                                                              \
+        float *, const int);                                                   \
                                                                                \
     template void DataDescriptor::Get<                                         \
         schema::nexus::bank##T, schema::nexus::bank##T::event_time_zero>(      \
-        double *);                                                             \
+        double *, const int);                                                  \
                                                                                \
     template void DataDescriptor::Get<schema::nexus::bank##T,                  \
                                       schema::nexus::bank##T::total_counts>(   \
-        float *);
+        float *, const int);
 
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
 #undef declare_ncio_types

@@ -10,6 +10,7 @@
 #include <cstdint> //fixed-width types e.g. std::uint64_t
 #include <map>
 #include <string>
+#include <vector>
 
 namespace ncio
 {
@@ -29,5 +30,10 @@ enum class openmode : std::uint64_t
 
 // alias for passing around key/value parameters
 using Parameters = std::map<std::string, std::string>;
+
+using Shape = std::vector<std::size_t>;
+using Start = std::vector<std::size_t>;
+using Count = std::vector<std::size_t>;
+using Dimensions = std::tuple<Shape, Start, Count>;
 
 } // end namespace ncio

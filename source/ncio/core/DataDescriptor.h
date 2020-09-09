@@ -13,6 +13,7 @@
 #include <any>
 #include <future>
 #include <memory> //std::unique_ptr
+#include <mutex>
 
 namespace ncio::core
 {
@@ -33,16 +34,16 @@ public:
     ~DataDescriptor() = default;
 
     template <class T>
-    void Put(const std::string &entryName, const T *data);
+    void Put(const std::string &entryName, const T *data, const int threadID);
 
     template <class Enum, Enum enumValue, class T>
-    void Put(const T *data);
+    void Put(const T *data, const int threadID);
 
     template <class T>
-    void Get(const std::string &entryName, T *data);
+    void Get(const std::string &entryName, T *data, const int threadID);
 
     template <class Enum, Enum enumValue, class T>
-    void Get(T *data);
+    void Get(T *data, const int threadID);
 
     /** Executes all Put or Get deferred tasks */
     void Execute();
@@ -74,7 +75,21 @@ private:
     /** Polymorphic object to interact with different I/O library backends */
     std::unique_ptr<transport::Transport> m_Transport;
 
-    /** In memory metadata index structure. Suitable for Nexus data */
+    /**
+     * Placeholder for deferred entries for Put or Get
+     * - key = threadID
+     * - value = map:
+     *   - key: entry name
+     *   - value: vector placeholder for Put or Get pointer and Dimensions
+     * request
+     */
+    std::map<int, std::map<std::string,
+                           std::vector<std::pair<std::any, Dimensions>>>>
+        m_Entries;
+
+    static std::mutex m_Mutex;
+
+    /** In memory metadata entry index structure. Suitable for Nexus data */
     std::map<std::string, std::set<std::string>> m_MetadataIndex1;
 
     /** Init relevant metadata structures */

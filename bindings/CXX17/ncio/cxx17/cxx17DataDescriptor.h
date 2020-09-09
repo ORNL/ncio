@@ -53,7 +53,7 @@ public:
      *   - if data is nullptr
      */
     template <auto entry, class T>
-    void Put(const T *data);
+    void Put(const T *data, const int threadID = 0);
 
     /**
      * Read prefetch operation. Cheap lazy evaluation function.
@@ -67,7 +67,7 @@ public:
      *   - if data is nullptr
      */
     template <auto entry, class T>
-    void Get(T *data);
+    void Get(T *data, const int threadID = 0);
 
     /**
      * Executes system I/O to transfer memory between writing Puts and reading
