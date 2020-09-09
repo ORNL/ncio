@@ -45,6 +45,8 @@ ncio_config_header = configure_file(input:  'ncioConfig.h.in',
 ncio_sources = ['core/NCIO.cpp',
                 'core/DataDescriptor.cpp',
                 
+                'helper/ncioHelperString.cpp',
+                
                 'transport/Transport.cpp',
                 'transport/TransportNull.cpp']
 

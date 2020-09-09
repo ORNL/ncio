@@ -19,23 +19,38 @@ TransportHDF5::TransportHDF5(const std::string &name, const openmode openMode,
                              const Parameters &parameters)
 : Transport("HDF5", name, openMode, parameters), m_File(hid_t(-1))
 {
-    // TODO: enable actual write and read
-    // hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
-    //    H5Pset_fclose_degree(fapl, H5F_CLOSE_STRONG);
-    //
-    //    if (openMode == openmode::read)
-    //    {
-    //        m_File = H5Fopen(name.c_str(), H5F_ACC_RDONLY, fapl);
-    //    }
-    //
-    //    if (std::any_cast<hid_t>(m_File) < 0)
-    //    {
-    //        throw std::invalid_argument("NCIO ERROR: couldn't open HDF5 file "
-    //        +
-    //                                    m_Name + " with fapl " +
-    //                                    std::to_string(fapl) + "\n");
-    //    }
-    //    m_IsOpen = true;
+    switch (openMode)
+    {
+    case (openmode::read):
+    {
+        // allow for multiple handlers
+        hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
+        H5Pset_fclose_degree(fapl, H5F_CLOSE_STRONG);
+        m_File = H5Fopen(name.c_str(), H5F_ACC_RDONLY, fapl);
+        if (std::any_cast<hid_t>(m_File) < 0)
+        {
+            throw std::invalid_argument("ncio ERROR: couldn't open HDF5 file " +
+                                        m_Name + " with fapl " +
+                                        std::to_string(fapl) + "\n");
+        }
+
+        break;
+    }
+    case (openmode::write):
+    {
+        m_File =
+            H5Fcreate(name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+        if (std::any_cast<hid_t>(m_File) < 0)
+        {
+            throw std::invalid_argument(
+                "ncio ERROR: couldn't create HDF5 file " + m_Name +
+                " for writing\n");
+        }
+        break;
+    }
+    }
+
+    m_IsOpen = true;
 }
 
 TransportHDF5::~TransportHDF5()
@@ -65,13 +80,12 @@ NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 
 void TransportHDF5::DoClose()
 {
-    /**
-herr_t status = H5Fclose(m_File);
-if (status < 0)
-{
-    throw std::invalid_argument("NCIO ERROR: couldn't close HDF5 file " +
-                                m_Name + "\n");
-} */
+    const herr_t status = H5Fclose(std::any_cast<hid_t>(m_File));
+    if (status < 0)
+    {
+        throw std::invalid_argument("ncio ERROR: couldn't close HDF5 file " +
+                                    m_Name + "\n");
+    }
     m_IsOpen = false;
 }
 
