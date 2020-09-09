@@ -5,6 +5,11 @@ if test -f /root/.bash_profile; then
   echo "Enabling gcc and clang compilers"	
   source /root/.bash_profile
   gcc --version
+  # meson master until v0.56 comes out with fix for hdf5 <= 1.8 dependency
+  cd /root
+  git clone https://github.com/mesonbuild/meson.git
+  alias meson="python3 /root/mesonbuild/meson.py"
+  which meson
 fi
 
 case "$1" in 
