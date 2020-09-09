@@ -6,10 +6,8 @@ if test -f /root/.bash_profile; then
   pip3 uninstall meson -y
   cd /root
   git clone https://github.com/mesonbuild/meson.git
-  ls -all /root/meson/
   echo "alias meson='python3 /root/meson/meson.py'" >> /root/.bash_profile
   
-  cat /root/.bash_profile
   shopt -s expand_aliases
   source /root/.bash_profile
   echo "Enabling gcc and clang compilers"
