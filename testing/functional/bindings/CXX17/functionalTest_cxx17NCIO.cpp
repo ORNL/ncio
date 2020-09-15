@@ -24,6 +24,9 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
     SUBCASE("OpenDataDescriptorWriteHDF5")
     {
         ncio::DataDescriptor fh = ncio.Open("empty.h5", ncio::openmode::write);
+
+        constexpr float totalCounts = 10;
+        fh.Put<ncio::schema::nexus::bank1::total_counts>(&totalCounts);
     }
 
     SUBCASE("OpenDataDescriptorReadHDF5")
@@ -36,6 +39,9 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
     SUBCASE("OpenDataDescriptorWriteNull")
     {
         ncio::DataDescriptor fh = ncio.Open("null", ncio::openmode::write);
+
+        constexpr float dataI32 = 10;
+        fh.Put<ncio::schema::nexus::bank1::total_counts>(&dataI32);
     }
 
     SUBCASE("OpenDataDescriptorReadNull")

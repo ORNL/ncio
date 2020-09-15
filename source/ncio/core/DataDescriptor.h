@@ -83,11 +83,12 @@ private:
      *   - value: vector placeholder for Put or Get pointer and Dimensions
      * request
      */
-    std::map<int, std::map<std::string,
-                           std::vector<std::pair<std::any, Dimensions>>>>
+    std::map<int,
+             std::map<std::string,
+                      std::vector<std::tuple<datatype, std::any, Dimensions>>>>
         m_Entries;
 
-    static std::mutex m_Mutex;
+    std::mutex m_Mutex;
 
     /** In memory metadata entry index structure. Suitable for Nexus data */
     std::map<std::string, std::set<std::string>> m_MetadataIndex1;

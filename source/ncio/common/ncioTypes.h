@@ -36,4 +36,19 @@ using Start = std::vector<std::size_t>;
 using Count = std::vector<std::size_t>;
 using Dimensions = std::tuple<Shape, Start, Count>;
 
+/** enum class for data types used internally for entries */
+enum class datatype
+{
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+    float32,
+    float64
+};
+
 } // end namespace ncio

@@ -11,19 +11,19 @@
 #include "DataDescriptor.h"
 
 #include "ncio/common/ncioTypes.h" // Dimensions
+#include "ncio/helper/ncioHelperTypes.h"
 #include "ncio/ncioConfig.h"
 
 namespace ncio::core
 {
-
-std::mutex DataDescriptor::m_Mutex;
 
 template <class T>
 void DataDescriptor::Put(const std::string &entryName, const T *data,
                          const int threadID)
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
-    m_Entries[threadID][entryName].emplace_back(data, Dimensions());
+    m_Entries[threadID][entryName].emplace_back(
+        helper::types::ToDatatypeEnum<T>(), data, Dimensions());
 
     // Call transport at Exec
     // m_Transport->Put(entryName, data, threadID);
