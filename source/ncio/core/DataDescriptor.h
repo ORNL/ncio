@@ -17,6 +17,15 @@
 
 namespace ncio::core
 {
+/**
+ * Alias to data structure containing requests for Put or Get
+ *   - key: entry name
+ *   - value: vector placeholder for Put or Get data type, pointer and
+ * Dimensions requests
+ */
+using EntryMap =
+    std::map<std::string,
+             std::vector<std::tuple<datatype, std::any, Dimensions>>>;
 
 class DataDescriptor
 {
@@ -46,16 +55,18 @@ public:
     void Get(T *data, const int threadID);
 
     /** Executes all Put or Get deferred tasks */
-    void Execute();
+    void Execute(const int threadID);
 
     /**
      * Asynchronous execution for Execute function
      * @param launchMode
      *        - std::launch async (execute in the background now)
      *        - std::launch deferred (execute at future.get() )
+     * @param threadID thread from which ExecuteAsync will be launched
      * @return future handler call .get() to guarantee Execute is done
      */
-    std::future<void> ExecuteAsync(const std::launch launchMode);
+    std::future<void> ExecuteAsync(const std::launch launchMode,
+                                   const int threadID);
 
     /**
      * Get underlying IO handler. This is for advanced users that wan't access
@@ -72,21 +83,21 @@ private:
      */
     std::string m_DescriptorName;
 
-    /** Polymorphic object to interact with different I/O library backends */
+    /**
+     * Placeholder for the open mode passed at the constructor from NCIO factory
+     */
+    openmode m_OpenMode = openmode::undefined;
+
+    /** Polymorphic object to interact with different I/O library backends.
+     * TODO: this would be a container in the future. For now it's 1-to-1. */
     std::unique_ptr<transport::Transport> m_Transport;
 
     /**
      * Placeholder for deferred entries for Put or Get
      * - key = threadID
-     * - value = map:
-     *   - key: entry name
-     *   - value: vector placeholder for Put or Get pointer and Dimensions
-     * request
+     * - value = EntryMap with current requests for Get or Put
      */
-    std::map<int,
-             std::map<std::string,
-                      std::vector<std::tuple<datatype, std::any, Dimensions>>>>
-        m_Entries;
+    std::map<int, EntryMap> m_Entries;
 
     std::mutex m_Mutex;
 

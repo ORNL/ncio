@@ -27,16 +27,92 @@ namespace ncio::core
 DataDescriptor::DataDescriptor(const std::string &descriptorName,
                                const openmode openMode,
                                const Parameters &parameters)
-: m_DescriptorName(descriptorName)
+: m_DescriptorName(descriptorName), m_OpenMode(openMode)
 {
     InitTransport(descriptorName, openMode, parameters);
 }
 
-void DataDescriptor::Execute() {}
-
-std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode)
+void DataDescriptor::Execute(const int threadID)
 {
-    return std::async(launchMode, &DataDescriptor::Execute, this);
+    auto lf_ExecutePuts = [this](const EntryMap &entriesMap) {
+        for (const auto &entryPair : entriesMap)
+        {
+            const std::string &entryName = entryPair.first;
+            const auto &requests = entryPair.second;
+
+            for (const auto &request : requests)
+            {
+                const datatype type = std::get<0>(request);
+                const std::any &data = std::get<1>(request);
+                // const Dimensions &dimensions = std::get<2>(request);
+
+                switch (type)
+                {
+#define declare_ncio_types(T, L)                                               \
+    case (T):                                                                  \
+        m_Transport->Put<L>(entryName, std::any_cast<const L *>(data));        \
+        break;
+
+                    NCIO_PRIMITIVE_DATATYPES_2ARGS(declare_ncio_types)
+#undef declare_ncio_types
+                }
+            }
+        }
+    };
+
+    auto lf_ExecuteGets = [this](EntryMap &entriesMap) {
+        for (auto &entryPair : entriesMap)
+        {
+            const std::string &entryName = entryPair.first;
+            auto &requests = entryPair.second;
+
+            for (auto &request : requests)
+            {
+                const datatype type = std::get<0>(request);
+                std::any &data = std::get<1>(request);
+                // const Dimensions &dimensions = std::get<2>(request);
+
+                switch (type)
+                {
+#define declare_ncio_types(T, L)                                               \
+    case (T):                                                                  \
+        m_Transport->Get<L>(entryName, std::any_cast<L *>(data));              \
+        break;
+
+                    NCIO_PRIMITIVE_DATATYPES_2ARGS(declare_ncio_types)
+#undef declare_ncio_types
+                }
+            }
+        }
+    };
+
+    auto itThreadID = m_Entries.find(threadID);
+    if (itThreadID == m_Entries.end())
+    {
+        throw std::invalid_argument(
+            "ncio ERROR: invalid threadID in call to Execute, no Put or Get "
+            "calls made from threadID " +
+            std::to_string(threadID) + "\n");
+    }
+
+    if (m_OpenMode == openmode::write)
+    {
+        lf_ExecutePuts(itThreadID->second);
+    }
+    else if (m_OpenMode == openmode::read)
+    {
+        lf_ExecuteGets(itThreadID->second);
+    }
+
+    // Clear all the requests for this thread
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    itThreadID->second.clear();
+}
+
+std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode,
+                                               const int threadID)
+{
+    return std::async(launchMode, &DataDescriptor::Execute, this, threadID);
 }
 
 std::any DataDescriptor::GetNativeHandler() noexcept

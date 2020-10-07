@@ -12,6 +12,8 @@
 
 #include "ncio/core/DataDescriptor.h"
 
+#include <stdexcept> // std::logic_error
+
 namespace ncio
 {
 
@@ -21,16 +23,30 @@ DataDescriptor::operator bool() const noexcept
     return m_ImplDataDescriptor != nullptr ? true : false;
 }
 
-void DataDescriptor::Execute()
+void DataDescriptor::Execute(const int threadID)
 {
-    assert(*this);
-    m_ImplDataDescriptor->Execute();
+    // Check m_ImplDataDescriptor is valid
+    CheckImpl("Execute");
+    m_ImplDataDescriptor->Execute(threadID);
 }
 
-std::future<void> DataDescriptor::ExecuteAsync(const std::launch mode)
+std::future<void> DataDescriptor::ExecuteAsync(const std::launch mode,
+                                               const int threadID)
 {
-    assert(*this);
-    return m_ImplDataDescriptor->ExecuteAsync(mode);
+    CheckImpl("ExecuteAsync");
+    return m_ImplDataDescriptor->ExecuteAsync(mode, threadID);
+}
+
+void DataDescriptor::CheckImpl(const std::string &functionName)
+{
+    if (!*this)
+    {
+        throw std::logic_error(
+            "ncio ERROR: invalid DataDescriptor object in call to " +
+            functionName +
+            ". Please modify your code and pass a valid DataDescriptor created "
+            "with NCIO::Open\n");
+    }
 }
 
 // PRIVATE

@@ -74,8 +74,9 @@ public:
      * Gets. Expensive function can be wrapped around std::async for running in
      * the background.
      * @throws std::system_error: if low-level error detected
+     *         std::input_error: if thread wasn't registered
      */
-    void Execute();
+    void Execute(const int threadID = 0);
 
     /**
      * Similar to Execute, but return a future handler to enable asynchrous I/O
@@ -85,8 +86,10 @@ public:
      * https://en.cppreference.com/w/cpp/thread/launch
      * @return C++ async handler to internal Execute task
      * @throws std::system_error: if low-level error detected
+     *         std::logic_error: if object is invalid
      */
-    std::future<void> ExecuteAsync(const std::launch mode);
+    std::future<void> ExecuteAsync(const std::launch mode,
+                                   const int threadID = 0);
 
 private:
     /**
@@ -94,6 +97,15 @@ private:
      * @param implDataDescriptor internal create implementation object
      */
     DataDescriptor(core::DataDescriptor &implDataDescriptor);
+
+    /**
+     * Verify if m_ImplDataDescriptor handler is valid and throws exception.
+     * @param functionName name of the function involking this for better error
+     * handling
+     * @throws std::logic_error if m_ImplDataDescriptor is invalid (e.g. empty
+     * constructor, after Close)
+     */
+    void CheckImpl(const std::string &functionName);
 
     /**
      * Non-owning pimpl core object placeholder, using pointer to allow empty

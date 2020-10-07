@@ -24,8 +24,9 @@ namespace ncio
  */
 enum class openmode : std::uint64_t
 {
-    write = std::uint64_t(1) << 1, // 2^1
-    read = std::uint64_t(1) << 2,  // 2^2
+    write = std::uint64_t(1) << 1,     // 2^1
+    read = std::uint64_t(1) << 2,      // 2^2
+    undefined = std::uint64_t(1) << 3, // 2^3
 };
 
 // alias for passing around key/value parameters

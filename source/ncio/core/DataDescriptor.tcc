@@ -24,9 +24,6 @@ void DataDescriptor::Put(const std::string &entryName, const T *data,
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Entries[threadID][entryName].emplace_back(
         helper::types::ToDatatypeEnum<T>(), data, Dimensions());
-
-    // Call transport at Exec
-    // m_Transport->Put(entryName, data, threadID);
 }
 
 template <class Enum, Enum enumValue, class T>
@@ -40,8 +37,9 @@ template <class T>
 void DataDescriptor::Get(const std::string &entryName, T *data,
                          const int threadID)
 {
-    // TODO
-    m_Transport->Get(entryName, data);
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    m_Entries[threadID][entryName].emplace_back(
+        helper::types::ToDatatypeEnum<T>(), data, Dimensions());
 }
 
 template <class Enum, Enum enumValue, class T>
