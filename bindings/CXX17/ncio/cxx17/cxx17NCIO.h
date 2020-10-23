@@ -71,11 +71,11 @@ public:
     /**
      * Creates a DataDescriptor object
      * @param name unique DataDescriptor identifier
-     * @param mode openmode::write, openmore::read
+     * @param mode OpenMode::write, OpenMode::read
      * @return a valid object that executes the I/O data movement operations
      * @throws exception of type std::system_error or std::invalid_argument
      */
-    DataDescriptor Open(const std::string &name, const openmode mode);
+    DataDescriptor Open(const std::string &name, const OpenMode mode);
 
 private:
     /** private implementation pointer owned by this class */

@@ -26,13 +26,13 @@
     MACRO(double)
 
 #define NCIO_PRIMITIVE_DATATYPES_2ARGS(MACRO)                                  \
-    MACRO(datatype::int8, std::int8_t)                                         \
-    MACRO(datatype::int16, std::int16_t)                                       \
-    MACRO(datatype::int32, std::int32_t)                                       \
-    MACRO(datatype::int64, std::int64_t)                                       \
-    MACRO(datatype::uint8, std::uint8_t)                                       \
-    MACRO(datatype::uint16, std::uint16_t)                                     \
-    MACRO(datatype::uint32, std::uint32_t)                                     \
-    MACRO(datatype::uint64, std::uint64_t)                                     \
-    MACRO(datatype::float32, float)                                            \
-    MACRO(datatype::float64, double)
+    MACRO(DataType::int8, std::int8_t)                                         \
+    MACRO(DataType::int16, std::int16_t)                                       \
+    MACRO(DataType::int32, std::int32_t)                                       \
+    MACRO(DataType::int64, std::int64_t)                                       \
+    MACRO(DataType::uint8, std::uint8_t)                                       \
+    MACRO(DataType::uint16, std::uint16_t)                                     \
+    MACRO(DataType::uint32, std::uint32_t)                                     \
+    MACRO(DataType::uint64, std::uint64_t)                                     \
+    MACRO(DataType::float32, float)                                            \
+    MACRO(DataType::float64, double)

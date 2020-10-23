@@ -14,6 +14,6 @@ namespace ncio::helper::types
 {
 
 template <class T>
-datatype ToDatatypeEnum();
+DataType ToDataTypeEnum() noexcept;
 
 }

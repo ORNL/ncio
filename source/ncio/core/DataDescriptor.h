@@ -14,18 +14,10 @@
 #include <future>
 #include <memory> //std::unique_ptr
 #include <mutex>
+#include <variant>
 
 namespace ncio::core
 {
-/**
- * Alias to data structure containing requests for Put or Get
- *   - key: entry name
- *   - value: vector placeholder for Put or Get data type, pointer and
- * Dimensions requests
- */
-using EntryMap =
-    std::map<std::string,
-             std::vector<std::tuple<datatype, std::any, Dimensions>>>;
 
 class DataDescriptor
 {
@@ -37,22 +29,24 @@ public:
      * @param parameters particular configuration parameters for constructing a
      * data descriptor
      */
-    DataDescriptor(const std::string &descriptorName,
-                   const ncio::openmode openMode, const Parameters &parameters);
+    DataDescriptor(const std::string &descriptorName, const OpenMode openMode,
+                   const Parameters &parameters);
 
     ~DataDescriptor() = default;
 
     template <class T>
-    void Put(const std::string &entryName, const T *data, const int threadID);
+    void Put(const std::string &entryName, const T &data, const int threadID);
 
-    template <class Enum, Enum enumValue, class T>
-    void Put(const T *data, const int threadID);
+    template <class T>
+    void Put(const std::string &entryName, const T *data,
+             const Dimensions &dimensions, const int threadID);
 
     template <class T>
     void Get(const std::string &entryName, T *data, const int threadID);
 
-    template <class Enum, Enum enumValue, class T>
-    void Get(T *data, const int threadID);
+    template <class T>
+    void Get(const std::string &entryName, T *data, const Box &box,
+             const int threadID);
 
     /** Executes all Put or Get deferred tasks */
     void Execute(const int threadID);
@@ -76,6 +70,16 @@ public:
      */
     std::any GetNativeHandler() noexcept;
 
+    /**
+     * Entry from enum defined in schema to string. To be called by
+     * bindings. Must be overloaded by a schema.
+     * @tparam Enum
+     * @tparam enumValue
+     * @return string registered in a schema from enum defining entries
+     */
+    template <class Enum, Enum enumValue>
+    std::string ToString() noexcept;
+
 private:
     /**
      * Placeholder for descriptor name, not necessarily the same as file name
@@ -86,19 +90,42 @@ private:
     /**
      * Placeholder for the open mode passed at the constructor from NCIO factory
      */
-    openmode m_OpenMode = openmode::undefined;
+    OpenMode m_OpenMode = OpenMode::undefined;
 
     /** Polymorphic object to interact with different I/O library backends.
      * TODO: this would be a container in the future. For now it's 1-to-1. */
     std::unique_ptr<transport::Transport> m_Transport;
 
     /**
+     * Defines Entry requests for Put and Get.
+     * NOTE: prioritizing readability rather than efficient memory alignment
+     * (larger size element first)
+     */
+    struct Entry
+    {
+        const DataType dataType; ///< data type
+        std::any data; ///< hold data pointer or value from application
+        const std::variant<Dimensions, Box> query; ///< request query
+        const ShapeType shapeType;
+        const Parameters parameters; ///< optional parameters (e.g. compression)
+        Info *info;                  // TODO
+
+        Entry(const DataType dataType, std::any data,
+              const std::variant<Dimensions, Box> &query,
+              const ShapeType shapeType, const Parameters &parameters,
+              Info *info);
+    };
+
+    /**
      * Placeholder for deferred entries for Put or Get
      * - key = threadID
-     * - value = EntryMap with current requests for Get or Put
+     * - value = Entries map with current requests
+     *   - key = entry name
+     *   - value = vector of Entry struct requests
      */
-    std::map<int, EntryMap> m_Entries;
+    std::map<int, std::map<std::string, std::vector<Entry>>> m_Entries;
 
+    /** private mutex for thread-safety operations */
     std::mutex m_Mutex;
 
     /** In memory metadata entry index structure. Suitable for Nexus data */
@@ -114,16 +141,18 @@ private:
      * @param parameters key/value parameters passed to backends
      */
     void InitTransport(const std::string &descriptorName,
-                       const openmode openMode, const Parameters &parameters);
+                       const OpenMode openMode, const Parameters &parameters);
 
     /**
-     * Must be overloaded by a plugin
-     * @tparam Enum
-     * @tparam enumValue
-     * @return
+     * Put entry into m_Transport->Put
+     * @tparam T
+     * @param entryName
+     * @param entry
+     * @param thread
      */
-    template <class Enum, Enum enumValue>
-    std::string ToString() noexcept;
+    template <class T>
+    void PutEntry(const std::string &entryName, const Entry &entry,
+                  const int thread);
 };
 
 } // end namespace ncio::core

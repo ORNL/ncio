@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "ncio/common/ncioTypes.h"
+
 #include <future>
 
 namespace ncio
@@ -47,27 +49,42 @@ public:
      * Pointer is not populated until Execute
      * @param data input data pointer to be registered, must not go out of scope
      * of be modified until Execute
+     * @param dimensions input dimensions for arrays, use ncio::DimsValue for
+     * single value
+     * @param threadID input threadID for multithreaded code
      * @exception std::exception
      * - std::system_error: if low-level error detected
      * - std::invalid_argument:
      *   - if data is nullptr
      */
+
     template <auto entry, class T>
-    void Put(const T *data, const int threadID = 0);
+    void Put(const T &data, const int threadID = 0);
+
+    template <auto entry, class T>
+    void Put(const T *data, const Dimensions &dimensions,
+             const int threadID = 0);
+
+    template <auto entry, class T>
+    void Get(T &data, const int threadID = 0);
 
     /**
      * Read prefetch operation. Cheap lazy evaluation function.
      * Register data pointer for a particular entry.
      * Pointer is not populated until Execute
+     * @tparam entry
+     * @tparam T
      * @param data input data pointer to be registered, must not go out of scope
      * of be modified until Execute
+     * @param box input dimensions selection box
+     * @param threadID
      * @throws std::exception
      * - std::system_error: if low-level error detected
      * - std::invalid_argument:
      *   - if data is nullptr
      */
     template <auto entry, class T>
-    void Get(T *data, const int threadID = 0);
+    void Get(T *data, const Box &box, const int threadID = 0);
 
     /**
      * Executes system I/O to transfer memory between writing Puts and reading

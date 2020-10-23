@@ -14,20 +14,20 @@ namespace ncio::helper::types
 {
 
 #define NCIO_TYPES_ENUM(MACRO)                                                 \
-    MACRO(std::int8_t, datatype::int8)                                         \
-    MACRO(std::int16_t, datatype::int16)                                       \
-    MACRO(std::int32_t, datatype::int32)                                       \
-    MACRO(std::int64_t, datatype::int64)                                       \
-    MACRO(std::uint8_t, datatype::uint8)                                       \
-    MACRO(std::uint16_t, datatype::uint16)                                     \
-    MACRO(std::uint32_t, datatype::uint32)                                     \
-    MACRO(std::uint64_t, datatype::uint64)                                     \
-    MACRO(float, datatype::float32)                                            \
-    MACRO(double, datatype::float64)
+    MACRO(std::int8_t, DataType::int8)                                         \
+    MACRO(std::int16_t, DataType::int16)                                       \
+    MACRO(std::int32_t, DataType::int32)                                       \
+    MACRO(std::int64_t, DataType::int64)                                       \
+    MACRO(std::uint8_t, DataType::uint8)                                       \
+    MACRO(std::uint16_t, DataType::uint16)                                     \
+    MACRO(std::uint32_t, DataType::uint32)                                     \
+    MACRO(std::uint64_t, DataType::uint64)                                     \
+    MACRO(float, DataType::float32)                                            \
+    MACRO(double, DataType::float64)
 
 #define declare_ncio_types(T, L)                                               \
     template <>                                                                \
-    datatype ToDatatypeEnum<T>()                                               \
+    DataType ToDataTypeEnum<T>() noexcept                                      \
     {                                                                          \
         return L;                                                              \
     }

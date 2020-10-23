@@ -14,7 +14,7 @@ namespace ncio::transport
 {
 
 Transport::Transport(const std::string &type, const std::string &name,
-                     const openmode openMode, const Parameters &parameters)
+                     const OpenMode openMode, const Parameters &parameters)
 : m_Type(type), m_Name(name), m_OpenMode(openMode), m_Parameters(parameters),
   m_IsOpen(true)
 {
@@ -30,8 +30,5 @@ void Transport::Close()
 }
 
 std::any Transport::GetNativeHandler() noexcept { return DoGetNativeHandler(); }
-
-// REGISTER TYPE for GetMetadata
-template std::map<std::string, std::set<std::string>> Transport::GetMetadata();
 
 } // end namespace ncio::io

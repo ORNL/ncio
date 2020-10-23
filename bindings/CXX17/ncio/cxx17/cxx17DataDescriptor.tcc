@@ -19,17 +19,40 @@ namespace ncio
 {
 
 template <auto entry, class T>
-void DataDescriptor::Put(const T *data, const int threadID)
+void DataDescriptor::Put(const T &data, const int threadID)
 {
-    assert(m_ImplDataDescriptor != nullptr);
-    m_ImplDataDescriptor->Put<decltype(entry), entry>(data, threadID);
+    CheckImpl("Put");
+    const std::string entryName =
+        m_ImplDataDescriptor->ToString<decltype(entry), entry>();
+    m_ImplDataDescriptor->Put(entryName, data, threadID);
 }
 
 template <auto entry, class T>
-void DataDescriptor::Get(T *data, const int threadID)
+void DataDescriptor::Put(const T *data, const Dimensions &dimensions,
+                         const int threadID)
 {
-    assert(m_ImplDataDescriptor != nullptr);
-    m_ImplDataDescriptor->Get<decltype(entry), entry>(data, threadID);
+    CheckImpl("Put");
+    const std::string entryName =
+        m_ImplDataDescriptor->ToString<decltype(entry), entry>();
+    m_ImplDataDescriptor->Put(entryName, data, dimensions, threadID);
+}
+
+template <auto entry, class T>
+void DataDescriptor::Get(T &data, const int threadID)
+{
+    CheckImpl("Get");
+    const std::string entryName =
+        m_ImplDataDescriptor->ToString<decltype(entry), entry>();
+    m_ImplDataDescriptor->Get(entryName, &data, threadID);
+}
+
+template <auto entry, class T>
+void DataDescriptor::Get(T *data, const Box &box, const int threadID)
+{
+    CheckImpl("Get");
+    const std::string entryName =
+        m_ImplDataDescriptor->ToString<decltype(entry), entry>();
+    m_ImplDataDescriptor->Get(entryName, data, box, threadID);
 }
 
 } // end namespace ncio

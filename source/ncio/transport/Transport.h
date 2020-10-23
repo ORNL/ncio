@@ -33,7 +33,7 @@ public:
      * from client
      */
     Transport(const std::string &type, const std::string &descriptorName,
-              const openmode openMode, const Parameters &parameters);
+              const OpenMode openMode, const Parameters &parameters);
 
     virtual ~Transport() = default;
 
@@ -45,13 +45,15 @@ public:
     template <class T>
     T GetMetadata();
 
-    /** Write a variable entry by name */
+    /** Write a variable entry by name and optional dimensions */
     template <class T>
-    void Put(const std::string &entryName, const T *data);
+    void Put(const std::string &entryName, const T *data,
+             const Dimensions &dimensions, const int threadID);
 
-    /** Read a variable entry by name */
+    /** Read a variable entry by name and optional dimensions*/
     template <class T>
-    void Get(const std::string &entryName, T *data);
+    void Get(const std::string &entryName, T *data, const Box &box,
+             const int threadID);
 
     /** Close system I/O underlying resources */
     void Close();
@@ -71,7 +73,7 @@ protected:
     const std::string m_Name;
 
     /** open mode for tranport, write or read */
-    const openmode m_OpenMode;
+    const OpenMode m_OpenMode;
 
     /** handler to client configuration parameters */
     const Parameters &m_Parameters;
@@ -85,8 +87,11 @@ protected:
     DoGetMetadata(std::map<std::string, std::set<std::string>> &index) = 0;
 
 #define declare_ncio_type(T)                                                   \
-    virtual void DoPut(const std::string &entryName, const T *data) = 0;       \
-    virtual void DoGet(const std::string &entryName, T *data) = 0;
+    virtual void DoPut(const std::string &entryName, const T *data,            \
+                       const Dimensions &dimensions, const int threadID) = 0;  \
+                                                                               \
+    virtual void DoGet(const std::string &entryName, T *data, const Box &box,  \
+                       const int threadID) = 0;
 
     NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 #undef declare_ncio_type

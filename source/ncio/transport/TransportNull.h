@@ -15,7 +15,7 @@ namespace ncio::transport
 class TransportNull : public Transport
 {
 public:
-    TransportNull(const std::string &name, const openmode openMode,
+    TransportNull(const std::string &name, const OpenMode openMode,
                   const Parameters &parameters);
 
     ~TransportNull() = default;
@@ -25,8 +25,11 @@ private:
     DoGetMetadata(std::map<std::string, std::set<std::string>> &index) final;
 
 #define declare_ncio_type(T)                                                   \
-    void DoPut(const std::string &entryName, const T *data) final;             \
-    void DoGet(const std::string &entryName, T *data) final;
+    void DoPut(const std::string &entryName, const T *data,                    \
+               const Dimensions &dimensions, const int threadID) final;        \
+                                                                               \
+    void DoGet(const std::string &entryName, T *data, const Box &dimensions,   \
+               const int threadID) final;
 
     NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 #undef declare_ncio_type
