@@ -1,10 +1,12 @@
 FROM centos:centos7
 LABEL William F Godoy williamfgc@yahoo.com
 
-RUN "echo [SCL-core] name=Springdale SCL Base $releasever - $basearch &&\
-mirrorlist=http://springdale.princeton.edu/data/springdale/SCL/$releasever/$basearch/mirrorlist &&\
-#baseurl=http://springdale.princeton.edu/data/springdale/SCL/$releasever/$basearch
-gpgcheck=0" >> /etc/yum.repos.d/CentOS-Base.repo
+RUN set -x  \
+  && echo "[SCL-core]"                                                                                         > /etc/yum.repos.d/CentOS-Base.repo \
+  && echo "name=Springdale SCL Base \$releasever - \$basearch"                                                  >> /etc/yum.repos.d/CentOS-Base.repo \
+  && echo "mirrorlist=http://springdale.princeton.edu/data/springdale/SCL/\$releasever/\$basearch/mirrorlist"   >> /etc/yum.repos.d/CentOS-Base.repo \
+  && echo "#baseurl=http://springdale.princeton.edu/data/springdale/SCL/\$releasever/\$basearch"                >> /etc/yum.repos.d/CentOS-Base.repo \
+  && echo "gpgcheck=0"                                                                                        >> /etc/yum.repos.d/CentOS-Base.repo
 
 RUN yum update -y &&\
     yum upgrade -y &&\
