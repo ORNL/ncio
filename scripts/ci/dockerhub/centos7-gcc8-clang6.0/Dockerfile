@@ -1,5 +1,11 @@
 FROM centos:centos7
 LABEL William F Godoy williamfgc@yahoo.com
+
+RUN "echo [SCL-core] name=Springdale SCL Base $releasever - $basearch &&\
+mirrorlist=http://springdale.princeton.edu/data/springdale/SCL/$releasever/$basearch/mirrorlist &&\
+#baseurl=http://springdale.princeton.edu/data/springdale/SCL/$releasever/$basearch
+gpgcheck=0" >> /etc/yum.repos.d/CentOS-Base.repo
+
 RUN yum update -y &&\
     yum upgrade -y &&\
     yum install centos-release-scl -y &&\
