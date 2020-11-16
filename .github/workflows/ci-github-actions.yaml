@@ -37,7 +37,7 @@ jobs:
             options: -u root
         - jobname: centos7-gcc8
           container: 
-            image: williamfgc/ncio-ci:centos7-gcc8-clang6.0
+            image: williamfgc/ncio-ci:centos7-gcc8-clang5
             options: -u root
         - jobname: centos7-clang6.0
           container: 
