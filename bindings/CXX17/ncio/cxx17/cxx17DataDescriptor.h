@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "ncio/common/ncioTypes.h"
+
 #include <future>
 
 namespace ncio
@@ -47,35 +49,51 @@ public:
      * Pointer is not populated until Execute
      * @param data input data pointer to be registered, must not go out of scope
      * of be modified until Execute
+     * @param dimensions input dimensions for arrays, use ncio::DimsValue for
+     * single value
+     * @param threadID input threadID for multithreaded code
      * @exception std::exception
      * - std::system_error: if low-level error detected
      * - std::invalid_argument:
      *   - if data is nullptr
      */
+
     template <auto entry, class T>
-    void Put(const T *data);
+    void Put(const T &data, const int threadID = 0);
+
+    template <auto entry, class T>
+    void Put(const T *data, const Dimensions &dimensions,
+             const int threadID = 0);
+
+    template <auto entry, class T>
+    void Get(T &data, const int threadID = 0);
 
     /**
      * Read prefetch operation. Cheap lazy evaluation function.
      * Register data pointer for a particular entry.
      * Pointer is not populated until Execute
+     * @tparam entry
+     * @tparam T
      * @param data input data pointer to be registered, must not go out of scope
      * of be modified until Execute
+     * @param box input dimensions selection box
+     * @param threadID
      * @throws std::exception
      * - std::system_error: if low-level error detected
      * - std::invalid_argument:
      *   - if data is nullptr
      */
     template <auto entry, class T>
-    void Get(T *data);
+    void Get(T *data, const Box &box, const int threadID = 0);
 
     /**
      * Executes system I/O to transfer memory between writing Puts and reading
      * Gets. Expensive function can be wrapped around std::async for running in
      * the background.
      * @throws std::system_error: if low-level error detected
+     *         std::input_error: if thread wasn't registered
      */
-    void Execute();
+    void Execute(const int threadID = 0);
 
     /**
      * Similar to Execute, but return a future handler to enable asynchrous I/O
@@ -85,8 +103,10 @@ public:
      * https://en.cppreference.com/w/cpp/thread/launch
      * @return C++ async handler to internal Execute task
      * @throws std::system_error: if low-level error detected
+     *         std::logic_error: if object is invalid
      */
-    std::future<void> ExecuteAsync(const std::launch mode);
+    std::future<void> ExecuteAsync(const std::launch mode,
+                                   const int threadID = 0);
 
 private:
     /**
@@ -94,6 +114,15 @@ private:
      * @param implDataDescriptor internal create implementation object
      */
     DataDescriptor(core::DataDescriptor &implDataDescriptor);
+
+    /**
+     * Verify if m_ImplDataDescriptor handler is valid and throws exception.
+     * @param functionName name of the function involking this for better error
+     * handling
+     * @throws std::logic_error if m_ImplDataDescriptor is invalid (e.g. empty
+     * constructor, after Close)
+     */
+    void CheckImpl(const std::string &functionName);
 
     /**
      * Non-owning pimpl core object placeholder, using pointer to allow empty

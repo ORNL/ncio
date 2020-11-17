@@ -36,7 +36,7 @@ std::optional<std::string> NCIO::GetParameter(const std::string key) const
     return m_ImplNCIO->GetParameter(key);
 }
 
-DataDescriptor NCIO::Open(const std::string &name, const openmode mode)
+DataDescriptor NCIO::Open(const std::string &name, const OpenMode mode)
 {
     return DataDescriptor(m_ImplNCIO->Open(name, mode));
 }

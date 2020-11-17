@@ -37,7 +37,7 @@ std::optional<std::string> NCIO::GetParameter(const std::string key) const
 }
 
 core::DataDescriptor &NCIO::Open(const std::string &name,
-                                 const ncio::openmode openMode)
+                                 const OpenMode openMode)
 {
     auto pair = m_DataDescriptors.emplace(
         name,

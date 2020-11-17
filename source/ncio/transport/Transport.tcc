@@ -20,23 +20,37 @@ T Transport::GetMetadata()
     return index;
 }
 
-template <class T>
-void Transport::Put(const std::string &entryName, const T *data)
-{
-    DoPut(entryName, data);
-}
+// REGISTER TYPES for GetMetadata
+template std::map<std::string, std::set<std::string>> Transport::GetMetadata();
 
 template <class T>
-void Transport::Get(const std::string &entryName, T *data)
+void Transport::Put(const std::string &entryName, const T *data,
+                    const Dimensions &dimensions, const int threadID)
 {
-    DoGet(entryName, data);
+    DoPut(entryName, data, dimensions, threadID);
 }
 
-#define declare_ncio_nexus_bank_entries(T)                                     \
-    template void Transport::Put(const std::string &entryName, const T *data); \
-    template void Transport::Get(const std::string &entryName, T *data);
+// REGISTER TYPES for Put
+#define declare_ncio_type(T)                                                   \
+    template void Transport::Put<T>(const std::string &, const T *,            \
+                                    const Dimensions &, const int threadID);
 
-NCIO_PRIMITIVE_TYPES(declare_ncio_nexus_bank_entries)
-#undef declare_ncio_nexus_bank_entries
+NCIO_PRIMITIVE_TYPES(declare_ncio_type)
+#undef declare_ncio_type
+
+template <class T>
+void Transport::Get(const std::string &entryName, T *data, const Box &box,
+                    const int threadID)
+{
+    DoGet(entryName, data, box, threadID);
+}
+
+// REGISTER TYPES for Get
+#define declare_ncio_type(T)                                                   \
+    template void Transport::Get<T>(const std::string &, T *, const Box &,     \
+                                    const int threadID);
+
+NCIO_PRIMITIVE_TYPES(declare_ncio_type)
+#undef declare_ncio_type
 
 } // end namespace ncio::io

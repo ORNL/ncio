@@ -9,6 +9,8 @@
 #include "DataDescriptor.h"
 #include "DataDescriptor.tcc"
 
+#include <cassert> // assert
+
 #include <ncioConfig.h> // for #define NCIO_HAVE_XXX
 
 // Helpers
@@ -25,18 +27,92 @@ namespace ncio::core
 {
 
 DataDescriptor::DataDescriptor(const std::string &descriptorName,
-                               const openmode openMode,
+                               const OpenMode openMode,
                                const Parameters &parameters)
-: m_DescriptorName(descriptorName)
+: m_DescriptorName(descriptorName), m_OpenMode(openMode)
 {
     InitTransport(descriptorName, openMode, parameters);
 }
 
-void DataDescriptor::Execute() {}
-
-std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode)
+void DataDescriptor::Execute(const int threadID)
 {
-    return std::async(launchMode, &DataDescriptor::Execute, this);
+    auto lf_ExecutePuts =
+        [this](const std::map<std::string, std::vector<Entry>> &entriesMap,
+               const int threadID) {
+            for (const auto &entriesPair : entriesMap)
+            {
+                const std::string &entryName = entriesPair.first;
+                const auto &entries = entriesPair.second;
+
+                for (const Entry &entry : entries)
+                {
+                    switch (entry.dataType)
+                    {
+#define declare_ncio_types(T, L)                                               \
+    case (T):                                                                  \
+        PutEntry<L>(entryName, entry, threadID);                               \
+        break;
+                        NCIO_PRIMITIVE_DATATYPES_2ARGS(declare_ncio_types)
+#undef declare_ncio_types
+                    }
+                }
+            }
+        };
+
+    auto lf_ExecuteGets =
+        [this](std::map<std::string, std::vector<Entry>> &requests,
+               const int threadID) {
+            for (auto &requestPair : requests)
+            {
+                const std::string &entryName = requestPair.first;
+                auto &requests = requestPair.second;
+
+                for (Entry &request : requests)
+                {
+                    const Box box = std::get<Box>(request.query);
+
+                    switch (request.dataType)
+                    {
+#define declare_ncio_types(T, L)                                               \
+    case (T):                                                                  \
+        m_Transport->Get<L>(entryName, std::any_cast<L *>(request.data), box,  \
+                            threadID);                                         \
+        break;
+
+                        NCIO_PRIMITIVE_DATATYPES_2ARGS(declare_ncio_types)
+#undef declare_ncio_types
+                    }
+                }
+            }
+        };
+
+    auto itThreadID = m_Entries.find(threadID);
+    assert(itThreadID != m_Entries.end());
+
+    switch (m_OpenMode)
+    {
+    case OpenMode::write:
+        lf_ExecutePuts(itThreadID->second, threadID);
+        break;
+
+    case OpenMode::read:
+        lf_ExecuteGets(itThreadID->second, threadID);
+        break;
+
+    case OpenMode::undefined:
+        break;
+    }
+
+    // TODO: add option for locking requests if write/read patterns are
+    // always the same
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    itThreadID->second.clear();
+}
+
+std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode,
+                                               const int threadID)
+{
+    return std::async(launchMode, &DataDescriptor::Execute, this, threadID);
 }
 
 std::any DataDescriptor::GetNativeHandler() noexcept
@@ -44,10 +120,20 @@ std::any DataDescriptor::GetNativeHandler() noexcept
     return m_Transport->GetNativeHandler();
 }
 
+// PRIVATE
+DataDescriptor::Entry::Entry(const DataType dataType, std::any data,
+                             const std::variant<Dimensions, Box> &query,
+                             const ShapeType shapeType,
+                             const Parameters &parameters, Info *info)
+: dataType(dataType), data(data), query(query), shapeType(shapeType),
+  parameters(parameters), info(info)
+{
+}
+
 void DataDescriptor::InitMetadata(const Parameters &parameters) {}
 
 void DataDescriptor::InitTransport(const std::string &descriptorName,
-                                   const openmode openMode,
+                                   const OpenMode openMode,
                                    const Parameters &parameters)
 {
     bool foundTransport = false;

@@ -23,23 +23,37 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
 
     SUBCASE("OpenDataDescriptorWriteHDF5")
     {
-        ncio::DataDescriptor fh = ncio.Open("empty.h5", ncio::openmode::write);
+        ncio::DataDescriptor fw = ncio.Open("empty.h5", ncio::OpenMode::write);
+
+        constexpr float totalCounts = 10;
+        fw.Put<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fw.Execute();
     }
 
     SUBCASE("OpenDataDescriptorReadHDF5")
     {
-        ncio::DataDescriptor fh = ncio.Open("empty.h5", ncio::openmode::read);
+        ncio::DataDescriptor fh = ncio.Open("empty.h5", ncio::OpenMode::read);
+        float totalCounts = 0;
+        fh.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fh.Execute();
     }
 
     ncio.SetParameter("Transport", "Null");
 
     SUBCASE("OpenDataDescriptorWriteNull")
     {
-        ncio::DataDescriptor fh = ncio.Open("null", ncio::openmode::write);
+        ncio::DataDescriptor fh = ncio.Open("null", ncio::OpenMode::write);
+
+        constexpr float dataI32 = 10;
+        fh.Put<ncio::schema::nexus::bank1::total_counts>(dataI32);
+        fh.Execute();
     }
 
     SUBCASE("OpenDataDescriptorReadNull")
     {
-        ncio::DataDescriptor fh = ncio.Open("null", ncio::openmode::read);
+        ncio::DataDescriptor fr = ncio.Open("null", ncio::OpenMode::read);
+        float totalCounts = 0.;
+        fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fr.Execute();
     }
 }

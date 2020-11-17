@@ -10,6 +10,7 @@
 #include <cstdint> //fixed-width types e.g. std::uint64_t
 #include <map>
 #include <string>
+#include <vector>
 
 namespace ncio
 {
@@ -21,13 +22,49 @@ namespace ncio
  * 	2. enum class in DataDescriptor
  * 	3. enum in DataDescriptor (similar interactions in 1)
  */
-enum class openmode : std::uint64_t
+enum class OpenMode : std::uint64_t
 {
-    write = std::uint64_t(1) << 1, // 2^1
-    read = std::uint64_t(1) << 2,  // 2^2
+    write = std::uint64_t(1) << 1,     // 2^1
+    read = std::uint64_t(1) << 2,      // 2^2
+    undefined = std::uint64_t(1) << 3, // 2^3
 };
 
 // alias for passing around key/value parameters
 using Parameters = std::map<std::string, std::string>;
+using Info = std::map<std::string, std::string>;
+
+using Shape = std::vector<std::size_t>;
+using Start = std::vector<std::size_t>;
+using Count = std::vector<std::size_t>;
+
+using Dimensions = std::tuple<Shape, Start, Count>;
+using Box = std::tuple<Start, Count>;
+
+const Dimensions DimensionsAll = {Shape(), Start(), Count()};
+const Dimensions DimensionsValue = {Shape(), Start(), Count()};
+
+const Box BoxAll = {Start(), Count()};
+const Box BoxValue = {Start(), Count()};
+
+enum class ShapeType
+{
+    value,
+    array,
+};
+
+/** enum class for data types used internally for entries */
+enum class DataType
+{
+    int8,
+    int16,
+    int32,
+    int64,
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+    float32,
+    float64
+};
 
 } // end namespace ncio

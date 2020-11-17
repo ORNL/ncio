@@ -62,7 +62,7 @@ public:
      * @return internal handler
      */
     core::DataDescriptor &Open(const std::string &name,
-                               const openmode openMode);
+                               const OpenMode openMode);
 
 private:
     /** input config file passed at constructor */

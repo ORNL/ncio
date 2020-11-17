@@ -11,7 +11,7 @@
 namespace ncio::transport
 {
 
-TransportNull::TransportNull(const std::string &name, const openmode openMode,
+TransportNull::TransportNull(const std::string &name, const OpenMode openMode,
                              const Parameters &parameters)
 : Transport("Null", name, openMode, parameters)
 {
@@ -24,8 +24,15 @@ void TransportNull::DoGetMetadata(
 }
 
 #define declare_ncio_types(T)                                                  \
-    void TransportNull::DoPut(const std::string &entryName, const T *data) {}  \
-    void TransportNull::DoGet(const std::string &entryName, T *data) {}
+    void TransportNull::DoPut(const std::string &entryName, const T *data,     \
+                              const Dimensions &dimensions,                    \
+                              const int threadID)                              \
+    {                                                                          \
+    }                                                                          \
+    void TransportNull::DoGet(const std::string &entryName, T *data,           \
+                              const Box &box, const int threadID)              \
+    {                                                                          \
+    }
 
 NCIO_PRIMITIVE_TYPES(declare_ncio_types)
 #undef declare_ncio_types
