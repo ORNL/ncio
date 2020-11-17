@@ -24,7 +24,7 @@ jobs:
           ubuntu18-gcc8,
           ubuntu18-clang6,
           centos7-gcc8,
-          centos7-clang5
+          centos7-clang6.0
         ]
         include:
         - jobname: ubuntu18-gcc8
@@ -39,9 +39,9 @@ jobs:
           container: 
             image: williamfgc/ncio-ci:centos7-gcc8-clang5
             options: -u root
-        - jobname: centos7-clang5
+        - jobname: centos7-clang6.0
           container: 
-            image: williamfgc/ncio-ci:centos7-gcc8-clang5
+            image: williamfgc/ncio-ci:centos7-gcc8-clang6.0
             options: -u root
 
     steps:
