@@ -108,6 +108,12 @@ public:
     std::future<void> ExecuteAsync(const std::launch mode,
                                    const int threadID = 0);
 
+    /**
+     * Close all operations with the current DataDescriptor. After this
+     * operation any call becomes invalid.
+     */
+    void Close();
+
 private:
     /**
      * Constructor only allowed for factory friend class NCIO

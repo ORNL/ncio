@@ -11,6 +11,8 @@
 #include "ncio/common/ncioMacros.h"
 #include "ncio/transport/Transport.h"
 
+#include <hdf5.h>
+
 namespace ncio::transport
 {
 
@@ -27,7 +29,10 @@ private:
      * HDF5 file handler. It could be int (4 bytes) or int64_t (8 bytes)
      * Using std::any to keep HDF5 dependency as a private library to ncio
      */
-    std::any m_File = -1;
+    hid_t m_File = -1;
+
+    /** generated Id for top level group "/" */
+    hid_t m_TopGroupID = -1;
 
     void
     DoGetMetadata(std::map<std::string, std::set<std::string>> &index) final;
@@ -54,8 +59,12 @@ private:
 
     std::any DoGetNativeHandler() noexcept final;
 
-    template <class T, class H5T>
-    H5T GetHDF5Datatype();
+    template <class T>
+    hid_t GetHDF5Datatype();
+
+    template <class T>
+    std::vector<hid_t> CreateDataset(const std::string &entryName,
+                                     hid_t fileSpace);
 };
 
 } // end namespace nexus::io

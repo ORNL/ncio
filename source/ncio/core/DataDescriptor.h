@@ -62,6 +62,9 @@ public:
     std::future<void> ExecuteAsync(const std::launch launchMode,
                                    const int threadID);
 
+    /** Close all operations with the current DataDescriptor */
+    void Close();
+
     /**
      * Get underlying IO handler. This is for advanced users that wan't access
      * to the underlying technology.

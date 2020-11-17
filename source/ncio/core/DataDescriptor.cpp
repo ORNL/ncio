@@ -115,6 +115,8 @@ std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode,
     return std::async(launchMode, &DataDescriptor::Execute, this, threadID);
 }
 
+void DataDescriptor::Close() { m_Transport->Close(); }
+
 std::any DataDescriptor::GetNativeHandler() noexcept
 {
     return m_Transport->GetNativeHandler();

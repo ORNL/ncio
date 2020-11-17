@@ -16,83 +16,9 @@
 namespace ncio::transport
 {
 
-namespace
-{
-
-/**
- * Creates groups
- * @param entryName
- * @param h5Type
- * @param filespaceID
- * @return
- */
-/**
-std::vector<hid_t> CreateDataset(const std::string &entryName, hid_t h5Type,
-                                 hid_t filespaceID)
-{
-    std::vector<hid_t> datasetChain;
-
-    std::vector<std::string> list;
-    char delimiter = '/';
-    int delimiterLength = 1;
-    std::string s = std::string(entryName);
-    size_t pos = 0;
-    std::string token;
-    while ((pos = s.find(delimiter)) != std::string::npos)
-    {
-        if (pos > 0)
-        { // "///a/b/c" == "a/b/c"
-            token = s.substr(0, pos);
-            list.push_back(token);
-        }
-        s.erase(0, pos + delimiterLength);
-    }
-    list.push_back(s);
-
-    hid_t topId = m_GroupId;
-    if (list.size() > 1)
-    {
-        for (int i = 0; i < list.size() - 1; i++)
-        {
-            if (H5Lexists(topId, list[i].c_str(), H5P_DEFAULT) == 0)
-            { // does not exist, so create
-                topId = H5Gcreate2(topId, list[i].c_str(), H5P_DEFAULT,
-                                   H5P_DEFAULT, H5P_DEFAULT);
-            }
-            else
-            {
-                topId = H5Gopen(topId, list[i].c_str(), H5P_DEFAULT);
-            }
-            datasetChain.push_back(topId);
-        }
-    }
-
-    hid_t varCreateProperty = H5P_DEFAULT;
-
-    hid_t dsetID = -1;
-    if (H5Lexists(topId, list.back().c_str(), H5P_DEFAULT) == 0)
-    {
-        dsetID = H5Dcreate(topId, list.back().c_str(), h5Type, filespaceID,
-                           H5P_DEFAULT, varCreateProperty, H5P_DEFAULT);
-    }
-    else
-    {
-        dsetID = H5Dopen(topId, list.back().c_str(), H5P_DEFAULT);
-    }
-
-    datasetChain.push_back(dsetID);
-
-    // hid_t dspace = H5Dget_space(dsetID);
-    // const int ndims = H5Sget_simple_extent_ndims(dspace);
-    return datasetChain;
-}
-*/
-
-} // end empty namespace
-
 TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
                              const Parameters &parameters)
-: Transport("HDF5", name, openMode, parameters), m_File(hid_t(-1))
+: Transport("HDF5", name, openMode, parameters)
 {
     switch (openMode)
     {
@@ -102,7 +28,7 @@ TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
         hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
         H5Pset_fclose_degree(fapl, H5F_CLOSE_STRONG);
         m_File = H5Fopen(name.c_str(), H5F_ACC_RDONLY, fapl);
-        if (std::any_cast<hid_t>(m_File) < 0)
+        if (m_File < 0)
         {
             throw std::invalid_argument("ncio ERROR: couldn't open HDF5 file " +
                                         m_Name + " with fapl " +
@@ -115,12 +41,16 @@ TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
     {
         m_File =
             H5Fcreate(name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-        if (std::any_cast<hid_t>(m_File) < 0)
+
+        if (m_File < 0)
         {
             throw std::invalid_argument(
                 "ncio ERROR: couldn't create HDF5 file " + m_Name +
                 " for writing\n");
         }
+
+        m_TopGroupID = H5Gopen2(m_File, "/", H5P_DEFAULT);
+
         break;
     }
     case (OpenMode::undefined):
@@ -139,6 +69,7 @@ TransportHDF5::~TransportHDF5()
     }
 }
 
+// PRIVATE
 void TransportHDF5::DoGetMetadata(
     std::map<std::string, std::set<std::string> > &index)
 {
@@ -164,7 +95,7 @@ NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 
 void TransportHDF5::DoClose()
 {
-    const herr_t status = H5Fclose(std::any_cast<hid_t>(m_File));
+    const herr_t status = H5Fclose(m_File);
     if (status < 0)
     {
         throw std::invalid_argument("ncio ERROR: couldn't close HDF5 file " +

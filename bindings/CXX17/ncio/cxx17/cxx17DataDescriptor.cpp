@@ -37,6 +37,14 @@ std::future<void> DataDescriptor::ExecuteAsync(const std::launch mode,
     return m_ImplDataDescriptor->ExecuteAsync(mode, threadID);
 }
 
+void DataDescriptor::Close()
+{
+    CheckImpl("Close");
+    m_ImplDataDescriptor->Close();
+    m_ImplDataDescriptor = nullptr;
+}
+
+// PRIVATE
 void DataDescriptor::CheckImpl(const std::string &functionName)
 {
     if (!*this)

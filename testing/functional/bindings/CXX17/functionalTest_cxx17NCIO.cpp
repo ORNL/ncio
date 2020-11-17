@@ -28,14 +28,16 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
         constexpr float totalCounts = 10;
         fw.Put<ncio::schema::nexus::bank1::total_counts>(totalCounts);
         fw.Execute();
+        fw.Close();
     }
 
     SUBCASE("OpenDataDescriptorReadHDF5")
     {
-        ncio::DataDescriptor fh = ncio.Open("empty.h5", ncio::OpenMode::read);
+        ncio::DataDescriptor fr = ncio.Open("empty.h5", ncio::OpenMode::read);
         float totalCounts = 0;
-        fh.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
-        fh.Execute();
+        fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fr.Execute();
+        fr.Close();
     }
 
     ncio.SetParameter("Transport", "Null");
@@ -47,6 +49,7 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
         constexpr float dataI32 = 10;
         fh.Put<ncio::schema::nexus::bank1::total_counts>(dataI32);
         fh.Execute();
+        fh.Close();
     }
 
     SUBCASE("OpenDataDescriptorReadNull")
@@ -55,5 +58,6 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
         float totalCounts = 0.;
         fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
         fr.Execute();
+        fr.Close();
     }
 }
