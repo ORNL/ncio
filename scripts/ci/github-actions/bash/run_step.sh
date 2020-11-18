@@ -45,8 +45,9 @@ case "$1" in
       ;;
       *"coverage"*)
         echo 'Configure for code coverage'
+        # meson regression bug in > 0.55 using 0.54.2
         pip3 install meson==0.54.2
-        meson -Dbuildtype=debugoptimized -Db_coverage=true --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+        meson -Dbuildtype=debug -Db_coverage=true --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with clang compilers
       *"clang"*)

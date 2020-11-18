@@ -62,6 +62,9 @@ public:
     std::future<void> ExecuteAsync(const std::launch launchMode,
                                    const int threadID);
 
+    /** Close all operations with the current DataDescriptor */
+    void Close();
+
     /**
      * Get underlying IO handler. This is for advanced users that wan't access
      * to the underlying technology.
@@ -78,7 +81,13 @@ public:
      * @return string registered in a schema from enum defining entries
      */
     template <class Enum, Enum enumValue>
-    std::string ToString() noexcept;
+    std::string ToString() const noexcept;
+
+    /** true: is currently opened, false: is closed and can be re-opened */
+    bool IsOpen() const noexcept;
+
+    /** used by NCIO factory, set open status if reopened */
+    void SetOpenStatus(const bool openStatus) noexcept;
 
 private:
     /**
@@ -95,6 +104,9 @@ private:
     /** Polymorphic object to interact with different I/O library backends.
      * TODO: this would be a container in the future. For now it's 1-to-1. */
     std::unique_ptr<transport::Transport> m_Transport;
+
+    /** true: active, false: Close has been called */
+    bool m_IsOpen;
 
     /**
      * Defines Entry requests for Put and Get.

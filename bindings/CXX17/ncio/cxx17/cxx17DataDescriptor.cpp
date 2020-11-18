@@ -37,6 +37,14 @@ std::future<void> DataDescriptor::ExecuteAsync(const std::launch mode,
     return m_ImplDataDescriptor->ExecuteAsync(mode, threadID);
 }
 
+void DataDescriptor::Close()
+{
+    CheckImpl("Close");
+    m_ImplDataDescriptor->Close();
+    m_ImplDataDescriptor = nullptr;
+}
+
+// PRIVATE
 void DataDescriptor::CheckImpl(const std::string &functionName)
 {
     if (!*this)
@@ -45,7 +53,7 @@ void DataDescriptor::CheckImpl(const std::string &functionName)
             "ncio ERROR: invalid DataDescriptor object in call to " +
             functionName +
             ". Please modify your code and pass a valid DataDescriptor created "
-            "with NCIO::Open\n");
+            "with NCIO::Open that has not been previously closed\n");
     }
 }
 
