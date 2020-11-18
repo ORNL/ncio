@@ -29,7 +29,7 @@ namespace ncio::core
 DataDescriptor::DataDescriptor(const std::string &descriptorName,
                                const OpenMode openMode,
                                const Parameters &parameters)
-: m_DescriptorName(descriptorName), m_OpenMode(openMode)
+: m_DescriptorName(descriptorName), m_OpenMode(openMode), m_IsOpen(true)
 {
     InitTransport(descriptorName, openMode, parameters);
 }
@@ -115,11 +115,30 @@ std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode,
     return std::async(launchMode, &DataDescriptor::Execute, this, threadID);
 }
 
-void DataDescriptor::Close() { m_Transport->Close(); }
+void DataDescriptor::Close()
+{
+    if (!m_IsOpen)
+    {
+        throw std::logic_error("ncio ERROR: ncio::DataDescriptor " +
+                               m_DescriptorName +
+                               " has been previously closed. Can only call "
+                               "Close once for every call to Open\n");
+    }
+
+    m_Transport->Close();
+    m_IsOpen = false;
+}
 
 std::any DataDescriptor::GetNativeHandler() noexcept
 {
     return m_Transport->GetNativeHandler();
+}
+
+bool DataDescriptor::IsOpen() const noexcept { return m_IsOpen; }
+
+void DataDescriptor::SetOpenStatus(const bool openStatus) noexcept
+{
+    m_IsOpen = openStatus;
 }
 
 // PRIVATE
@@ -154,8 +173,8 @@ void DataDescriptor::InitTransport(const std::string &descriptorName,
                 m_Transport = std::make_unique<transport::TransportHDF5>(
                     descriptorName, openMode, parameters);
 #else
-                std::invalid_argument("NCIO ERROR: this version of NCIO didn't "
-                                      "compile with the HDF5 dependency, can't "
+                std::invalid_argument("ncio ERROR: this version of ncio didn't "
+                                      "compile with the hdf5 dependency, can't "
                                       "use transport (key) hdf5 (value) in "
                                       "configuration parameters\n");
 #endif
@@ -169,8 +188,9 @@ void DataDescriptor::InitTransport(const std::string &descriptorName,
             {
                 // TODO : update error message as new transports are added
                 throw std::invalid_argument(
-                    "NCIO ERROR: for parameters key=transport value=" + value +
-                    " is not valid. Only hdf5 and null is supported\n");
+                    "ncio ERROR: for parameters key=transport value=" +
+                    parameter.second +
+                    " is not valid. Only hdf5 and null are supported\n");
             }
         }
     }

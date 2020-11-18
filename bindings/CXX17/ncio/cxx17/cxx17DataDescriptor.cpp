@@ -53,7 +53,7 @@ void DataDescriptor::CheckImpl(const std::string &functionName)
             "ncio ERROR: invalid DataDescriptor object in call to " +
             functionName +
             ". Please modify your code and pass a valid DataDescriptor created "
-            "with NCIO::Open\n");
+            "with NCIO::Open that has not been previously closed\n");
     }
 }
 

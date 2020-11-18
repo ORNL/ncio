@@ -16,8 +16,9 @@ namespace ncio::core
 // Implement DataDescriptor::ToString for Schema entries
 #define NCIO_SCHEMA_NEXUS_TOSTRING(bank, entry)                                \
     template <>                                                                \
-    std::string DataDescriptor::ToString<                                      \
-        schema::nexus::bank, schema::nexus::bank::entry>() noexcept            \
+    std::string DataDescriptor::ToString<schema::nexus::bank,                  \
+                                         schema::nexus::bank::entry>()         \
+        const noexcept                                                         \
     {                                                                          \
         return std::string("/entry/").append(#bank).append("/").append(        \
             #entry);                                                           \

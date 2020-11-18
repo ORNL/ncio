@@ -24,9 +24,10 @@ TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
     {
     case (OpenMode::read):
     {
-        // allow for multiple handlers
         hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
-        H5Pset_fclose_degree(fapl, H5F_CLOSE_STRONG);
+        // multiple handlers is not recommended by HDF5
+        // H5Pset_fclose_degree(fapl, H5F_CLOSE_STRONG);
+        // https://support.hdfgroup.org/HDF5/doc/RM/RM_H5F.html#File-Open
         m_File = H5Fopen(name.c_str(), H5F_ACC_RDONLY, fapl);
         if (m_File < 0)
         {

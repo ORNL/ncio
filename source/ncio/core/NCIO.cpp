@@ -39,10 +39,30 @@ std::optional<std::string> NCIO::GetParameter(const std::string key) const
 core::DataDescriptor &NCIO::Open(const std::string &name,
                                  const OpenMode openMode)
 {
-    auto pair = m_DataDescriptors.emplace(
-        name,
-        std::make_unique<core::DataDescriptor>(name, openMode, m_Parameters));
-    return *pair.first->second.get();
+    auto itDataDescriptor = m_DataDescriptors.find(name);
+
+    // doesn't exist
+    if (itDataDescriptor == m_DataDescriptors.end())
+    {
+
+        auto pair = m_DataDescriptors.emplace(
+            name, std::make_unique<core::DataDescriptor>(name, openMode,
+                                                         m_Parameters));
+        return *pair.first->second.get();
+    }
+
+    // exist
+    DataDescriptor &dataDescriptor = *itDataDescriptor->second.get();
+    if (dataDescriptor.IsOpen())
+    {
+        throw std::logic_error("ncio ERROR: trying to Open DataDescriptor " +
+                               name +
+                               " more than once is not allowed. Call "
+                               "DataDescriptor::Close() first\n");
+    }
+    dataDescriptor.SetOpenStatus(true);
+
+    return dataDescriptor;
 }
 
 } // end namespace ncio::core

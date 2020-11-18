@@ -109,6 +109,13 @@ template <class T>
 void TransportHDF5::DoGetCommon(const std::string &entryName, T *data,
                                 const Box &box, const int threadID)
 {
+    if (box == BoxValue)
+    {
+        hid_t dataSetID = H5Dopen(m_File, entryName.c_str(), H5P_DEFAULT);
+        hid_t status = H5Dread(dataSetID, GetHDF5Datatype<T>(), H5S_ALL,
+                               H5S_ALL, H5P_DEFAULT, data);
+        H5Dclose(dataSetID);
+    }
 }
 
 } // end namespace ncio::transport
