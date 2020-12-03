@@ -99,8 +99,8 @@ void TransportHDF5::DoClose()
     const herr_t status = H5Fclose(m_File);
     if (status < 0)
     {
-        throw std::invalid_argument("ncio ERROR: couldn't close HDF5 file " +
-                                    m_Name + "\n");
+        throw std::runtime_error("ncio ERROR: couldn't close HDF5 file " +
+                                 m_Name + "\n");
     }
     m_IsOpen = false;
 }

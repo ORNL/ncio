@@ -87,9 +87,32 @@ void DataDescriptor::PutEntry(const std::string &entryName, const Entry &entry,
     }
     case (ShapeType::array):
     {
+        // TODO some checks on Dimensions
         const T *data = std::any_cast<const T *>(entry.data);
         m_Transport->Put(entryName, data, std::get<Dimensions>(entry.query),
                          threadID);
+        break;
+    }
+    }
+}
+
+template <class T>
+void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
+                              const int threadID)
+{
+    switch (entry.shapeType)
+    {
+    case (ShapeType::value):
+    {
+        T *data = std::any_cast<T>(&entry.data);
+        m_Transport->Get(entryName, data, DimensionsValue, threadID);
+        break;
+    }
+    case (ShapeType::array):
+    {
+        // TODO some checks on Dimensions
+        T *data = std::any_cast<T *>(entry.data);
+        m_Transport->Get(entryName, data, std::get<Box>(entry.query), threadID);
         break;
     }
     }

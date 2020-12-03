@@ -156,7 +156,7 @@ private:
                        const OpenMode openMode, const Parameters &parameters);
 
     /**
-     * Put entry into m_Transport->Put
+     * Put entry into m_Transport->Put. Called at Execute for writing.
      * @tparam T
      * @param entryName
      * @param entry
@@ -164,7 +164,18 @@ private:
      */
     template <class T>
     void PutEntry(const std::string &entryName, const Entry &entry,
-                  const int thread);
+                  const int threadID);
+
+    /**
+     * Get entry into m_Transport->Put. Called at Execute for reading.
+     * @tparam T
+     * @param entryName
+     * @param entry
+     * @param thread
+     */
+    template <class T>
+    void GetEntry(const std::string &entryName, Entry &entry,
+                  const int threadID);
 };
 
 } // end namespace ncio::core

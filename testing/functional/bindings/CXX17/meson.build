@@ -3,7 +3,7 @@
 #      Author: William F Godoy godoywf@ornl.gov
 
 
-tests = ['NCIO']
+tests = ['NCIO', 'DataDescriptor']
 
 foreach test : tests
   exe = executable('functionaltest-cxx17-' + test, 

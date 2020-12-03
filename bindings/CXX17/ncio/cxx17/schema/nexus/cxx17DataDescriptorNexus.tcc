@@ -18,10 +18,10 @@ namespace ncio
     template void DataDescriptor::Put<schema::nexus::bank##T::event_id>(       \
         const std::uint64_t &, const int);                                     \
     template void DataDescriptor::Put<schema::nexus::bank##T::event_index>(    \
-        const std::uint32_t &, const int);                                     \
+        const std::uint64_t *, const Dimensions &, const int);                 \
     template void                                                              \
     DataDescriptor::Put<schema::nexus::bank##T::event_time_offset>(            \
-        const float &, const int);                                             \
+        const float *, const Dimensions &, const int);                         \
     template void                                                              \
     DataDescriptor::Put<schema::nexus::bank##T::event_time_zero>(              \
         const double &, const int);                                            \
@@ -35,10 +35,12 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
     template void DataDescriptor::Get<schema::nexus::bank##T::event_id>(       \
         std::uint64_t &, const int);                                           \
     template void DataDescriptor::Get<schema::nexus::bank##T::event_index>(    \
-        std::uint32_t &, const int);                                           \
+        std::uint64_t *, const Box &box, const int);                           \
+                                                                               \
     template void                                                              \
-    DataDescriptor::Get<schema::nexus::bank##T::event_time_offset>(float &,    \
-                                                                   const int); \
+    DataDescriptor::Get<schema::nexus::bank##T::event_time_offset>(            \
+        float *, const Box &box, const int);                                   \
+                                                                               \
     template void                                                              \
     DataDescriptor::Get<schema::nexus::bank##T::event_time_zero>(double &,     \
                                                                  const int);   \

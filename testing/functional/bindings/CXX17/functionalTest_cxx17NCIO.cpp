@@ -1,6 +1,6 @@
 /**
- * testNCIO.cpp : unit tests for the ncio::NCIO C++17 bindings class using the
- * doctest framework
+ * functionalTest_cxx17NCIO.cpp : functional tests for the ncio::NCIO C++17
+ * bindings class using the doctest framework
  *
  *  Created on: May 18, 2020
  *      Author: William F Godoy godoywf@ornl.gov
@@ -10,7 +10,7 @@
 
 #include <ncio.h>
 
-TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
+TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
 {
     ncio::NCIO ncio;
     ncio.SetParameter("key", "value");
@@ -21,7 +21,8 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
     }
     SUBCASE("GetConfigFile") { CHECK(ncio.GetConfigFile() == std::nullopt); }
 
-    // minimal functionality tests
+    // minimal functionality tests for DataDescriptor, more in
+    // functionalTest_cxx17DataDescriptor.cpp
 
 #ifdef NCIO_HAVE_HDF5
     SUBCASE("OpenDataDescriptorWriteHDF5")
@@ -29,23 +30,35 @@ TEST_CASE("Function test for ncio::NCIO C++17 bindings class")
         ncio::DataDescriptor fw =
             ncio.Open("total_counts.h5", ncio::OpenMode::write);
 
+        // put a single value
         constexpr float totalCounts = 10;
         fw.Put<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+
+        // put a 1D array
+        constexpr std::array<std::uint64_t, 3> eventIndex = {1, 2, 3};
+        constexpr std::size_t nx = eventIndex.size();
+        fw.Put<ncio::schema::nexus::bank1::event_index>(eventIndex.data(),
+                                                        {{nx}, {0}, {nx}});
         fw.Execute();
         fw.Close();
     }
 
     SUBCASE("OpenDataDescriptorReadHDF5")
     {
+        float totalCounts = 0;
+        std::array<std::uint64_t, 3> eventIndex;
+
         ncio::DataDescriptor fr =
             ncio.Open("total_counts.h5", ncio::OpenMode::read);
 
-        float totalCounts = 0;
         fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fr.Get<ncio::schema::nexus::bank1::event_index>(eventIndex.data(),
+                                                        ncio::BoxAll);
         fr.Execute();
         fr.Close();
 
         CHECK_EQ(totalCounts, 10);
+        CHECK_EQ(eventIndex, std::array<std::uint64_t, 3>{1, 2, 3});
     }
 
     SUBCASE("OpenExceptions")
