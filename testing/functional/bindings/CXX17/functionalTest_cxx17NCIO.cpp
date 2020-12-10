@@ -8,6 +8,10 @@
 
 #include "ncio-doctest.h"
 
+#include <future>
+#include <numeric> // std::iota
+#include <thread>
+
 #include <ncio.h>
 
 TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")

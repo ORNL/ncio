@@ -105,8 +105,7 @@ void TransportHDF5::DoPutCommon(const std::string &entryName, const T *data,
     if (dimensions == DimensionsValue)
     {
         hid_t fileSpace = H5Screate(H5S_SCALAR);
-        const std::vector<hid_t> listIDs =
-            CreateDataset<T>(entryName, fileSpace);
+        std::vector<hid_t> listIDs = CreateDataset<T>(entryName, fileSpace);
         hid_t datasetID = listIDs.back();
         hid_t status = H5Dwrite(datasetID, GetHDF5Datatype<T>(), H5S_ALL,
                                 H5S_ALL, H5P_DEFAULT, data);
@@ -117,6 +116,7 @@ void TransportHDF5::DoPutCommon(const std::string &entryName, const T *data,
                                      entryName + " to HDF5 file " + m_Name +
                                      "\n");
         }
+        CloseDataset(listIDs);
     }
     // array
     else
@@ -125,8 +125,7 @@ void TransportHDF5::DoPutCommon(const std::string &entryName, const T *data,
 
         // create file space and dataset
         hid_t fileSpace = lf_H5SCreateSimple(shape);
-        const std::vector<hid_t> listIDs =
-            CreateDataset<T>(entryName, fileSpace);
+        std::vector<hid_t> listIDs = CreateDataset<T>(entryName, fileSpace);
 
         // retrieve fileSpace from dataset and set hyperslab box selection
         hid_t datasetID = listIDs.back();
@@ -154,6 +153,7 @@ void TransportHDF5::DoPutCommon(const std::string &entryName, const T *data,
                                      entryName + " to HDF5 file " + m_Name +
                                      "\n");
         }
+        CloseDataset(listIDs);
     }
 }
 
