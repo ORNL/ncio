@@ -51,7 +51,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
     SUBCASE("ReadHDF5_async")
     {
         float totalCounts = 0;
-        std::array<std::uint64_t, 3> eventIndex;
+        std::vector<std::uint64_t> eventIndex(3);
 
         ncio::DataDescriptor fr =
             ncio.Open("data_async.h5", ncio::OpenMode::read);
@@ -68,7 +68,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         fr.Close();
 
         CHECK_EQ(totalCounts, 10);
-        CHECK_EQ(eventIndex, std::array<std::uint64_t, 3>{1, 2, 3});
+        CHECK_EQ(eventIndex, std::vector<std::uint64_t>{1, 2, 3});
     }
 
     SUBCASE("WriteHDF5_threads")

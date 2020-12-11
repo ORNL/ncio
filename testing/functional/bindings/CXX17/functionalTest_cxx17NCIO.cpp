@@ -8,6 +8,7 @@
 
 #include "ncio-doctest.h"
 
+#include <array>
 #include <future>
 #include <numeric> // std::iota
 #include <thread>
@@ -39,8 +40,9 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
         fw.Put<ncio::schema::nexus::bank1::total_counts>(totalCounts);
 
         // put a 1D array
-        constexpr std::array<std::uint64_t, 3> eventIndex = {1, 2, 3};
-        constexpr std::size_t nx = eventIndex.size();
+        // moving from constexpr to const, not allowed by macOS clang in CI
+        const std::array<std::uint64_t, 3> eventIndex = {1, 2, 3};
+        const std::size_t nx = eventIndex.size();
         fw.Put<ncio::schema::nexus::bank1::event_index>(eventIndex.data(),
                                                         {{nx}, {0}, {nx}});
         fw.Execute();
@@ -50,7 +52,7 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
     SUBCASE("OpenDataDescriptorReadHDF5")
     {
         float totalCounts = 0;
-        std::array<std::uint64_t, 3> eventIndex;
+        std::vector<std::uint64_t> eventIndex(3);
 
         ncio::DataDescriptor fr =
             ncio.Open("total_counts.h5", ncio::OpenMode::read);
@@ -62,7 +64,7 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
         fr.Close();
 
         CHECK_EQ(totalCounts, 10);
-        CHECK_EQ(eventIndex, std::array<std::uint64_t, 3>{1, 2, 3});
+        CHECK_EQ(eventIndex, std::vector<std::uint64_t>{1, 2, 3});
     }
 
     SUBCASE("OpenExceptions")
