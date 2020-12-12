@@ -3,14 +3,14 @@
 #      Author: William F Godoy godoywf@ornl.gov
 
 
-tests = ['NCIO']
+tests = ['NCIO', 'DataDescriptor']
 
 foreach test : tests
   exe = executable('functionaltest-cxx17-' + test, 
                    'functionalTest_cxx17' + test + '.cpp',
                    include_directories:  ncio_doctest_inc, 
-                   dependencies: [ncio_cxx17_dep, doctest_dep])
-  test(test, exe, timeout: 10, suite: ['functionaltest', 'cxx17'] )
+                   dependencies: [ncio_cxx17_dep, doctest_dep, threads_dep])
+  test(test, exe, timeout: 10, suite: ['functionaltest', 'cxx17'], is_parallel: false )
 endforeach
 
 
@@ -22,6 +22,6 @@ foreach ncio_schema : ncio_schemas
   exe = executable('functionaltest-cxx17-schema-' + test, 
                    file_name,
                    include_directories:  ncio_doctest_inc, 
-                   dependencies: [ncio_cxx17_dep, doctest_dep])
+                   dependencies: [ncio_cxx17_dep, doctest_dep, threads_dep])
   test( test, exe, timeout: 10, suite: ['functionaltest', 'cxx17', 'schema'])
 endforeach

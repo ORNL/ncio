@@ -55,7 +55,7 @@ NCIO_HD5Types_MAP(declare_ncio_types)
         for (std::size_t i = 1; i < list.size() - 1; ++i)
         {
             currentGroup = list[i];
-            // if (H5Gget_objinfo(groupID, currentGroup.c_str(), 0, NULL) == 0)
+
             if (H5Lexists(groupID, currentGroup.c_str(), H5P_DEFAULT) == 0)
             {
                 groupID = H5Gcreate2(groupID, currentGroup.c_str(), H5P_DEFAULT,
@@ -92,16 +92,68 @@ void TransportHDF5::DoPutCommon(const std::string &entryName, const T *data,
                                 const Dimensions &dimensions,
                                 const int threadID)
 {
+    auto lf_H5SCreateSimple =
+        [](const std::vector<std::size_t> &input) -> hid_t {
+        return H5Screate_simple(static_cast<int>(input.size()),
+                                reinterpret_cast<hsize_t *>(
+                                    const_cast<std::size_t *>(input.data())),
+                                NULL);
+    };
+
     // TODO: check valid entryName for HDF5
-    // Single value
+    // single value (aka scalar)
     if (dimensions == DimensionsValue)
     {
         hid_t fileSpace = H5Screate(H5S_SCALAR);
-        const std::vector<hid_t> listIDs =
-            CreateDataset<T>(entryName, fileSpace);
+        std::vector<hid_t> listIDs = CreateDataset<T>(entryName, fileSpace);
+        hid_t datasetID = listIDs.back();
+        hid_t status = H5Dwrite(datasetID, GetHDF5Datatype<T>(), H5S_ALL,
+                                H5S_ALL, H5P_DEFAULT, data);
+        // TODO capture status
+        if (status < 0)
+        {
+            throw std::runtime_error("ncio ERROR: couldn't write entry " +
+                                     entryName + " to HDF5 file " + m_Name +
+                                     "\n");
+        }
+        CloseDataset(listIDs);
+    }
+    // array
+    else
+    {
+        const auto [shape, start, count] = dimensions;
 
-        H5Dwrite(listIDs.back(), GetHDF5Datatype<T>(), H5S_ALL, H5S_ALL,
-                 H5P_DEFAULT, data);
+        // create file space and dataset
+        hid_t fileSpace = lf_H5SCreateSimple(shape);
+        std::vector<hid_t> listIDs = CreateDataset<T>(entryName, fileSpace);
+
+        // retrieve fileSpace from dataset and set hyperslab box selection
+        hid_t datasetID = listIDs.back();
+        fileSpace = H5Dget_space(datasetID);
+
+        // FIXME address empty count
+        H5Sselect_hyperslab(fileSpace, H5S_SELECT_SET,
+                            reinterpret_cast<hsize_t *>(
+                                const_cast<std::size_t *>(start.data())),
+                            NULL,
+                            reinterpret_cast<hsize_t *>(
+                                const_cast<std::size_t *>(count.data())),
+                            NULL);
+
+        // actual memory space
+        hid_t memorySpace = count.empty() ? lf_H5SCreateSimple(shape)
+                                          : lf_H5SCreateSimple(count);
+        const hid_t status =
+            H5Dwrite(datasetID, GetHDF5Datatype<T>(), memorySpace, fileSpace,
+                     H5P_DEFAULT, data);
+
+        if (status < 0)
+        {
+            throw std::runtime_error("ncio ERROR: couldn't write entry " +
+                                     entryName + " to HDF5 file " + m_Name +
+                                     "\n");
+        }
+        CloseDataset(listIDs);
     }
 }
 
@@ -109,12 +161,50 @@ template <class T>
 void TransportHDF5::DoGetCommon(const std::string &entryName, T *data,
                                 const Box &box, const int threadID)
 {
+
+    hid_t dataSetID = H5Dopen(m_File, entryName.c_str(), H5P_DEFAULT);
+    // TODO check dataSetID for errors
+
     if (box == BoxValue)
     {
-        hid_t dataSetID = H5Dopen(m_File, entryName.c_str(), H5P_DEFAULT);
         hid_t status = H5Dread(dataSetID, GetHDF5Datatype<T>(), H5S_ALL,
                                H5S_ALL, H5P_DEFAULT, data);
+        if (status < 0)
+        {
+            throw std::runtime_error("ncio ERROR: couldn't read entry " +
+                                     entryName + " from HDF5 file " + m_Name +
+                                     "\n");
+        }
         H5Dclose(dataSetID);
+    }
+    // array with Box selection
+    else
+    {
+        const auto [start, count] = box;
+        hid_t fileSpace = H5Dget_space(dataSetID); /* dataspace handle */
+
+        H5Sselect_hyperslab(fileSpace, H5S_SELECT_SET,
+                            reinterpret_cast<hsize_t *>(
+                                const_cast<std::size_t *>(start.data())),
+                            NULL,
+                            reinterpret_cast<hsize_t *>(
+                                const_cast<std::size_t *>(count.data())),
+                            NULL);
+
+        // actual memory space
+        hid_t memorySpace =
+            H5Screate_simple(static_cast<int>(count.size()),
+                             reinterpret_cast<hsize_t *>(
+                                 const_cast<std::size_t *>(count.data())),
+                             NULL);
+        hid_t status = H5Dread(dataSetID, GetHDF5Datatype<T>(), memorySpace,
+                               fileSpace, H5P_DEFAULT, data);
+        if (status < 0)
+        {
+            throw std::runtime_error("ncio ERROR: couldn't read array entry " +
+                                     entryName + " from HDF5 file " + m_Name +
+                                     "\n");
+        }
     }
 }
 

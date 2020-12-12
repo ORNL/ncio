@@ -26,6 +26,7 @@
 *.dll
 *.obj
 build/
+*.h5
 
 # Mac OSX finder-related files
 .DS_Store

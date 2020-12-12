@@ -65,6 +65,8 @@ private:
     template <class T>
     std::vector<hid_t> CreateDataset(const std::string &entryName,
                                      hid_t fileSpace);
+
+    void CloseDataset(std::vector<hid_t> &handlers);
 };
 
 } // end namespace nexus::io

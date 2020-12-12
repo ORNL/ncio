@@ -20,6 +20,10 @@ TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
                              const Parameters &parameters)
 : Transport("HDF5", name, openMode, parameters)
 {
+    // Prevent seg faults at exit due to unnecessary cleanup
+    // https://support.hdfgroup.org/HDF5/doc/RM/RM_H5.html#Library-DontAtExit
+    H5dont_atexit();
+
     switch (openMode)
     {
     case (OpenMode::read):
@@ -99,12 +103,27 @@ void TransportHDF5::DoClose()
     const herr_t status = H5Fclose(m_File);
     if (status < 0)
     {
-        throw std::invalid_argument("ncio ERROR: couldn't close HDF5 file " +
-                                    m_Name + "\n");
+        throw std::runtime_error("ncio ERROR: couldn't close HDF5 file " +
+                                 m_Name + "\n");
     }
     m_IsOpen = false;
 }
 
 std::any TransportHDF5::DoGetNativeHandler() noexcept { return m_File; }
+
+void TransportHDF5::CloseDataset(std::vector<hid_t> &handlers)
+{
+    for (std::size_t i = 0; i < handlers.size(); ++i)
+    {
+        if (i == handlers.size() - 1)
+        {
+            H5Dclose(handlers[i]);
+        }
+        else
+        {
+            H5Gclose(handlers[i]);
+        }
+    }
+}
 
 } // end namespace ncio::io

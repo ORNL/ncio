@@ -78,7 +78,7 @@ case "$1" in
   # Install the library
   install)
     cd ${GITHUB_WORKSPACE}/../ncio-build
-    ninja test
+    ninja install
     ;;
   
   # Generate coverage reports
