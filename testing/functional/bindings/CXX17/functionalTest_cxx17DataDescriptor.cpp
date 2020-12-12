@@ -41,7 +41,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
             eventTimeOffset.data(), {{nx}, {0}, {nx}});
         // launch in a separate thread and wait
         std::future future = fw.ExecuteAsync(std::launch::async);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        // std::this_thread::sleep_for(std::chrono::seconds(1));
 
         future.get();
 
@@ -61,7 +61,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
                                                         ncio::BoxAll);
 
         std::future future = fr.ExecuteAsync(std::launch::async);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        // std::this_thread::sleep_for(std::chrono::seconds(1));
 
         future.get();
 
@@ -111,7 +111,12 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 
         // maximum number of threads
         const std::size_t nThreads =
-            static_cast<std::size_t>(std::thread::hardware_concurrency());
+#ifdef __APPLE__
+            1;
+#else
+            static_cast<std::size_t>(std::thread::hardware_concurrency() / 2);
+#endif
+        std::cout << "nThreads writers = " << nThreads << "\n";
 
         std::vector<std::thread> threads;
         threads.reserve(nThreads);
@@ -169,9 +174,14 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         ncio::DataDescriptor fw =
             ncio.Open("data_threads.h5", ncio::OpenMode::read);
 
-        // maximum number of threads
         const std::size_t nThreads =
-            static_cast<std::size_t>(std::thread::hardware_concurrency());
+#ifdef __APPLE__
+            1;
+#else
+            static_cast<std::size_t>(std::thread::hardware_concurrency() / 2);
+#endif
+
+        std::cout << "nThreads readers = " << nThreads << "\n";
 
         std::vector<std::thread> threads;
         threads.reserve(nThreads);
