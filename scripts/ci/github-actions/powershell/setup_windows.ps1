@@ -3,7 +3,7 @@
 choco install ninja -y
 py -3 -m pip install meson
 # Verify meson
-C:\hostedtoolcache\windows\Python\3.9.0\x64\Scripts\meson.exe --version
+C:\hostedtoolcache\windows\Python\3.9.1\x64\Scripts\meson.exe --version
 
 cmake --version
 # vcpkg install hdf5

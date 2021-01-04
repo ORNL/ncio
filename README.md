@@ -1,5 +1,5 @@
-[![GitHub Actions](https://github.com/ORNL/ncio/workflows/GitHub%20Actions/badge.svg?branch=master)](https://github.com/ORNL/ncio/actions)
-[![Coverage](https://codecov.io/gh/ORNL/ncio/branch/master/graph/badge.svg)](https://codecov.io/gh/ORNL/ncio)
+[![GitHub Actions](https://github.com/ORNL/ncio/workflows/GitHub%20Actions/badge.svg?branch=main)](https://github.com/ORNL/ncio/actions)
+[![Coverage](https://codecov.io/gh/ORNL/ncio/branch/main/graph/badge.svg?token=P1WPZHOEFB)](https://codecov.io/gh/ORNL/ncio)
 
 # ncio
 No Cost Input Output data management framework
@@ -18,7 +18,7 @@ No Cost Input Output data management framework
 
     We highly recommend truly out-of-source builds (completely outside the repo directory).
 
-    ```
+	```
     $ mkdir ncio-build
     $ cd ncio-build
     $ meson --prefix=/path/to/install/ncio  /path/to/repo/ncio
@@ -33,7 +33,7 @@ No Cost Input Output data management framework
    Requires passing `-Db_coverage=true` when configuring and running the `coverage` target.
    Reports would be generated under the `meson-logs` directory 
 
-    ```
+	```
     $ mkdir ncio-build
     $ cd ncio-build
     $ meson --prefix=/path/to/install/ncio -Db_coverage=true /path/to/repo/ncio
@@ -42,7 +42,7 @@ No Cost Input Output data management framework
     [1/1] Generates coverage reports
 	lines: 45.8% (11 out of 24)
 	branches: 34.6% (9 out of 26)
-
+	
 	Xml coverage report can be found at file:///Users/wfg/workspace/ncio-build/meson-logs/coverage.xml
 	Text coverage report can be found at file:///Users/wfg/workspace/ncio-build/meson-logs/coverage.txt
 	Html coverage report can be found at file:///Users/wfg/workspace/ncio-build/meson-logs/coveragereport/index.html
@@ -65,8 +65,8 @@ The following snippet illustrates how to create a ncio target and link it to a `
 	add_executable(ncio_cmake ncio_cmake.cpp)
 	# link with PkgConfig::ncio target
 	target_link_libraries(ncio_cmake PUBLIC PkgConfig::ncio)
-	
 	```
+	
 
 ## Directory layout
 * bindings - Public application programming interface, API, language bindings (C++17)
