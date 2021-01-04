@@ -56,11 +56,11 @@ git remote add upstream ${remote_upstream}
 git fetch --all -p
 
 echo ""
-echo "Local master branch points to upstream/master, NEVER push to it"
-git checkout master
-git branch --set-upstream-to=upstream/master master
+echo "Local main branch points to upstream/main, NEVER push to it"
+git checkout main
+git branch --set-upstream-to=upstream/main main
 # only fast forward to "protect" master branch
-git config --add branch.master.mergeOptions --ff-only
+git config --add branch.main.mergeOptions --ff-only
 
 # log message uses default 20 one-liner commit messages
 git config merge.log 20

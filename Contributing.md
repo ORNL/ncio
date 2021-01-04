@@ -15,14 +15,14 @@ Contents
          
 
 ## Terminology
-- `upstream`: the project remote repo https://github.com/ORNL/ncio
-- `origin`: a fork remote repo _e.g._ https://github.com/williamfgc/ncio
-- `Pull Request (PR)`: a request to merge from one branch onto another using GitHub. The most common case is from a remote branch in `origin` onto `upstream` `master` branch.
+- `upstream`: the project remote repo  https://github.com/ORNL/ncio
+- `origin`: a fork remote repo _e.g._  https://github.com/williamfgc/ncio
+- `Pull Request (PR)`: a request to merge from one branch onto another using GitHub. The most common case is from a remote branch in `origin` onto `upstream` `main` branch.
 
 For those new to `git`, we recommend reading about git concepts such as `branch`, `commmit`, `merge`, `rebase` at https://git-scm.com/. 
 
 ## Workflow
-**ncio** uses a GitHub fork-and-branch pull request (PR) workflow for contributions on the master branch. While each individual developer has their own copy of the repo to work in, changes are then submitted to the main `upstream` `master` branch repository via pull-requests made with branches from your fork. Ideally, each PR branch would cover a specific topic with few commits. A maximum of 5 commits per PR branch is a good rule of thumb, but it's at the reviewers discretion.
+**ncio** uses a GitHub fork-and-branch pull request (PR) workflow for contributions on the main branch. While each individual developer has their own copy of the repo to work in, changes are then submitted to the main `upstream` `main` branch repository via pull-requests made with branches from your fork. Ideally, each PR branch would cover a specific topic with few commits. A maximum of 5 commits per PR branch is a good rule of thumb, but it's at the reviewers discretion.
 
 ## Setup
 To setup your local repository for development (requires a GitHub account):
@@ -37,7 +37,7 @@ To setup your local repository for development (requires a GitHub account):
     $ git clone https://github.com/ORNL/ncio.git
     ```
     
-3. Run the `scripts/development/setup.sh` script.  The script will configure an `upstream` remote and link your local master branch to the `upstream` repo. IMPORTANT: check you system ssh public keys are registered to use ssh, otherwise http would be used to set the repos.
+3. Run the `scripts/development/setup.sh` script.  The script will configure an `upstream` remote and link your local main branch to the `upstream` repo. IMPORTANT: check you system ssh public keys are registered to use ssh, otherwise http would be used to set the repos.
     
     ```
     $ cd ncio
@@ -46,24 +46,24 @@ To setup your local repository for development (requires a GitHub account):
     
 ## Submitting a pull request
 
-0. Update master (it's good practice to keep master up to date):
+0. Update main (it's good practice to keep the `main` branch up to date):
     
-    ```
-    $  git checkout master
+	```
+    $  git checkout main
     $  git pull   
-    ```
+	```
 
 1. Create a branch:
     
-    ```
+	```
     $  git checkout -b my-bug-fix
-    ```
+	```
   
 2. Make changes and commit locally as needed. Keep commits to a max of 5 (check `git rebase` to reduce number of commits).
 
-    ```
+	```
     $  git commit -a -m "Fixing bug" 
-    ```
+	```
   
 3. Push branch to your fork
 
