@@ -2,19 +2,14 @@
 
 # centos7-* only
 if test -f /root/.bash_profile; then
-  # meson master until v0.56 comes out with fix for hdf5 <= 1.8 dependency
-  pip3 uninstall meson -y
-  cd /root
-  git clone https://github.com/mesonbuild/meson.git
-  echo "alias meson='python3 /root/meson/meson.py'" >> /root/.bash_profile
-  
-  shopt -s expand_aliases
   source /root/.bash_profile
-  echo "Enabling gcc and clang compilers"
-  gcc --version
-  echo "Enable meson alias"
-  meson --version
 fi
+
+echo -e "\nCheck gcc and clang compilers\n"
+gcc --version
+clang --version
+echo -e "\nCheck meson build\n"
+meson --version
 
 case "$1" in 
 

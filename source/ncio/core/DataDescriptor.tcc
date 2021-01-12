@@ -79,8 +79,7 @@ void DataDescriptor::PutEntry(const std::string &entryName, const Entry &entry,
 {
     switch (entry.shapeType)
     {
-    case (ShapeType::value):
-    {
+    case (ShapeType::value): {
         const T *data = std::any_cast<const T>(&entry.data);
         std::lock_guard<std::mutex> lock(m_Mutex);
         {
@@ -88,8 +87,7 @@ void DataDescriptor::PutEntry(const std::string &entryName, const Entry &entry,
         }
         break;
     }
-    case (ShapeType::array):
-    {
+    case (ShapeType::array): {
         // TODO some checks on Dimensions
         const T *data = std::any_cast<const T *>(entry.data);
         std::lock_guard<std::mutex> lock(m_Mutex);
@@ -108,8 +106,7 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
 {
     switch (entry.shapeType)
     {
-    case (ShapeType::value):
-    {
+    case (ShapeType::value): {
         T *data = std::any_cast<T>(&entry.data);
         std::lock_guard<std::mutex> lock(m_Mutex);
         {
@@ -117,8 +114,7 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
         }
         break;
     }
-    case (ShapeType::array):
-    {
+    case (ShapeType::array): {
         // TODO some checks on Dimensions
         T *data = std::any_cast<T *>(entry.data);
         std::lock_guard<std::mutex> lock(m_Mutex);

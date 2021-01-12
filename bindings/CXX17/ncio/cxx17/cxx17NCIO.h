@@ -65,8 +65,8 @@ public:
      * @param key input parameter key to search in existing set parameters.
      * @return parameter value, if key not found returns an empty string.
      */
-    std::optional<std::string> GetParameter(const std::string key) const
-        noexcept;
+    std::optional<std::string>
+    GetParameter(const std::string key) const noexcept;
 
     /**
      * Creates a DataDescriptor object

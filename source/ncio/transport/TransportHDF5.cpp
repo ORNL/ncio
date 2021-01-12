@@ -26,8 +26,7 @@ TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
 
     switch (openMode)
     {
-    case (OpenMode::read):
-    {
+    case (OpenMode::read): {
         hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
         // multiple handlers is not recommended by HDF5
         // H5Pset_fclose_degree(fapl, H5F_CLOSE_STRONG);
@@ -42,8 +41,7 @@ TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
 
         break;
     }
-    case (OpenMode::write):
-    {
+    case (OpenMode::write): {
         m_File =
             H5Fcreate(name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
@@ -58,8 +56,7 @@ TransportHDF5::TransportHDF5(const std::string &name, const OpenMode openMode,
 
         break;
     }
-    case (OpenMode::undefined):
-    {
+    case (OpenMode::undefined): {
     }
     } // end switch
 
