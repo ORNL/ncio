@@ -5,10 +5,10 @@ if test -f /root/.bash_profile; then
   source /root/.bash_profile
 fi
 
-echo "Check gcc and clang compilers"
+echo -e "\nCheck gcc and clang compilers\n"
 gcc --version
 clang --version
-echo "Check meson"
+echo -e "\nCheck meson build\n"
 meson --version
 
 case "$1" in 
