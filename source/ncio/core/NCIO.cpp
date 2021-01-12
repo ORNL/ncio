@@ -25,8 +25,8 @@ void NCIO::SetParameter(const std::string key, const std::string value) noexcept
     m_Parameters[key] = value;
 }
 
-std::optional<std::string> NCIO::GetParameter(const std::string key) const
-    noexcept
+std::optional<std::string>
+NCIO::GetParameter(const std::string key) const noexcept
 {
     auto itKey = m_Parameters.find(key);
     if (itKey == m_Parameters.end())
