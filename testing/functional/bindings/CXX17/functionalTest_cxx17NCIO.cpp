@@ -109,7 +109,30 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
         float totalCounts = 0.;
         fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
         fr.Execute();
+        std::any handler = fr.GetNativeHandler();
+        CHECK_FALSE(handler.has_value());
         fr.Close();
+    }
+
+    SUBCASE("InvalidDataDescriptor")
+    {
+        ncio::DataDescriptor fr;
+        float totalCounts = 0.;
+        CHECK_THROWS_WITH_AS(
+            fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts),
+            "ncio ERROR: invalid DataDescriptor object in call to Get. Please "
+            "modify your code and pass a valid DataDescriptor created "
+            "with NCIO::Open that has not been previously closed\n",
+            std::logic_error);
+
+        ncio::DataDescriptor fclose = ncio.Open("null", ncio::OpenMode::read);
+        fclose.Close();
+        CHECK_THROWS_WITH_AS(
+            fclose.Close(),
+            "ncio ERROR: invalid DataDescriptor object in call to Close. "
+            "Please modify your code and pass a valid DataDescriptor created "
+            "with NCIO::Open that has not been previously closed\n",
+            std::logic_error);
     }
 
     ncio.SetParameter("Transport", "Unsupported");

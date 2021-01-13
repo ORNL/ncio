@@ -25,6 +25,8 @@ TEST_CASE("Unit test for ncio::helper::string functions")
     {
         CHECK_EQ(ncio::helper::string::EndsWith("MyName", "Name"), true);
         CHECK_EQ(ncio::helper::string::EndsWith("w123", "23"), true);
+        CHECK_FALSE(ncio::helper::string::EndsWith("hell", "x"));
+        CHECK_FALSE(ncio::helper::string::EndsWith("hell", "hello"));
     }
 
     SUBCASE("Split")

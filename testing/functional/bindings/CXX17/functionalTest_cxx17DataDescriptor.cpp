@@ -61,8 +61,6 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
                                                         ncio::BoxAll);
 
         std::future future = fr.ExecuteAsync(std::launch::async);
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
-
         future.get();
 
         fr.Close();
@@ -171,7 +169,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         std::vector<float> eventTimeOffset(1024);
         float totalCounts = 0.f;
 
-        ncio::DataDescriptor fw =
+        ncio::DataDescriptor fr =
             ncio.Open("data_threads.h5", ncio::OpenMode::read);
 
         const std::size_t nThreads =
@@ -188,9 +186,10 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 
         for (std::size_t threadID = 0; threadID < nThreads; ++threadID)
         {
+            // std::ref(rf) is optional as it's a lightweight object
             threads.emplace_back(lf_ReadThread, threadID, nThreads,
                                  std::ref(eventTimeOffset),
-                                 std::ref(totalCounts), std::ref(fw));
+                                 std::ref(totalCounts), std::ref(fr));
         }
 
         for (auto &thread : threads)
@@ -198,10 +197,17 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
             thread.join();
         }
 
-        fw.Close();
+        fr.Close();
 
         CHECK_EQ(eventTimeOffset, eventTimeOffsetExpected);
         CHECK_EQ(totalCounts, totalCountsExpected);
+    }
+
+    SUBCASE("GetNativeHandler")
+    {
+        ncio::DataDescriptor fw =
+            ncio.Open("data_threads.h5", ncio::OpenMode::read);
+        std::any nativeHandler = fw.GetNativeHandler();
     }
 
 #endif
