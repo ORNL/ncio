@@ -37,6 +37,12 @@ std::future<void> DataDescriptor::ExecuteAsync(const std::launch mode,
     return m_ImplDataDescriptor->ExecuteAsync(mode, threadID);
 }
 
+std::any DataDescriptor::GetNativeHandler() noexcept
+{
+    CheckImpl("GetNativeHandler");
+    return m_ImplDataDescriptor->GetNativeHandler();
+}
+
 void DataDescriptor::Close()
 {
     CheckImpl("Close");

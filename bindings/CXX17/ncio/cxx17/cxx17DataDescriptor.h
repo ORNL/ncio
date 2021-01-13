@@ -10,6 +10,7 @@
 
 #include "ncio/common/ncioTypes.h"
 
+#include <any>
 #include <future>
 
 namespace ncio
@@ -107,6 +108,14 @@ public:
      */
     std::future<void> ExecuteAsync(const std::launch mode,
                                    const int threadID = 0);
+
+    /**
+     * Function that returns a reference to the underlying native handler
+     * std::any_cast conversion requires publicly linking the underlying
+     * dependency.
+     * @return generic handler as std::any
+     */
+    std::any GetNativeHandler() noexcept;
 
     /**
      * Close all operations with the current DataDescriptor. After this

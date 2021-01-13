@@ -117,14 +117,6 @@ std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode,
 
 void DataDescriptor::Close()
 {
-    if (!m_IsOpen)
-    {
-        throw std::logic_error("ncio ERROR: ncio::DataDescriptor " +
-                               m_DescriptorName +
-                               " has been previously closed. Can only call "
-                               "Close once for every call to Open\n");
-    }
-
     m_Transport->Close();
     m_IsOpen = false;
 }
