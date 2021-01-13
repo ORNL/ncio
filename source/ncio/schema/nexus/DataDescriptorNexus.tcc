@@ -5,6 +5,7 @@
  *  Created on: Jun 16, 2020
  *      Author: William F Godoy godoywf@ornl.gov
  */
+#pragma once
 
 #include "ncio/schema/nexus/ncioTypesSchemaNexus.h"
 
@@ -34,4 +35,8 @@ namespace ncio::core
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_type)
 #undef declare_ncio_type
 
+template schema::nexus::model1_t
+DataDescriptor::GetMetadata<schema::nexus::index, schema::nexus::index::model1,
+                            schema::nexus::model1_t>(
+    const Parameters &parameters);
 }

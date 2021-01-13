@@ -48,6 +48,9 @@ public:
     void Get(const std::string &entryName, T *data, const Box &box,
              const int threadID);
 
+    template <class Enum, Enum indexModel, class T>
+    T GetMetadata(const Parameters &parameters);
+
     /** Executes all Put or Get deferred tasks */
     void Execute(const int threadID);
 
@@ -139,12 +142,6 @@ private:
 
     /** private mutex for thread-safety operations */
     std::mutex m_Mutex;
-
-    /** In memory metadata entry index structure. Suitable for Nexus data */
-    std::map<std::string, std::set<std::string>> m_MetadataIndex1;
-
-    /** Init relevant metadata structures */
-    void InitMetadata(const Parameters &parameters);
 
     /**
      * Init transport backend resources (e.g. open a file)

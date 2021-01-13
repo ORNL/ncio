@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include <map>
+#include <set>
+#include <string>
+
 #include "ncio/schema/nexus/ncioTypesSchemaNexus.h"
 
 namespace ncio
 {
-// TODO implement array data with dimensions
-
 #define declare_ncio_types(T)                                                  \
     template void DataDescriptor::Put<schema::nexus::bank##T::event_id>(       \
         const std::uint64_t &, const int);                                     \
@@ -49,5 +51,11 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
 
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
 #undef declare_ncio_types
+
+// check MACRO generation for expansion
+template schema::nexus::model1_t
+DataDescriptor::GetMetadata<schema::nexus::index::model1,
+                            schema::nexus::model1_t>(
+    const Parameters &parameters);
 
 }

@@ -31,4 +31,4 @@ void Transport::Close()
 
 std::any Transport::GetNativeHandler() noexcept { return DoGetNativeHandler(); }
 
-} // end namespace ncio::io
+}

@@ -72,11 +72,6 @@ TransportHDF5::~TransportHDF5()
 }
 
 // PRIVATE
-void TransportHDF5::DoGetMetadata(
-    std::map<std::string, std::set<std::string> > &index)
-{
-}
-
 // will need to specialize for each HDF5 type
 #define declare_ncio_type(T)                                                   \
     void TransportHDF5::DoPut(const std::string &entryName, const T *data,     \
@@ -122,5 +117,11 @@ void TransportHDF5::CloseDataset(std::vector<hid_t> &handlers)
         }
     }
 }
+
+
+
+
+
+
 
 } // end namespace ncio::io

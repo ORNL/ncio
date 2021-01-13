@@ -9,19 +9,10 @@
 
 #include "Transport.h"
 
+#include "ncio/schema/nexus/ncioTypesSchemaNexus.h"
+
 namespace ncio::transport
 {
-
-template <class T>
-T Transport::GetMetadata()
-{
-    T index;
-    DoGetMetadata(index);
-    return index;
-}
-
-// REGISTER TYPES for GetMetadata
-template std::map<std::string, std::set<std::string>> Transport::GetMetadata();
 
 template <class T>
 void Transport::Put(const std::string &entryName, const T *data,
@@ -30,7 +21,7 @@ void Transport::Put(const std::string &entryName, const T *data,
     DoPut(entryName, data, dimensions, threadID);
 }
 
-// REGISTER TYPES for Put
+// REGISTER GENERAL TYPES for Put
 #define declare_ncio_type(T)                                                   \
     template void Transport::Put<T>(const std::string &, const T *,            \
                                     const Dimensions &, const int threadID);
@@ -45,7 +36,7 @@ void Transport::Get(const std::string &entryName, T *data, const Box &box,
     DoGet(entryName, data, box, threadID);
 }
 
-// REGISTER TYPES for Get
+// REGISTER GENERAL TYPES for Get
 #define declare_ncio_type(T)                                                   \
     template void Transport::Get<T>(const std::string &, T *, const Box &,     \
                                     const int threadID);
@@ -53,4 +44,8 @@ void Transport::Get(const std::string &entryName, T *data, const Box &box,
 NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 #undef declare_ncio_type
 
-} // end namespace ncio::io
+}
+
+#ifdef NCIO_HAVE_SCHEMA_NEXUS
+#include "ncio/schema/nexus/TransportNexus.tcc"
+#endif

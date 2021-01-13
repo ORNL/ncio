@@ -9,6 +9,9 @@
 #pragma once
 
 #include <cstdint> //fixed-width types e.g. std::uint64_t
+#include <map>
+#include <set>
+#include <string>
 
 /**
  * Define inputs to NCIO API functions that are specific to the NeXus schema
@@ -17,6 +20,15 @@
  */
 namespace ncio::schema::nexus
 {
+
+enum class index
+{
+    model1
+};
+
+using model1_t = std::map<std::string, std::set<std::string>>;
+
+#define NCIO_MACRO_NEXUS_INDEX_MODEL(MACRO) MACRO(ncio::schema::nexus::model1_t)
 
 #define NCIO_MACRO_NEXUS_TYPES(MACRO)                                          \
     MACRO(std::uint32_t)                                                       \

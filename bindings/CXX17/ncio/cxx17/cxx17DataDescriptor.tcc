@@ -55,6 +55,14 @@ void DataDescriptor::Get(T *data, const Box &box, const int threadID)
     m_ImplDataDescriptor->Get(entryName, data, box, threadID);
 }
 
+template <auto indexModel, class T>
+T DataDescriptor::GetMetadata(const Parameters &parameters)
+{
+    CheckImpl("GetMetadata");
+    return m_ImplDataDescriptor
+        ->GetMetadata<decltype(indexModel), indexModel, T>(parameters);
+}
+
 } // end namespace ncio
 
 #ifdef NCIO_HAVE_SCHEMA_NEXUS

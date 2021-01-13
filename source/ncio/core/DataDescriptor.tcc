@@ -12,9 +12,9 @@
 
 #include "ncio/common/ncioTypes.h" // Dimensions
 #include "ncio/helper/ncioHelperTypes.h"
-#include "ncio/ncioConfig.h"
-
 #include "ncio/transport/Transport.h"
+
+#include "ncio/ncioConfig.h"
 
 namespace ncio::core
 {
@@ -71,6 +71,13 @@ void DataDescriptor::Get(const std::string &entryName, T *data, const Box &box,
 
 NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 #undef declare_ncio_type
+
+template <class Enum, Enum indexModel, class T>
+T DataDescriptor::GetMetadata(const Parameters &parameters)
+{
+    // for now it assumes metadata is 1-to-1 from a single transport
+    return m_Transport->GetMetadata<Enum, indexModel, T>(parameters);
+}
 
 // PRIVATE
 template <class T>
@@ -129,7 +136,6 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
 
 } // end namespace ncio::core
 
-// Schema implements ncio::core::DataDescriptor::ToString
 #ifdef NCIO_HAVE_SCHEMA_NEXUS
 #include "ncio/schema/nexus/DataDescriptorNexus.tcc"
 #endif

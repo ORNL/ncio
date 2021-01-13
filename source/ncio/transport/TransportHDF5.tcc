@@ -208,4 +208,8 @@ void TransportHDF5::DoGetCommon(const std::string &entryName, T *data,
     }
 }
 
-} // end namespace ncio::transport
+}
+
+#ifdef NCIO_HAVE_SCHEMA_NEXUS
+#include "ncio/schema/nexus/TransportHDF5Nexus.tcc"
+#endif

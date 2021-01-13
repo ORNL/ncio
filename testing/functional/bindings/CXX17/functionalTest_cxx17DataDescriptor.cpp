@@ -205,9 +205,21 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 
     SUBCASE("GetNativeHandler")
     {
-        ncio::DataDescriptor fw =
+        ncio::DataDescriptor fr =
             ncio.Open("data_threads.h5", ncio::OpenMode::read);
-        std::any nativeHandler = fw.GetNativeHandler();
+        std::any nativeHandler = fr.GetNativeHandler();
+
+        fr.Close();
+    }
+
+    SUBCASE("GetMetadata")
+    {
+        ncio::DataDescriptor fr =
+            ncio.Open("data_threads.h5", ncio::OpenMode::read);
+
+        const auto entries1 = fr.GetMetadata<ncio::schema::nexus::index::model1,
+                                             ncio::schema::nexus::model1_t>();
+        fr.Close();
     }
 
 #endif

@@ -143,8 +143,6 @@ DataDescriptor::Entry::Entry(const DataType dataType, std::any data,
 {
 }
 
-void DataDescriptor::InitMetadata(const Parameters &parameters) {}
-
 void DataDescriptor::InitTransport(const std::string &descriptorName,
                                    const OpenMode openMode,
                                    const Parameters &parameters)
