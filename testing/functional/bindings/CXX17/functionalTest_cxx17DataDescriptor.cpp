@@ -26,21 +26,31 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         ncio::DataDescriptor fw =
             ncio.Open("data_async.h5", ncio::OpenMode::write);
 
+        fw.PutAttribute<ncio::schema::nexus::entry::NX_class, std::string>();
+        fw.PutAttribute<ncio::schema::nexus::entry::bank1_events::NX_class,
+                        std::string>();
+
         // put a single value
         constexpr float totalCounts = 10;
-        fw.Put<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fw.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(
+            totalCounts);
 
         // put a 1D array
+        const std::size_t nx = 3;
         const std::vector<std::uint64_t> eventIndex = {1, 2, 3};
-        const std::size_t nx = eventIndex.size();
-        fw.Put<ncio::schema::nexus::bank1::event_index>(eventIndex.data(),
-                                                        {{nx}, {0}, {nx}});
+        fw.Put<ncio::schema::nexus::entry::bank1_events::event_index>(
+            eventIndex.data(), {{nx}, {0}, {nx}});
+
+        const std::vector<std::uint64_t> eventID = {194, 335, 353};
+        fw.Put<ncio::schema::nexus::entry::bank1_events::event_id>(
+            eventID.data(), {{nx}, {0}, {nx}});
 
         const std::vector<float> eventTimeOffset = {1.f, 2.f, 3.f};
-        fw.Put<ncio::schema::nexus::bank1::event_time_offset>(
+        fw.Put<ncio::schema::nexus::entry::bank1_events::event_time_offset>(
             eventTimeOffset.data(), {{nx}, {0}, {nx}});
         // launch in a separate thread and wait
         std::future future = fw.ExecuteAsync(std::launch::async);
+
         // std::this_thread::sleep_for(std::chrono::seconds(1));
 
         future.get();
@@ -56,9 +66,10 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         ncio::DataDescriptor fr =
             ncio.Open("data_async.h5", ncio::OpenMode::read);
 
-        fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
-        fr.Get<ncio::schema::nexus::bank1::event_index>(eventIndex.data(),
-                                                        ncio::BoxAll);
+        fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
+            totalCounts);
+        fr.Get<ncio::schema::nexus::entry::bank1_events::event_index>(
+            eventIndex.data(), ncio::BoxAll);
 
         std::future future = fr.ExecuteAsync(std::launch::async);
         future.get();
@@ -88,15 +99,15 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
                       static_cast<float>(start));
 
             // array sections
-            fw.Put<ncio::schema::nexus::bank1::event_time_offset>(
+            fw.Put<ncio::schema::nexus::entry::bank1_events::event_time_offset>(
                 &eventTimeOffset[start], {{shape}, {start}, {count}}, threadID);
 
             // single value from only one thread
             if (threadID == 0)
             {
                 constexpr float totalCounts = 10;
-                fw.Put<ncio::schema::nexus::bank1::total_counts>(totalCounts,
-                                                                 0);
+                fw.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(
+                    totalCounts, 0);
             }
 
             fw.Execute(threadID);
@@ -148,14 +159,14 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
                                           : shape / nThreads;
 
             // array sections
-            fw.Get<ncio::schema::nexus::bank1::event_time_offset>(
+            fw.Get<ncio::schema::nexus::entry::bank1_events::event_time_offset>(
                 &eventTimeOffset[start], {{start}, {count}}, threadID);
 
             // single value from only one thread
             if (threadID == 0)
             {
-                fw.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts,
-                                                                 0);
+                fw.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
+                    totalCounts, 0);
             }
 
             fw.Execute(threadID);
@@ -215,10 +226,11 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
     SUBCASE("GetMetadata")
     {
         ncio::DataDescriptor fr =
-            ncio.Open("data_threads.h5", ncio::OpenMode::read);
+            ncio.Open("data_async.h5", ncio::OpenMode::read);
 
-        const auto entries1 = fr.GetMetadata<ncio::schema::nexus::index::model1,
-                                             ncio::schema::nexus::model1_t>();
+        // const auto entries1 =
+        // fr.GetMetadata<ncio::schema::nexus::index::model1,
+        //                                    ncio::schema::nexus::model1_t>();
         fr.Close();
     }
 

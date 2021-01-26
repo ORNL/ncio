@@ -15,6 +15,22 @@ namespace ncio::transport
 {
 
 template <class T>
+void Transport::PutAttribute(const std::string &entryName, const T *data,
+                             const Dimensions &dimensions, const int threadID)
+{
+    DoPutAttribute(entryName, data, dimensions, threadID);
+}
+
+// REGISTER GENERAL TYPES for PutAttribute
+#define declare_ncio_type(T)                                                   \
+    template void Transport::PutAttribute<T>(const std::string &, const T *,   \
+                                             const Dimensions &,               \
+                                             const int threadID);
+
+NCIO_ATTRIBUTE_DATATYPES(declare_ncio_type)
+#undef declare_ncio_type
+
+template <class T>
 void Transport::Put(const std::string &entryName, const T *data,
                     const Dimensions &dimensions, const int threadID)
 {

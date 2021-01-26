@@ -55,6 +55,7 @@ enum class ShapeType
 /** enum class for data types used internally for entries */
 enum class DataType
 {
+    string,
     int8,
     int16,
     int32,

@@ -296,9 +296,15 @@ using model1_t = std::map<std::string, std::set<std::string>>;
     MACRO(_error)                                                              \
     MACRO(_unmapped)
 
+namespace entry
+{
+
+constexpr int NX_class = 0;
+
 #define declare_nexus_banks_enum_entries(T)                                    \
-    enum class bank##T{event_id, event_index, event_time_offset,               \
-                       event_time_zero, total_counts};
+    enum class bank##T##_events{event_id,          event_index,                \
+                                event_time_offset, event_time_zero,            \
+                                total_counts,      NX_class};
 
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_nexus_banks_enum_entries)
 #undef declare_nexus_banks_enum_entries
@@ -356,4 +362,6 @@ enum class user
     name
 };
 
-} // end namespace ncio::nexus
+} // end namespace entry
+
+} // end namespace ncio::schema::nexus

@@ -50,6 +50,10 @@ public:
     template <class Enum, Enum indexModel, class T>
     T GetMetadata(const Parameters &parameters);
 
+    template <class T>
+    void PutAttribute(const std::string &entryName, const T *data,
+                      const Dimensions &dimensions, const int threadID);
+
     /** Write a variable entry by name and optional dimensions */
     template <class T>
     void Put(const std::string &entryName, const T *data,
@@ -85,6 +89,14 @@ protected:
 
     /** flag to check if m_File is open and close it in destructor (RAII) */
     bool m_IsOpen = false;
+
+#define declare_ncio_type(T)                                                   \
+    virtual void DoPutAttribute(const std::string &attributeName,              \
+                                const T *data, const Dimensions &dimensions,   \
+                                const int threadID) = 0;
+
+    NCIO_ATTRIBUTE_DATATYPES(declare_ncio_type)
+#undef declare_ncio_type
 
 #define declare_ncio_type(T)                                                   \
     virtual void DoPut(const std::string &entryName, const T *data,            \

@@ -37,14 +37,15 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
 
         // put a single value
         constexpr float totalCounts = 10;
-        fw.Put<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fw.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(
+            totalCounts);
 
         // put a 1D array
         // moving from constexpr to const, not allowed by macOS clang in CI
         const std::array<std::uint64_t, 3> eventIndex = {1, 2, 3};
         const std::size_t nx = eventIndex.size();
-        fw.Put<ncio::schema::nexus::bank1::event_index>(eventIndex.data(),
-                                                        {{nx}, {0}, {nx}});
+        fw.Put<ncio::schema::nexus::entry::bank1_events::event_index>(
+            eventIndex.data(), {{nx}, {0}, {nx}});
         fw.Execute();
         fw.Close();
     }
@@ -57,9 +58,10 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
         ncio::DataDescriptor fr =
             ncio.Open("total_counts.h5", ncio::OpenMode::read);
 
-        fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
-        fr.Get<ncio::schema::nexus::bank1::event_index>(eventIndex.data(),
-                                                        ncio::BoxAll);
+        fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
+            totalCounts);
+        fr.Get<ncio::schema::nexus::entry::bank1_events::event_index>(
+            eventIndex.data(), ncio::BoxAll);
         fr.Execute();
         fr.Close();
 
@@ -98,7 +100,7 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
         ncio::DataDescriptor fh = ncio.Open("null", ncio::OpenMode::write);
 
         constexpr float dataI32 = 10;
-        fh.Put<ncio::schema::nexus::bank1::total_counts>(dataI32);
+        fh.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(dataI32);
         fh.Execute();
         fh.Close();
     }
@@ -107,7 +109,8 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
     {
         ncio::DataDescriptor fr = ncio.Open("null", ncio::OpenMode::read);
         float totalCounts = 0.;
-        fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts);
+        fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
+            totalCounts);
         fr.Execute();
         std::any handler = fr.GetNativeHandler();
         CHECK_FALSE(handler.has_value());
@@ -119,7 +122,8 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
         ncio::DataDescriptor fr;
         float totalCounts = 0.;
         CHECK_THROWS_WITH_AS(
-            fr.Get<ncio::schema::nexus::bank1::total_counts>(totalCounts),
+            fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
+                totalCounts),
             "ncio ERROR: invalid DataDescriptor object in call to Get. Please "
             "modify your code and pass a valid DataDescriptor created "
             "with NCIO::Open that has not been previously closed\n",

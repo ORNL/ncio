@@ -44,6 +44,12 @@ public:
      */
     explicit operator bool() const noexcept;
 
+    template <auto attribute, class T>
+    void PutAttribute(const int threadID = 0);
+
+    template <auto entry, class T>
+    void PutAttribute(const T &data, const int threadID = 0);
+
     /**
      * Write prefetch operation.
      * Register data pointer for a particular entry.
@@ -58,7 +64,6 @@ public:
      * - std::invalid_argument:
      *   - if data is nullptr
      */
-
     template <auto entry, class T>
     void Put(const T &data, const int threadID = 0);
 

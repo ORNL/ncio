@@ -22,6 +22,14 @@ public:
 
 private:
 #define declare_ncio_type(T)                                                   \
+    void DoPutAttribute(const std::string &entryName, const T *data,           \
+                        const Dimensions &dimensions, const int threadID)      \
+        final;
+
+    NCIO_ATTRIBUTE_DATATYPES(declare_ncio_type)
+#undef declare_ncio_type
+
+#define declare_ncio_type(T)                                                   \
     void DoPut(const std::string &entryName, const T *data,                    \
                const Dimensions &dimensions, const int threadID) final;        \
                                                                                \

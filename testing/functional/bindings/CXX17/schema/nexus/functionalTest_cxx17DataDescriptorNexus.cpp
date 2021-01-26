@@ -19,7 +19,7 @@ TEST_CASE("Test Nexus schema entries")
     {
         // this will unroll to check each enum type bank_*
 #define declare_ncio_type(T)                                                   \
-    CHECK(std::is_enum<ncio::schema::nexus::bank##T>::value);
+    CHECK(std::is_enum<ncio::schema::nexus::entry::bank##T##_events>::value);
 
         NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_type)
 #undef declare_ncio_type

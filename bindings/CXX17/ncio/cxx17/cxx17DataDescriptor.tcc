@@ -18,8 +18,28 @@
 namespace ncio
 {
 
+template <auto attribute, class T>
+void DataDescriptor::PutAttribute(const int threadID)
+{
+    CheckImpl("PutAttribute");
+    const std::string attributeName =
+        m_ImplDataDescriptor->ToString<decltype(attribute), attribute>();
+    const T data = m_ImplDataDescriptor
+                       ->AttributeData<decltype(attribute), attribute, T>();
+    m_ImplDataDescriptor->PutAttribute(attributeName, data, threadID);
+}
+
+template <auto attribute, class T>
+void DataDescriptor::PutAttribute(const T &data, const int threadID)
+{
+    //    CheckImpl("PutAttribute");
+    //    const std::string attributeName =
+    //        m_ImplDataDescriptor->ToString<decltype(attribute), attribute>();
+    //    m_ImplDataDescriptor->PutAttribute(attributeName, data, threadID);
+}
+
 template <auto entry, class T>
-void DataDescriptor::Put(const T &data, const int threadID)
+inline void DataDescriptor::Put(const T &data, const int threadID)
 {
     CheckImpl("Put");
     const std::string entryName =
@@ -28,8 +48,8 @@ void DataDescriptor::Put(const T &data, const int threadID)
 }
 
 template <auto entry, class T>
-void DataDescriptor::Put(const T *data, const Dimensions &dimensions,
-                         const int threadID)
+inline void DataDescriptor::Put(const T *data, const Dimensions &dimensions,
+                                const int threadID)
 {
     CheckImpl("Put");
     const std::string entryName =
