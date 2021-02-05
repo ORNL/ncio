@@ -113,7 +113,7 @@ void TransportHDF5::DoPutAttributeCommon<std::string>(
 
         hid_t attributeSpace = H5Screate(H5S_SCALAR);
         hid_t attributeType = H5Tcopy(H5T_C_S1);
-        H5Tset_size(attributeType, attributeName.size());
+        H5Tset_size(attributeType, data->size());
         H5Tset_strpad(attributeType, H5T_STR_NULLTERM);
 
         const std::vector<hid_t> ids =

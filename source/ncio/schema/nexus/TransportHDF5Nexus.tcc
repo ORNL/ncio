@@ -65,8 +65,10 @@ void TransportHDF5::DoGetMetadataNexus(schema::nexus::model1_t &index,
         [&](schema::nexus::model1_t &index, hid_t groupID) {
             const std::size_t groupNameLength =
                 static_cast<std::size_t>(H5Iget_name(groupID, NULL, 0));
-            std::vector<char> groupName(groupNameLength);
-            H5Iget_name(groupID, groupName.data(), groupNameLength);
+
+            std::vector<char> groupName(groupNameLength + 1);
+            H5Iget_name(groupID, groupName.data(), groupNameLength + 1);
+            groupName.resize(groupNameLength);
 
             hsize_t nObjects = 0;
             H5Gget_num_objs(groupID, &nObjects);
@@ -94,9 +96,10 @@ void TransportHDF5::DoGetMetadataNexus(schema::nexus::model1_t &index,
                     static_cast<std::size_t>(H5Gget_objname_by_idx(
                         groupID, static_cast<hsize_t>(i), NULL, 0));
                 memberName.clear();
-                memberName.resize(memberNameLength);
+                memberName.resize(memberNameLength + 1);
                 H5Gget_objname_by_idx(groupID, static_cast<hsize_t>(i),
-                                      memberName.data(), memberNameLength);
+                                      memberName.data(), memberNameLength + 1);
+                memberName.resize(memberNameLength);
 
                 if (type == H5O_TYPE_GROUP)
                 {
@@ -118,7 +121,9 @@ void TransportHDF5::DoGetMetadataNexus(schema::nexus::model1_t &index,
 
     // need a callable fully defined lambda function as the search is done
     // recursively
+    m_TopGroupID = H5Gopen2(m_File, "/", H5P_DEFAULT);
     lf_GetGroup(index, m_TopGroupID);
+    H5Gclose(m_TopGroupID);
 }
 
 }

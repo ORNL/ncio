@@ -225,12 +225,24 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 
     SUBCASE("GetMetadata")
     {
-        ncio::DataDescriptor fr =
-            ncio.Open("data_async.h5", ncio::OpenMode::read);
+        const std::string fileName = "data_async.h5";
 
-        // const auto entries1 =
-        // fr.GetMetadata<ncio::schema::nexus::index::model1,
-        //                                    ncio::schema::nexus::model1_t>();
+        ncio::DataDescriptor fr = ncio.Open(fileName, ncio::OpenMode::read);
+
+        const auto entries1 = fr.GetMetadata<ncio::schema::nexus::index::model1,
+                                             ncio::schema::nexus::model1_t>();
+
+        for (const auto &entryPair : entries1)
+        {
+            std::cout << "Class: " << entryPair.first << "\n";
+
+            for (const auto &entry : entryPair.second)
+            {
+                std::cout << "\nEntry: " << entry << "\n";
+            }
+            std::cout << "\n";
+        }
+
         fr.Close();
     }
 
