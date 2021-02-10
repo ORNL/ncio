@@ -34,8 +34,13 @@ private:
     /** generated Id for top level group "/" */
     hid_t m_TopGroupID = -1;
 
-    void
-    DoGetMetadata(std::map<std::string, std::set<std::string>> &index) final;
+#define declare_ncio_type(T)                                                   \
+    void DoPutAttribute(const std::string &attributeName, const T *data,       \
+                        const Dimensions &dimensions, const int threadID)      \
+        final;
+
+    NCIO_ATTRIBUTE_DATATYPES(declare_ncio_type)
+#undef declare_ncio_type
 
 #define declare_ncio_type(T)                                                   \
     void DoPut(const std::string &entryName, const T *data,                    \
@@ -46,6 +51,10 @@ private:
 
     NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 #undef declare_ncio_type
+
+    template <class T>
+    void DoPutAttributeCommon(const std::string &attributeName, const T *data,
+                              const Dimensions &dimensions, const int threadID);
 
     template <class T>
     void DoPutCommon(const std::string &entryName, const T *data,
@@ -62,11 +71,28 @@ private:
     template <class T>
     hid_t GetHDF5Datatype();
 
+    /**
+     * Creates a hierarchy of groups
+     * @tparam T
+     * @param entryName
+     * @param fileSpace
+     * @param isDataset
+     * @return
+     */
     template <class T>
-    std::vector<hid_t> CreateDataset(const std::string &entryName,
-                                     hid_t fileSpace);
+    std::vector<hid_t> CreateIDs(const std::string &entryName, hid_t fileSpace,
+                                 const bool isDataset = true);
 
     void CloseDataset(std::vector<hid_t> &handlers);
+
+#ifdef NCIO_HAVE_SCHEMA_NEXUS
+#define declare_ncio_type(T)                                                   \
+    void DoGetMetadataNexus(T &index, const schema::nexus::index model,        \
+                            const Parameters &parameters) final;
+
+    NCIO_MACRO_NEXUS_INDEX_MODEL(declare_ncio_type)
+#undef declare_ncio_type
+#endif
 };
 
-} // end namespace nexus::io
+}

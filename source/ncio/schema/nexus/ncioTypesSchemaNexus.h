@@ -9,6 +9,9 @@
 #pragma once
 
 #include <cstdint> //fixed-width types e.g. std::uint64_t
+#include <map>
+#include <set>
+#include <string>
 
 /**
  * Define inputs to NCIO API functions that are specific to the NeXus schema
@@ -17,6 +20,15 @@
  */
 namespace ncio::schema::nexus
 {
+
+enum class index
+{
+    model1
+};
+
+using model1_t = std::map<std::string, std::set<std::string>>;
+
+#define NCIO_MACRO_NEXUS_INDEX_MODEL(MACRO) MACRO(ncio::schema::nexus::model1_t)
 
 #define NCIO_MACRO_NEXUS_TYPES(MACRO)                                          \
     MACRO(std::uint32_t)                                                       \
@@ -284,9 +296,15 @@ namespace ncio::schema::nexus
     MACRO(_error)                                                              \
     MACRO(_unmapped)
 
+namespace entry
+{
+
+constexpr int NX_class = 0;
+
 #define declare_nexus_banks_enum_entries(T)                                    \
-    enum class bank##T{event_id, event_index, event_time_offset,               \
-                       event_time_zero, total_counts};
+    enum class bank##T##_events{event_id,          event_index,                \
+                                event_time_offset, event_time_zero,            \
+                                total_counts,      NX_class};
 
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_nexus_banks_enum_entries)
 #undef declare_nexus_banks_enum_entries
@@ -344,4 +362,6 @@ enum class user
     name
 };
 
-} // end namespace ncio::nexus
+} // end namespace entry
+
+} // end namespace ncio::schema::nexus

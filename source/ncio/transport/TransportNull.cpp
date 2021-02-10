@@ -7,6 +7,7 @@
  */
 
 #include "TransportNull.h"
+#include "TransportNull.tcc"
 
 namespace ncio::transport
 {
@@ -18,10 +19,15 @@ TransportNull::TransportNull(const std::string &name, const OpenMode openMode,
 }
 
 // PRIVATE
-void TransportNull::DoGetMetadata(
-    std::map<std::string, std::set<std::string>> &index)
-{
-}
+#define declare_ncio_type(T)                                                   \
+    void TransportNull::DoPutAttribute(                                        \
+        const std::string &entryName, const T *data,                           \
+        const Dimensions &dimensions, const int threadID)                      \
+    {                                                                          \
+    }
+
+NCIO_ATTRIBUTE_DATATYPES(declare_ncio_type)
+#undef declare_ncio_type
 
 #define declare_ncio_types(T)                                                  \
     void TransportNull::DoPut(const std::string &entryName, const T *data,     \

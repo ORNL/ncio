@@ -12,12 +12,46 @@
 
 #include "ncio/common/ncioTypes.h" // Dimensions
 #include "ncio/helper/ncioHelperTypes.h"
-#include "ncio/ncioConfig.h"
-
 #include "ncio/transport/Transport.h"
+
+#include "ncio/ncioConfig.h"
 
 namespace ncio::core
 {
+
+template <class T>
+void DataDescriptor::PutAttribute(const std::string &entryName, const T &data,
+                                  const int threadID)
+{
+    auto itFind = m_Attributes.find(entryName);
+    if (itFind != m_Attributes.end())
+    {
+        return; // already created
+    }
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    m_Attributes.emplace(entryName,
+                         Entry(helper::types::ToDataTypeEnum<T>(), data,
+                               DimensionsValue, ShapeType::value, Parameters(),
+                               nullptr));
+}
+
+template <class T>
+void DataDescriptor::PutAttribute(const std::string &attributeName,
+                                  const T *data, const Dimensions &dimensions,
+                                  const int threadID)
+{
+    // TODO: array attributes
+}
+
+#define declare_ncio_type(T)                                                   \
+    template void DataDescriptor::PutAttribute(const std::string &, const T &, \
+                                               const int);                     \
+                                                                               \
+    template void DataDescriptor::PutAttribute(const std::string &, const T *, \
+                                               const Dimensions &, const int);
+
+NCIO_ATTRIBUTE_DATATYPES(declare_ncio_type)
+#undef declare_ncio_type
 
 template <class T>
 void DataDescriptor::Put(const std::string &entryName, const T &data,
@@ -72,7 +106,35 @@ void DataDescriptor::Get(const std::string &entryName, T *data, const Box &box,
 NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 #undef declare_ncio_type
 
+template <class Enum, Enum indexModel, class T>
+T DataDescriptor::GetMetadata(const Parameters &parameters)
+{
+    // for now it assumes metadata is 1-to-1 from a single transport
+    return m_Transport->GetMetadata<Enum, indexModel, T>(parameters);
+}
+
 // PRIVATE
+template <class T>
+void DataDescriptor::PutAttributeEntry(const std::string &attributeName,
+                                       const Entry &entry, const int threadID)
+{
+    switch (entry.shapeType)
+    {
+    case (ShapeType::value): {
+        const T *data = std::any_cast<const T>(&entry.data);
+        std::lock_guard<std::mutex> lock(m_Mutex);
+        {
+            m_Transport->PutAttribute(attributeName, data, DimensionsValue,
+                                      threadID);
+        }
+        break;
+    }
+    case (ShapeType::array): {
+        break;
+    }
+    }
+}
+
 template <class T>
 void DataDescriptor::PutEntry(const std::string &entryName, const Entry &entry,
                               const int threadID)
@@ -108,6 +170,7 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
     {
     case (ShapeType::value): {
         T *data = std::any_cast<T>(&entry.data);
+        // TODO: rethink when backends allow truly threaded code
         std::lock_guard<std::mutex> lock(m_Mutex);
         {
             m_Transport->Get(entryName, data, DimensionsValue, threadID);
@@ -117,6 +180,7 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
     case (ShapeType::array): {
         // TODO some checks on Dimensions
         T *data = std::any_cast<T *>(entry.data);
+        // TODO: rethink when backends allow truly threaded code
         std::lock_guard<std::mutex> lock(m_Mutex);
         {
             m_Transport->Get(entryName, data, std::get<Box>(entry.query),
@@ -129,7 +193,6 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
 
 } // end namespace ncio::core
 
-// Schema implements ncio::core::DataDescriptor::ToString
 #ifdef NCIO_HAVE_SCHEMA_NEXUS
 #include "ncio/schema/nexus/DataDescriptorNexus.tcc"
 #endif

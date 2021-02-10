@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <complex>
 #include <cstdint> //fixed-width types e.g. std::uint64_t
 
 #include "ncio/common/ncioTypes.h"
@@ -36,3 +35,11 @@
     MACRO(DataType::uint64, std::uint64_t)                                     \
     MACRO(DataType::float32, float)                                            \
     MACRO(DataType::float64, double)
+
+#define NCIO_ATTRIBUTE_DATATYPES(MACRO)                                        \
+    MACRO(std::string)                                                         \
+    NCIO_PRIMITIVE_TYPES(MACRO)
+
+#define NCIO_ATTRIBUTE_DATATYPES_2ARGS(MACRO)                                  \
+    MACRO(DataType::string, std::string)                                       \
+    NCIO_PRIMITIVE_DATATYPES_2ARGS(MACRO)

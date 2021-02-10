@@ -35,6 +35,14 @@ public:
     ~DataDescriptor() = default;
 
     template <class T>
+    void PutAttribute(const std::string &attributeName, const T &data,
+                      const int threadID);
+
+    template <class T>
+    void PutAttribute(const std::string &attributeName, const T *data,
+                      const Dimensions &dimensions, const int threadID);
+
+    template <class T>
     void Put(const std::string &entryName, const T &data, const int threadID);
 
     template <class T>
@@ -47,6 +55,9 @@ public:
     template <class T>
     void Get(const std::string &entryName, T *data, const Box &box,
              const int threadID);
+
+    template <class Enum, Enum indexModel, class T>
+    T GetMetadata(const Parameters &parameters);
 
     /** Executes all Put or Get deferred tasks */
     void Execute(const int threadID);
@@ -76,12 +87,15 @@ public:
     /**
      * Entry from enum defined in schema to string. To be called by
      * bindings. Must be overloaded by a schema.
-     * @tparam Enum
-     * @tparam enumValue
-     * @return string registered in a schema from enum defining entries
+     * @tparam Type
+     * @tparam value
+     * @return string registered in a schema
      */
-    template <class Enum, Enum enumValue>
+    template <class Type, Type value>
     std::string ToString() const noexcept;
+
+    template <class Type, Type attribute, class T>
+    T AttributeData() const noexcept;
 
     /** true: is currently opened, false: is closed and can be re-opened */
     bool IsOpen() const noexcept;
@@ -137,14 +151,17 @@ private:
      */
     std::map<int, std::map<std::string, std::vector<Entry>>> m_Entries;
 
+    /**
+     * Placeholder for deferred attribute entries for Put or Get.
+     * - key = threadID
+     * - value = Entries map with current attribute requests
+     *   - key = attribute name
+     *   - value = vector of Entry struct requests
+     */
+    std::map<std::string, Entry> m_Attributes;
+
     /** private mutex for thread-safety operations */
     std::mutex m_Mutex;
-
-    /** In memory metadata entry index structure. Suitable for Nexus data */
-    std::map<std::string, std::set<std::string>> m_MetadataIndex1;
-
-    /** Init relevant metadata structures */
-    void InitMetadata(const Parameters &parameters);
 
     /**
      * Init transport backend resources (e.g. open a file)
@@ -154,6 +171,10 @@ private:
      */
     void InitTransport(const std::string &descriptorName,
                        const OpenMode openMode, const Parameters &parameters);
+
+    template <class T>
+    void PutAttributeEntry(const std::string &attributeName, const Entry &entry,
+                           const int threadID);
 
     /**
      * Put entry into m_Transport->Put. Called at Execute for writing.

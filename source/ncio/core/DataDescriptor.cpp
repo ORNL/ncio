@@ -36,6 +36,26 @@ DataDescriptor::DataDescriptor(const std::string &descriptorName,
 
 void DataDescriptor::Execute(const int threadID)
 {
+    auto lf_ExecutePutAttributes =
+        [this](const std::map<std::string, Entry> &attributesMap,
+               const int threadID) {
+            for (const auto &attributePair : attributesMap)
+            {
+                const std::string &attributeName = attributePair.first;
+                const Entry &attributeEntry = attributePair.second;
+
+                switch (attributeEntry.dataType)
+                {
+#define declare_ncio_types(T, L)                                               \
+    case (T):                                                                  \
+        PutAttributeEntry<L>(attributeName, attributeEntry, threadID);         \
+        break;
+                    NCIO_ATTRIBUTE_DATATYPES_2ARGS(declare_ncio_types)
+#undef declare_ncio_types
+                }
+            }
+        };
+
     auto lf_ExecutePuts =
         [this](const std::map<std::string, std::vector<Entry>> &entriesMap,
                const int threadID) {
@@ -48,6 +68,10 @@ void DataDescriptor::Execute(const int threadID)
                 {
                     switch (entry.dataType)
                     {
+                    // TODO: add support for string variables, added to
+                    // avoid warning
+                    case (DataType::string):
+                        break;
 #define declare_ncio_types(T, L)                                               \
     case (T):                                                                  \
         PutEntry<L>(entryName, entry, threadID);                               \
@@ -73,6 +97,10 @@ void DataDescriptor::Execute(const int threadID)
 
                     switch (request.dataType)
                     {
+                        // TODO: add support for string variables, added to
+                        // avoid warning
+                    case (DataType::string):
+                        break;
 #define declare_ncio_types(T, L)                                               \
     case (T):                                                                  \
         m_Transport->Get<L>(entryName, std::any_cast<L *>(request.data), box,  \
@@ -93,6 +121,7 @@ void DataDescriptor::Execute(const int threadID)
     {
     case OpenMode::write:
         lf_ExecutePuts(itThreadID->second, threadID);
+        lf_ExecutePutAttributes(m_Attributes, threadID);
         break;
 
     case OpenMode::read:
@@ -107,6 +136,7 @@ void DataDescriptor::Execute(const int threadID)
     // always the same
     std::lock_guard<std::mutex> lock(m_Mutex);
     itThreadID->second.clear();
+    m_Attributes.clear();
 }
 
 std::future<void> DataDescriptor::ExecuteAsync(const std::launch launchMode,
@@ -142,8 +172,6 @@ DataDescriptor::Entry::Entry(const DataType dataType, std::any data,
   parameters(parameters), info(info)
 {
 }
-
-void DataDescriptor::InitMetadata(const Parameters &parameters) {}
 
 void DataDescriptor::InitTransport(const std::string &descriptorName,
                                    const OpenMode openMode,

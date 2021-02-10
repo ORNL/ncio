@@ -44,6 +44,12 @@ public:
      */
     explicit operator bool() const noexcept;
 
+    template <auto attribute, class T>
+    void PutAttribute(const int threadID = 0);
+
+    template <auto entry, class T>
+    void PutAttribute(const T &data, const int threadID = 0);
+
     /**
      * Write prefetch operation.
      * Register data pointer for a particular entry.
@@ -58,7 +64,6 @@ public:
      * - std::invalid_argument:
      *   - if data is nullptr
      */
-
     template <auto entry, class T>
     void Put(const T &data, const int threadID = 0);
 
@@ -86,6 +91,16 @@ public:
      */
     template <auto entry, class T>
     void Get(T *data, const Box &box, const int threadID = 0);
+
+    /**
+     * GetMetadata provides an application specific in-memory index.
+     * @tparam schema type
+     * @tparam T application specific data structure type for the metadata index
+     * @param parameters
+     * @return expected data structure for metadata index model
+     */
+    template <auto indexModel, class T>
+    T GetMetadata(const Parameters &parameters = Parameters());
 
     /**
      * Executes system I/O to transfer memory between writing Puts and reading

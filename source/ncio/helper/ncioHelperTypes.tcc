@@ -14,6 +14,7 @@ namespace ncio::helper::types
 {
 
 #define NCIO_TYPES_ENUM(MACRO)                                                 \
+    MACRO(std::string, DataType::string)                                       \
     MACRO(std::int8_t, DataType::int8)                                         \
     MACRO(std::int16_t, DataType::int16)                                       \
     MACRO(std::int32_t, DataType::int32)                                       \
