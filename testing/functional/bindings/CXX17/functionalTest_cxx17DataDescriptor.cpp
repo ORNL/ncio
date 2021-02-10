@@ -229,10 +229,20 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 
         ncio::DataDescriptor fr = ncio.Open(fileName, ncio::OpenMode::read);
 
-        const auto entries1 = fr.GetMetadata<ncio::schema::nexus::index::model1,
-                                             ncio::schema::nexus::model1_t>();
+        const auto nxClassIndex =
+            fr.GetMetadata<ncio::schema::nexus::index::model1,
+                           ncio::schema::nexus::model1_t>();
 
-        for (const auto &entryPair : entries1)
+        const std::map<std::string, std::set<std::string>>
+            expectedNxClassIndex = {{"NXentry", {"/entry"}},
+                                    {"NXevent_data", {"/entry/bank1_events"}},
+                                    {"SDS",
+                                     {"/entry/bank1_events/event_id",
+                                      "/entry/bank1_events/event_index",
+                                      "/entry/bank1_events/event_time_offset",
+                                      "/entry/bank1_events/total_counts"}}};
+
+        for (const auto &entryPair : nxClassIndex)
         {
             std::cout << "Class: " << entryPair.first << "\n";
 
@@ -242,6 +252,8 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
             }
             std::cout << "\n";
         }
+
+        CHECK_EQ(nxClassIndex, expectedNxClassIndex);
 
         fr.Close();
     }
