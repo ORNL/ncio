@@ -15,6 +15,9 @@
 
 #include <ncio.h>
 
+namespace ncio::testing::ci::functional
+{
+
 TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
 {
     ncio::NCIO ncio;
@@ -148,4 +151,6 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
             "valid. Only hdf5 and null are supported\n",
             std::invalid_argument);
     }
+}
+
 }
