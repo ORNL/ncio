@@ -8,7 +8,7 @@ project('ncio',
         license: 'BSD 3-Clause',
         version: '0.0.1',
         meson_version: '>=0.52.0',
-        default_options: ['cpp_std=c++17', 'buildtype=release', 'layout=flat']
+        default_options: ['cpp_std=c++17', 'buildtype=debugoptimized', 'layout=flat']
 )
 
 # SCHEMAS
@@ -47,6 +47,11 @@ subdir('bindings')
 # Tests
 if get_option('build-tests')
   doctest_dep = dependency('doctest', fallback: ['doctest', 'doctest_dep'])
+  
+  if get_option('build-tests-regression')
+    ncio_data_dep = dependency('ncio-data', fallback: ['ncio-data', 'ncio_data_dep'])
+  endif
+  
   subdir('testing')
 endif
 

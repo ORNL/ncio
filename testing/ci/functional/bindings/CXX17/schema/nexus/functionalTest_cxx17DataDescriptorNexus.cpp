@@ -12,6 +12,9 @@
 
 #include <ncio.h>
 
+namespace ncio::testing::ci::functional
+{
+
 TEST_CASE("Test Nexus schema entries")
 {
 #ifdef NCIO_HAVE_SCHEMA_NEXUS
@@ -25,4 +28,6 @@ TEST_CASE("Test Nexus schema entries")
 #undef declare_ncio_type
     }
 #endif
+}
+
 }

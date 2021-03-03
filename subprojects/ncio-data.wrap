@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://code.ornl.gov/wfg/ncio-data.git
+revision = master
+depth = 1

@@ -11,6 +11,9 @@
 
 #include <iostream>
 
+namespace ncio::testing::unit::helper
+{
+
 TEST_CASE("Unit test for ncio::helper::string functions")
 {
     SUBCASE("ToLower")
@@ -37,4 +40,6 @@ TEST_CASE("Unit test for ncio::helper::string functions")
         CHECK_EQ(ncio::helper::string::Split("hello world/of /hierarchy"),
                  std::vector<std::string>{"hello world", "of ", "hierarchy"});
     }
+}
+
 }

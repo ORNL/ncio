@@ -10,10 +10,15 @@
 
 #include "ncio/core/NCIO.h"
 
+namespace ncio::testing::unit::core
+{
+
 TEST_CASE("Unit test for core::NCIO class")
 {
     ncio::core::NCIO ncio;
     ncio.SetParameter("key", "value");
     SUBCASE("GetParameter") { CHECK(ncio.GetParameter("key") == "value"); }
     SUBCASE("GetConfigFile") { CHECK(ncio.GetConfigFile() == std::nullopt); }
+}
+
 }

@@ -15,6 +15,9 @@
 
 #include <ncio.h>
 
+namespace ncio::testing::ci::functional
+{
+
 TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 {
     ncio::NCIO ncio;
@@ -259,4 +262,6 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
     }
 
 #endif
+}
+
 }

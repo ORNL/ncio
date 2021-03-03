@@ -10,7 +10,7 @@ foreach test : tests
                    'functionalTest_cxx17' + test + '.cpp',
                    include_directories:  ncio_doctest_inc, 
                    dependencies: [ncio_cxx17_dep, doctest_dep, threads_dep])
-  test(test, exe, timeout: 10, suite: ['functionaltest', 'cxx17'], is_parallel: false )
+  test(test, exe, timeout: 10, suite: ['ci', 'functionaltest', 'cxx17'], is_parallel: false )
 endforeach
 
 
@@ -23,5 +23,5 @@ foreach ncio_schema : ncio_schemas
                    file_name,
                    include_directories:  ncio_doctest_inc, 
                    dependencies: [ncio_cxx17_dep, doctest_dep, threads_dep])
-  test( test, exe, timeout: 10, suite: ['functionaltest', 'cxx17', 'schema'])
+  test( test, exe, timeout: 10, suite: ['ci', 'functionaltest', 'cxx17', 'schema'])
 endforeach
