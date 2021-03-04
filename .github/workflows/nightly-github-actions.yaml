@@ -30,7 +30,7 @@ jobs:
             image: williamfgc/ncio-ci:centos7-gcc8-clang6.0
             options: -u root
 
-  steps:
+    steps:
     - name: Checkout Action
       uses: actions/checkout@v1
 
