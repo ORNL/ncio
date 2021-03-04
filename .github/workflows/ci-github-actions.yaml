@@ -14,7 +14,6 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     env:
       GH_JOBNAME: ${{ matrix.jobname }}
       GH_OS: Linux
@@ -64,7 +63,6 @@ jobs:
 
   macos:
     runs-on: macos-latest
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     env:
       GH_YML_JOBNAME: ${{ matrix.jobname }}
       GH_YML_OS: macOS
@@ -98,7 +96,6 @@ jobs:
 
   windows:
     runs-on: windows-2019
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     env:
       GH_YML_JOBNAME: ${{ matrix.jobname }}
       GH_YML_OS: windows
@@ -136,7 +133,6 @@ jobs:
   dynamic:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     env:
       GH_JOBNAME: ${{ matrix.jobname }}
     strategy:
@@ -204,7 +200,6 @@ jobs:
   static:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     env:
       GH_JOBNAME: ${{ matrix.jobname }}
     strategy:
