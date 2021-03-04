@@ -30,6 +30,9 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
             ncio.Open("data_async.h5", ncio::OpenMode::write);
 
         fw.PutAttribute<ncio::schema::nexus::entry::NX_class, std::string>();
+        // attributes are immutable, already created
+        fw.PutAttribute<ncio::schema::nexus::entry::NX_class, std::string>();
+
         fw.PutAttribute<ncio::schema::nexus::entry::bank1_events::NX_class,
                         std::string>();
 
@@ -226,6 +229,16 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         fr.Close();
     }
 
+    SUBCASE("ReOpen")
+    {
+        ncio::DataDescriptor fr =
+            ncio.Open("data_threads.h5", ncio::OpenMode::read);
+        fr.Close();
+
+        fr = ncio.Open("data_threads.h5", ncio::OpenMode::read);
+        fr.Close();
+    }
+
     SUBCASE("GetMetadata")
     {
         const std::string fileName = "data_async.h5";
@@ -260,7 +273,6 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 
         fr.Close();
     }
-
 #endif
 }
 

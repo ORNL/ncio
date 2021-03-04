@@ -44,7 +44,6 @@ core::DataDescriptor &NCIO::Open(const std::string &name,
     // doesn't exist
     if (itDataDescriptor == m_DataDescriptors.end())
     {
-
         auto pair = m_DataDescriptors.emplace(
             name, std::make_unique<core::DataDescriptor>(name, openMode,
                                                          m_Parameters));
@@ -52,17 +51,21 @@ core::DataDescriptor &NCIO::Open(const std::string &name,
     }
 
     // exist
-    DataDescriptor &dataDescriptor = *itDataDescriptor->second.get();
-    if (dataDescriptor.IsOpen())
+    if (itDataDescriptor->second->IsOpen())
     {
         throw std::logic_error("ncio ERROR: trying to Open DataDescriptor " +
                                name +
                                " more than once is not allowed. Call "
                                "DataDescriptor::Close() first\n");
     }
-    dataDescriptor.SetOpenStatus(true);
 
-    return dataDescriptor;
+    // remove from map if it was properly closed
+    m_DataDescriptors.erase(itDataDescriptor);
+    // create again
+    auto pair = m_DataDescriptors.emplace(
+        name,
+        std::make_unique<core::DataDescriptor>(name, openMode, m_Parameters));
+    return *pair.first->second.get();
 }
 
 } // end namespace ncio::core

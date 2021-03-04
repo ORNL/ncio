@@ -100,9 +100,6 @@ public:
     /** true: is currently opened, false: is closed and can be re-opened */
     bool IsOpen() const noexcept;
 
-    /** used by NCIO factory, set open status if reopened */
-    void SetOpenStatus(const bool openStatus) noexcept;
-
 private:
     /**
      * Placeholder for descriptor name, not necessarily the same as file name

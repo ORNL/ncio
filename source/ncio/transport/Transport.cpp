@@ -20,11 +20,8 @@ Transport::Transport(const std::string &type, const std::string &name,
 {
 }
 
-std::string Transport::GetType() const noexcept { return m_Type; }
-
 void Transport::Close()
 {
-    assert(m_IsOpen);
     DoClose();
     m_IsOpen = false;
 }
