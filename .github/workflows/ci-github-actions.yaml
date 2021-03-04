@@ -2,10 +2,13 @@
 name: GitHub Actions CI
 
 on: 
-  push: 
+  push:
     branches: 
-    - main 
-  pull_request: 
+    - main
+  pull_request:
+    paths-ignore:
+    - 'scripts/**'
+    - '!scripts/ci/github-actions/**' 
     branches: 
     - main 
 
