@@ -16,7 +16,6 @@ case "$1" in
   # Configure ncio using meson using out-of-source builds
   # Downloads ncio-data with -Dbuild-tests-regression=true
   configure)
-    git lfs init
     cd ${GITHUB_WORKSPACE}/..
     mkdir ncio-build
     cd ncio-build
