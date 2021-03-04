@@ -102,6 +102,7 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
     {
         ncio::DataDescriptor fh = ncio.Open("null", ncio::OpenMode::write);
 
+        fh.PutAttribute<ncio::schema::nexus::entry::NX_class, std::string>();
         constexpr float dataI32 = 10;
         fh.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(dataI32);
         fh.Execute();
@@ -111,6 +112,10 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
     SUBCASE("OpenDataDescriptorReadNull")
     {
         ncio::DataDescriptor fr = ncio.Open("null", ncio::OpenMode::read);
+
+        const auto nxClassIndex =
+            fr.GetMetadata<ncio::schema::nexus::index::model1,
+                           ncio::schema::nexus::model1_t>();
         float totalCounts = 0.;
         fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
             totalCounts);

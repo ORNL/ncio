@@ -46,29 +46,34 @@ NCIO_HD5Types_MAP(declare_ncio_types)
                                                 const bool isDataSet)
 {
     const std::vector<std::string> list = helper::string::Split(entryName);
+    if (list.size() <= 1)
+    {
+        throw std::invalid_argument(
+            "ncio ERROR: couldn't create hid_t for entry " + entryName +
+            " in file " + m_Name + "\n");
+    }
+
     std::vector<hid_t> datasetChain;
 
     hid_t groupID = m_TopGroupID;
 
     // create groups recursively
-    if (list.size() > 1)
-    {
-        std::string currentGroup = "";
-        for (std::size_t i = 1; i < list.size() - 1; ++i)
-        {
-            currentGroup = list[i];
 
-            if (H5Lexists(groupID, currentGroup.c_str(), H5P_DEFAULT) == 0)
-            {
-                groupID = H5Gcreate2(groupID, currentGroup.c_str(), H5P_DEFAULT,
-                                     H5P_DEFAULT, H5P_DEFAULT);
-            }
-            else
-            {
-                groupID = H5Gopen(groupID, currentGroup.c_str(), H5P_DEFAULT);
-            }
-            datasetChain.push_back(groupID);
+    std::string currentGroup = "";
+    for (std::size_t i = 1; i < list.size() - 1; ++i)
+    {
+        currentGroup = list[i];
+
+        if (H5Lexists(groupID, currentGroup.c_str(), H5P_DEFAULT) == 0)
+        {
+            groupID = H5Gcreate2(groupID, currentGroup.c_str(), H5P_DEFAULT,
+                                 H5P_DEFAULT, H5P_DEFAULT);
         }
+        else
+        {
+            groupID = H5Gopen(groupID, currentGroup.c_str(), H5P_DEFAULT);
+        }
+        datasetChain.push_back(groupID);
     }
 
     if (!isDataSet)

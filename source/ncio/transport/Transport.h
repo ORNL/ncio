@@ -42,9 +42,6 @@ public:
 
     virtual ~Transport() = default;
 
-    /** Retrieve current transport transport class from derived class */
-    std::string GetType() const noexcept;
-
     /** Retrieves a Metadata Index structure as requested by clients
      * constructors */
     template <class Enum, Enum indexModel, class T>
