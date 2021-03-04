@@ -16,4 +16,4 @@ RUN apt-get update -y &&\
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8 &&\
     update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-8 800 &&\
     pip3 install gcovr &&\
-    pip3 install meson
+    pip3 install meson==0.56
