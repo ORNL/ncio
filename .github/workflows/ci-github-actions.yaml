@@ -8,7 +8,8 @@ on:
   pull_request:
     paths-ignore:
     - 'scripts/**'
-    - '!scripts/ci/github-actions/**' 
+    - '!scripts/ci/github-actions/**'
+    - '.github/workflows/nightly-github-actions.yaml'
     branches: 
     - main 
 
