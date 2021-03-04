@@ -3,7 +3,7 @@ name: GitHub Actions Nightly
 
 on: 
   schedule:
-    - cron: '0 15 23 * *' # run at 9 PM UTC (4 PM EST) 
+    - cron: '* 16 * * *' # run at 9 PM UTC (4 PM EST) 
 
 jobs:
 

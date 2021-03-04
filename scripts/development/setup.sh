@@ -21,7 +21,7 @@ then
   exit
 fi
 
-# Configure origin and upstream repo via SSH (preference) or HTTPS if SSH fails
+# Configure origin and upstream repo via SSH (preferred method) or HTTPS if SSH fails
 # SSH users make sure your system public key is registed in gitlab user settings > SSH Keys 
 # (e.g. ~/.ssh/id_rsa.pub)
 remote_origin=""
