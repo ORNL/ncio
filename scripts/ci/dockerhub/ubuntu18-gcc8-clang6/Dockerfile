@@ -8,6 +8,7 @@ RUN apt-get update -y &&\
                     pkg-config \
                     python3-pip \
                     git \
+                    git-lfs \
                     ninja-build \
                     libhdf5-serial-dev \
                     curl \
