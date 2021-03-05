@@ -41,8 +41,14 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         fw.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(
             totalCounts);
 
-        // put a 1D array
+        // put 1D arrays
         const std::size_t nx = 3;
+
+        const std::vector<double> eventTimeZero = {0.016667, 0.033335,
+                                                   0.050003};
+        fw.Put<ncio::schema::nexus::entry::bank2_events::event_time_zero>(
+            eventTimeZero.data(), {{nx}, {0}, {nx}});
+
         const std::vector<std::uint64_t> eventIndex = {1, 2, 3};
         fw.Put<ncio::schema::nexus::entry::bank1_events::event_index>(
             eventIndex.data(), {{nx}, {0}, {nx}});
@@ -54,6 +60,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         const std::vector<float> eventTimeOffset = {1.f, 2.f, 3.f};
         fw.Put<ncio::schema::nexus::entry::bank1_events::event_time_offset>(
             eventTimeOffset.data(), {{nx}, {0}, {nx}});
+
         // launch in a separate thread and wait
         std::future future = fw.ExecuteAsync(std::launch::async);
 
@@ -68,6 +75,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
     {
         float totalCounts = 0;
         std::vector<std::uint64_t> eventIndex(3);
+        std::vector<double> eventTimeZero(3);
 
         ncio::DataDescriptor fr =
             ncio.Open("data_async.h5", ncio::OpenMode::read);
@@ -77,6 +85,9 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         fr.Get<ncio::schema::nexus::entry::bank1_events::event_index>(
             eventIndex.data(), ncio::BoxAll);
 
+        fr.Get<ncio::schema::nexus::entry::bank2_events::event_time_zero>(
+            eventTimeZero.data(), ncio::BoxAll);
+
         std::future future = fr.ExecuteAsync(std::launch::async);
         future.get();
 
@@ -84,6 +95,8 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
 
         CHECK_EQ(totalCounts, 10);
         CHECK_EQ(eventIndex, std::vector<std::uint64_t>{1, 2, 3});
+        CHECK_EQ(eventTimeZero,
+                 std::vector<double>{0.016667, 0.033335, 0.050003});
     }
 
     SUBCASE("WriteHDF5_threads")
@@ -256,7 +269,8 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
                                      {"/entry/bank1_events/event_id",
                                       "/entry/bank1_events/event_index",
                                       "/entry/bank1_events/event_time_offset",
-                                      "/entry/bank1_events/total_counts"}}};
+                                      "/entry/bank1_events/total_counts",
+                                      "/entry/bank2_events/event_time_zero"}}};
 
         for (const auto &entryPair : nxClassIndex)
         {

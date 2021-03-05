@@ -46,7 +46,7 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
                                                                                \
     template void DataDescriptor::Put<                                         \
         schema::nexus::entry::bank##T##_events::event_time_zero>(              \
-        const double &, const int);                                            \
+        const double *, const Dimensions &, const int);                        \
                                                                                \
     template void                                                              \
     DataDescriptor::Put<schema::nexus::entry::bank##T##_events::total_counts>( \
@@ -63,15 +63,15 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
                                                                                \
     template void                                                              \
     DataDescriptor::Get<schema::nexus::entry::bank##T##_events::event_index>(  \
-        std::uint64_t *, const Box &box, const int);                           \
+        std::uint64_t *, const Box &, const int);                              \
                                                                                \
     template void DataDescriptor::Get<                                         \
         schema::nexus::entry::bank##T##_events::event_time_offset>(            \
-        float *, const Box &box, const int);                                   \
+        float *, const Box &, const int);                                      \
                                                                                \
     template void DataDescriptor::Get<                                         \
-        schema::nexus::entry::bank##T##_events::event_time_zero>(double &,     \
-                                                                 const int);   \
+        schema::nexus::entry::bank##T##_events::event_time_zero>(              \
+        double *, const Box &, const int);                                     \
                                                                                \
     template void                                                              \
     DataDescriptor::Get<schema::nexus::entry::bank##T##_events::total_counts>( \

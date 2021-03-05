@@ -125,27 +125,14 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
         fr.Close();
     }
 
-    SUBCASE("InvalidDataDescriptor")
-    {
-        ncio::DataDescriptor fr;
-        float totalCounts = 0.;
-        CHECK_THROWS_WITH_AS(
-            fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
-                totalCounts),
-            "ncio ERROR: invalid DataDescriptor object in call to Get. Please "
-            "modify your code and pass a valid DataDescriptor created "
-            "with NCIO::Open that has not been previously closed\n",
-            std::logic_error);
-
-        ncio::DataDescriptor fclose = ncio.Open("null", ncio::OpenMode::read);
-        fclose.Close();
-        CHECK_THROWS_WITH_AS(
-            fclose.Close(),
-            "ncio ERROR: invalid DataDescriptor object in call to Close. "
-            "Please modify your code and pass a valid DataDescriptor created "
-            "with NCIO::Open that has not been previously closed\n",
-            std::logic_error);
-    }
+    ncio::DataDescriptor fclose = ncio.Open("null", ncio::OpenMode::read);
+    fclose.Close();
+    CHECK_THROWS_WITH_AS(
+        fclose.Close(),
+        "ncio ERROR: invalid DataDescriptor object in call to Close. "
+        "Please modify your code and pass a valid DataDescriptor created "
+        "with NCIO::Open that has not been previously closed\n",
+        std::logic_error);
 
     ncio.SetParameter("Transport", "Unsupported");
     SUBCASE("UnsupportedTransport")
@@ -158,4 +145,85 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
     }
 }
 
+TEST_CASE("Invalid DataDescriptor")
+{
+    auto lf_Message = [](const std::string &functionName) -> std::string {
+        return "ncio ERROR: invalid DataDescriptor object in call to " +
+               functionName +
+               ". Please modify your code and pass a valid DataDescriptor "
+               "created with NCIO::Open that has not been previously "
+               "closed\n";
+    };
+
+    SUBCASE("PutAttribute")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("PutAttribute");
+        CHECK_THROWS_WITH_AS(
+            (fr.PutAttribute<ncio::schema::nexus::entry::NX_class,
+                             std::string>()),
+            error.c_str(), std::logic_error);
+    }
+
+    SUBCASE("Put")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("Put");
+        CHECK_THROWS_WITH_AS(
+            (fr.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(
+                10.f)),
+            error.c_str(), std::logic_error);
+    }
+
+    SUBCASE("Get")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("Get");
+        float totalCounts = 0.;
+        CHECK_THROWS_WITH_AS(
+            (fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
+                totalCounts)),
+            error.c_str(), std::logic_error);
+    }
+
+    SUBCASE("GetMetadata")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("GetMetadata");
+        CHECK_THROWS_WITH_AS((fr.GetMetadata<ncio::schema::nexus::index::model1,
+                                             ncio::schema::nexus::model1_t>()),
+                             error.c_str(), std::logic_error);
+    }
+
+    SUBCASE("GetNativeHandler")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("GetNativeHandler");
+        CHECK_THROWS_WITH_AS(fr.GetNativeHandler(), error.c_str(),
+                             std::logic_error);
+    }
+
+    SUBCASE("Execute")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("Execute");
+        CHECK_THROWS_WITH_AS(fr.Execute(), error.c_str(), std::logic_error);
+    }
+
+    SUBCASE("ExecuteAsync")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("ExecuteAsync");
+        CHECK_THROWS_WITH_AS(auto f = fr.ExecuteAsync(std::launch::async),
+                             error.c_str(), std::logic_error);
+    }
+
+    SUBCASE("Close")
+    {
+        ncio::DataDescriptor fr;
+        const std::string error = lf_Message("Close");
+        CHECK_THROWS_WITH_AS(fr.Close(), error.c_str(), std::logic_error);
+    }
 }
+
+} // end namespace
