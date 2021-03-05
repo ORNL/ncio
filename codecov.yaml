@@ -12,3 +12,11 @@ ignore:
 # from https://docs.codecov.io/docs/fixing-paths
 fixes:
   - "/__w/::"
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: no
+      loop: yes
+      method: no
+      macro: no
