@@ -188,15 +188,26 @@ jobs:
       if: contains(matrix.jobname, 'coverage')
       run: scripts/ci/github-actions/bash/run_step.sh coverage
     
-    - name: Upload Coverage
+    - name: Upload Coverage Codecov
       if: contains(matrix.jobname, 'coverage')
       uses: codecov/codecov-action@v1
       with:
-        file:  ../ncio-build/meson-logs/coverage.xml
+        file:  ../ncio-build/meson-logs/coverage.info
         flags: alltests # optional
         name: codecov-ncio # optional
         fail_ci_if_error: true # optional (default = false)
-
+    
+    - name: Upload Coverage Coveralls
+      if: contains(matrix.jobname, 'coverage')
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.github_token }}
+        flag-name: ci
+        path-to-lcov: ../ncio-build/meson-logs/coverage.info 
+        
+        
+    
+    
   static:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
