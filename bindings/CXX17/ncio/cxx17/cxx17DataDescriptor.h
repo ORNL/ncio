@@ -130,7 +130,7 @@ public:
      * dependency.
      * @return generic handler as std::any
      */
-    std::any GetNativeHandler() noexcept;
+    std::any GetNativeHandler();
 
     /**
      * Close all operations with the current DataDescriptor. After this

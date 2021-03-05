@@ -127,15 +127,50 @@ TEST_CASE("Functional tests for ncio::NCIO C++17 bindings class")
 
     SUBCASE("InvalidDataDescriptor")
     {
+        auto lf_Message = [](const std::string &functionName) -> std::string {
+            return "ncio ERROR: invalid DataDescriptor object in call to " +
+                   functionName +
+                   ". Please modify your code and pass a valid DataDescriptor "
+                   "created with NCIO::Open that has not been previously "
+                   "closed\n";
+        };
+
         ncio::DataDescriptor fr;
+
+        CHECK_THROWS_WITH_AS(
+            (fr.PutAttribute<ncio::schema::nexus::entry::NX_class,
+                             std::string>()),
+            lf_Message("PutAttribute").c_str(), std::logic_error);
+
+        CHECK_THROWS_WITH_AS(
+            fr.Put<ncio::schema::nexus::entry::bank1_events::total_counts>(
+                10.f),
+            lf_Message("Put").c_str(), std::logic_error);
+
         float totalCounts = 0.;
         CHECK_THROWS_WITH_AS(
             fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
                 totalCounts),
-            "ncio ERROR: invalid DataDescriptor object in call to Get. Please "
-            "modify your code and pass a valid DataDescriptor created "
-            "with NCIO::Open that has not been previously closed\n",
-            std::logic_error);
+            lf_Message("Get").c_str(), std::logic_error);
+
+        CHECK_THROWS_WITH_AS((fr.GetMetadata<ncio::schema::nexus::index::model1,
+                                             ncio::schema::nexus::model1_t>()),
+                             lf_Message("GetMetadata").c_str(),
+                             std::logic_error);
+
+        CHECK_THROWS_WITH_AS(fr.GetNativeHandler(),
+                             lf_Message("NativeHandler").c_str(),
+                             std::logic_error);
+
+        CHECK_THROWS_WITH_AS(fr.Execute(), lf_Message("Execute").c_str(),
+                             std::logic_error);
+
+        CHECK_THROWS_WITH_AS(auto f = fr.ExecuteAsync(std::launch::async),
+                             lf_Message("ExecuteAsync").c_str(),
+                             std::logic_error);
+
+        CHECK_THROWS_WITH_AS(fr.Close(), lf_Message("Close").c_str(),
+                             std::logic_error);
 
         ncio::DataDescriptor fclose = ncio.Open("null", ncio::OpenMode::read);
         fclose.Close();
