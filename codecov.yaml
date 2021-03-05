@@ -11,4 +11,4 @@ ignore:
 # Fixes report prefix paths from CI dynamic coverage action
 # from https://docs.codecov.io/docs/fixing-paths
 fixes:
-  - "/__w/ncio/::"
+  - "/__w/::"

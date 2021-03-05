@@ -39,10 +39,8 @@ case "$1" in
         CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=memory --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       *"coverage"*)
-        echo 'Configure for code coverage'
-        # meson regression bug in > 0.55 using 0.54.2
-        pip3 install meson==0.54.2
-        meson -Dbuildtype=debug -Db_coverage=true --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+        echo 'Configure for code coverage with llvm-cov'
+        CC=clang CXX=clang++ meson -Dbuildtype=debug -Db_coverage=true -Dc_args=-fno-elide-constructors --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with clang compilers
       *"clang"*)
