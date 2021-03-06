@@ -40,7 +40,7 @@ case "$1" in
       ;;
       *"coverage"*)
         echo 'Configure for code coverage with llvm-cov'
-        CC=clang CXX=clang++ meson -Dbuildtype=debug -Db_coverage=true -Dc_args=-fno-elide-constructors --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+        CC=clang CXX=clang++ meson -Dbuildtype=debugoptimized -Db_coverage=true -Dc_args=-fno-elide-constructors --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with clang compilers
       *"clang"*)
