@@ -39,8 +39,8 @@ case "$1" in
         CC=clang CXX=clang++ meson -Db_lundef=false -Db_sanitize=memory --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       *"coverage"*)
-        echo 'Configure for code coverage with llvm-cov'
-        CC=clang CXX=clang++ meson -Dbuildtype=debugoptimized -Db_coverage=true -Dc_args="-fprofile-instr-generate -fcoverage-mapping" --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
+        echo 'Configure for code coverage with gcc and gcovr'
+        meson -Dbuildtype=release -Db_coverage=true --prefix=${GITHUB_WORKSPACE}/../ncio-install ${GITHUB_WORKSPACE}
       ;;
       # Test with clang compilers
       *"clang"*)
@@ -77,7 +77,9 @@ case "$1" in
   # Generate coverage reports
   coverage)
     cd ${GITHUB_WORKSPACE}/../ncio-build
-    ninja coverage-xml
+    # filter unreachable branches with gcovr
+    # see https://gcovr.com/en/stable/faq.html#why-does-c-code-have-so-many-uncovered-branches
+    gcovr --exclude-unreachable-branches --exclude-throw-branches --root=${GITHUB_WORKSPACE}/.. --xml-pretty -o meson-logs/coverage.xml
     du -hs meson-logs/coverage.xml
     cat meson-logs/coverage.xml
     ;;
