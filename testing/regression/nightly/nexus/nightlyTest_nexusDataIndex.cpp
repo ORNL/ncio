@@ -1,4 +1,8 @@
 
+
+#include "nightlyTest_nexusDataIndex.h"
+#include "nightlyTest_nexusDataIndex.tcc"
+
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest.h>
 
@@ -7,8 +11,6 @@
 #include <string>
 
 #include <ncio.h>
-
-#include "nightlyTest_nexusDataIndex.h"
 
 namespace ncio::testing::regression
 {
@@ -57,13 +59,13 @@ TEST_CASE_FIXTURE(testInfo,
 
     const std::map<std::string, const ncio::schema::nexus::model1_t &>
         fileIndices = {
-            {"CG2_8179.nxs.h5", testInfo::expectedIndexCG2_8179},
-            {"CG2_8953.nxs.h5", testInfo::expectedIndexCG2_8953},
-            {"CG3_1545.nxs.h5", testInfo::expectedIndexCG3_1545},
-            {"CG3_943.nxs.h5", testInfo::expectedIndexCG3_943},
-            {"EQSANS_112296.nxs.h5", testInfo::expectedIndexEQSANS_112296},
-            {"EQSANS_112307.nxs.h5", testInfo::expectedIndexEQSANS_112307},
-            {"NOM_78106.nxs.h5", testInfo::expectedIndexNOM_7816}};
+            {"CG2_8179.nxs.h5", testInfo::expectedIndex::CG2_8179},
+            {"CG2_8953.nxs.h5", testInfo::expectedIndex::CG2_8953},
+            {"CG3_1545.nxs.h5", testInfo::expectedIndex::CG3_1545},
+            {"CG3_943.nxs.h5", testInfo::expectedIndex::CG3_943},
+            {"EQSANS_112296.nxs.h5", testInfo::expectedIndex::EQSANS_112296},
+            {"EQSANS_112307.nxs.h5", testInfo::expectedIndex::EQSANS_112307},
+            {"NOM_78106.nxs.h5", testInfo::expectedIndex::NOM_7816}};
 
     ncio::NCIO ncio;
 

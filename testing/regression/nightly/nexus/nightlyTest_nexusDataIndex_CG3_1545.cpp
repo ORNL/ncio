@@ -4,7 +4,7 @@
 namespace ncio::testing::regression
 {
 const std::map<std::string, std::set<std::string>>
-    testInfo::expectedIndexCG3_1545 = {
+    testInfo::expectedIndex::CG3_1545 = {
         {"NXcollection",
          {
              "/entry/DASlogs",

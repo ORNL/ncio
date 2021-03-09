@@ -10,7 +10,7 @@ namespace ncio::testing::regression
 {
 
 const std::map<std::string, std::set<std::string>>
-    testInfo::expectedIndexNOM_7816 = {
+    testInfo::expectedIndex::NOM_7816 = {
         {"NXcollection",
          {
              "/entry/DASlogs",

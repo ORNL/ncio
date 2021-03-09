@@ -7,9 +7,12 @@
 
 #pragma once
 
+#include <cstdint>
 #include <map>
 #include <set>
 #include <string>
+#include <utility> // std::pair
+#include <vector>
 
 namespace ncio::testing::regression
 {
@@ -21,20 +24,39 @@ namespace ncio::testing::regression
 struct testInfo
 {
     static std::string ncioDataDir;
-    const static std::map<std::string, std::set<std::string> >
-        expectedIndexNOM_7816;
-    const static std::map<std::string, std::set<std::string> >
-        expectedIndexCG2_8179;
-    const static std::map<std::string, std::set<std::string> >
-        expectedIndexCG2_8953;
-    const static std::map<std::string, std::set<std::string> >
-        expectedIndexCG3_1545;
-    const static std::map<std::string, std::set<std::string> >
-        expectedIndexCG3_943;
-    const static std::map<std::string, std::set<std::string> >
-        expectedIndexEQSANS_112296;
-    const static std::map<std::string, std::set<std::string> >
-        expectedIndexEQSANS_112307;
+
+    /**
+     * Holds a few array data for the each NeXus file. Runtime built with
+     * h5dump from ncio/source/helper/ncioHelper/ncioHelperH5Dump*
+     */
+    struct expectedData
+    {
+        struct CG2_8179
+        {
+            std::vector<std::uint32_t> bank_event_id;
+            std::vector<std::uint64_t> bank_event_index;
+            std::vector<float> bank_event_time_offset;
+            std::vector<std::uint32_t> bank_event_time_zero;
+            std::vector<std::uint64_t> bank_total_counts;
+        };
+        // TODO expand to other files
+
+        template <class T>
+        std::vector<T> GetArray(const std::string &hdf5FileName,
+                                const std::string &arrayDataset);
+    };
+
+    /** Holds the expected index (at compile time) for the each NeXus file */
+    struct expectedIndex
+    {
+        const static std::map<std::string, std::set<std::string>> CG2_8179;
+        const static std::map<std::string, std::set<std::string>> CG2_8953;
+        const static std::map<std::string, std::set<std::string>> CG3_1545;
+        const static std::map<std::string, std::set<std::string>> CG3_943;
+        const static std::map<std::string, std::set<std::string>> EQSANS_112296;
+        const static std::map<std::string, std::set<std::string>> EQSANS_112307;
+        const static std::map<std::string, std::set<std::string>> NOM_7816;
+    };
 };
 
-}
+} // end namespace
