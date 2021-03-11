@@ -68,4 +68,13 @@ enum class DataType
     float64
 };
 
+/** The long-term goal is to enable higher-level memory contiguous containers
+ *  (e.g. smart pointers) */
+enum class ContainerType
+{
+    reference, ///< used for values only
+    pointer,
+    std_vector,
+};
+
 } // end namespace ncio

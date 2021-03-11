@@ -159,12 +159,13 @@ std::any DataDescriptor::GetNativeHandler() noexcept
 bool DataDescriptor::IsOpen() const noexcept { return m_IsOpen; }
 
 // PRIVATE
-DataDescriptor::Entry::Entry(const DataType dataType, std::any data,
+DataDescriptor::Entry::Entry(const DataType dataType,
+                             const ContainerType containerType, std::any data,
                              const std::variant<Dimensions, Box> &query,
                              const ShapeType shapeType,
                              const Parameters &parameters, Info *info)
-: dataType(dataType), data(data), query(query), shapeType(shapeType),
-  parameters(parameters), info(info)
+: dataType(dataType), containerType(containerType), data(data), query(query),
+  shapeType(shapeType), parameters(parameters), info(info)
 {
 }
 

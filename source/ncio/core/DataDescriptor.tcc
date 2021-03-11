@@ -30,9 +30,9 @@ void DataDescriptor::PutAttribute(const std::string &entryName, const T &data,
     }
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Attributes.emplace(entryName,
-                         Entry(helper::types::ToDataTypeEnum<T>(), data,
-                               DimensionsValue, ShapeType::value, Parameters(),
-                               nullptr));
+                         Entry(helper::types::ToDataTypeEnum<T>(),
+                               ContainerType::reference, data, DimensionsValue,
+                               ShapeType::value, Parameters(), nullptr));
 }
 
 template <class T>
@@ -59,8 +59,8 @@ void DataDescriptor::Put(const std::string &entryName, const T &data,
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Entries[threadID][entryName].emplace_back(
-        helper::types::ToDataTypeEnum<T>(), data, DimensionsValue,
-        ShapeType::value, Parameters(), nullptr);
+        helper::types::ToDataTypeEnum<T>(), ContainerType::reference, data,
+        DimensionsValue, ShapeType::value, Parameters(), nullptr);
 }
 
 template <class T>
@@ -69,8 +69,8 @@ void DataDescriptor::Put(const std::string &entryName, const T *data,
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Entries[threadID][entryName].emplace_back(
-        helper::types::ToDataTypeEnum<T>(), data, dimensions, ShapeType::array,
-        Parameters(), nullptr);
+        helper::types::ToDataTypeEnum<T>(), ContainerType::pointer, data,
+        dimensions, ShapeType::array, Parameters(), nullptr);
 }
 
 template <class T>
@@ -79,8 +79,8 @@ void DataDescriptor::Get(const std::string &entryName, T *data,
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Entries[threadID][entryName].emplace_back(
-        helper::types::ToDataTypeEnum<T>(), data, BoxValue, ShapeType::value,
-        Parameters(), nullptr);
+        helper::types::ToDataTypeEnum<T>(), ContainerType::pointer, data,
+        BoxValue, ShapeType::value, Parameters(), nullptr);
 }
 
 template <class T>
@@ -89,8 +89,18 @@ void DataDescriptor::Get(const std::string &entryName, T *data, const Box &box,
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Entries[threadID][entryName].emplace_back(
-        helper::types::ToDataTypeEnum<T>(), data, box, ShapeType::array,
-        Parameters(), nullptr);
+        helper::types::ToDataTypeEnum<T>(), ContainerType::pointer, data, box,
+        ShapeType::array, Parameters(), nullptr);
+}
+
+template <class T>
+void DataDescriptor::Get(const std::string &entryName, std::vector<T> &data,
+                         const Box &box, const int threadID)
+{
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    m_Entries[threadID][entryName].emplace_back(
+        helper::types::ToDataTypeEnum<T>(), ContainerType::std_vector, data,
+        box, ShapeType::array, Parameters(), nullptr);
 }
 
 #define declare_ncio_type(T)                                                   \

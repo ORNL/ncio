@@ -75,6 +75,16 @@ void DataDescriptor::Get(T *data, const Box &box, const int threadID)
     m_ImplDataDescriptor->Get(entryName, data, box, threadID);
 }
 
+template <auto entry, class T>
+void DataDescriptor::Get(std::vector<T> &data, const Box &box,
+                         const int threadID)
+{
+    CheckImpl("Get");
+    const std::string entryName =
+        m_ImplDataDescriptor->ToString<decltype(entry), entry>();
+    m_ImplDataDescriptor->Get(entryName, data, box, threadID);
+}
+
 template <auto indexModel, class T>
 T DataDescriptor::GetMetadata(const Parameters &parameters)
 {
