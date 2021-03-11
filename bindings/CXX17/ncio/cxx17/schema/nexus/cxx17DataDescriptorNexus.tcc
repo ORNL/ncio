@@ -12,6 +12,8 @@
 #include <set>
 #include <string>
 
+#include "ncio/cxx17/cxx17DataDescriptor.h"
+
 #include "ncio/schema/nexus/ncioTypesSchemaNexus.h"
 
 namespace ncio
@@ -59,7 +61,7 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
                                                                                \
     template void                                                              \
     DataDescriptor::Get<schema::nexus::entry::bank##T##_events::event_id>(     \
-        std::uint64_t *, const Box &box, const int);                           \
+        std::uint64_t *, const Box &, const int);                              \
                                                                                \
     template void                                                              \
     DataDescriptor::Get<schema::nexus::entry::bank##T##_events::event_index>(  \
@@ -76,6 +78,42 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
     template void                                                              \
     DataDescriptor::Get<schema::nexus::entry::bank##T##_events::total_counts>( \
         float &, const int);
+
+NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
+#undef declare_ncio_types
+
+#define declare_ncio_types(T)                                                  \
+    template void                                                              \
+    DataDescriptor::Get<schema::nexus::entry::bank##T##_events::event_id>(     \
+        std::vector<std::uint64_t> &, const Box &);                            \
+                                                                               \
+    template void                                                              \
+    DataDescriptor::Get<schema::nexus::entry::bank##T##_events::event_index>(  \
+        std::vector<std::uint64_t> &, const Box &);                            \
+                                                                               \
+    template void DataDescriptor::Get<                                         \
+        schema::nexus::entry::bank##T##_events::event_time_offset>(            \
+        std::vector<float> &, const Box &);                                    \
+                                                                               \
+    template void DataDescriptor::Get<                                         \
+        schema::nexus::entry::bank##T##_events::event_time_zero>(              \
+        std::vector<double> &, const Box &);
+
+NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
+#undef declare_ncio_types
+
+#define declare_ncio_types(T)                                                  \
+    template Shape DataDescriptor::GetShape<                                   \
+        schema::nexus::entry::bank##T##_events::event_id>() const;             \
+                                                                               \
+    template Shape DataDescriptor::GetShape<                                   \
+        schema::nexus::entry::bank##T##_events::event_index>() const;          \
+                                                                               \
+    template Shape DataDescriptor::GetShape<                                   \
+        schema::nexus::entry::bank##T##_events::event_time_offset>() const;    \
+                                                                               \
+    template Shape DataDescriptor::GetShape<                                   \
+        schema::nexus::entry::bank##T##_events::event_time_zero>() const;
 
 NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
 #undef declare_ncio_types

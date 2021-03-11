@@ -11,10 +11,13 @@
 #include "DataDescriptor.h"
 
 #include "ncio/common/ncioTypes.h" // Dimensions
+#include "ncio/helper/ncioHelperMath.h"
 #include "ncio/helper/ncioHelperTypes.h"
 #include "ncio/transport/Transport.h"
 
 #include "ncio/ncioConfig.h"
+
+#include <cassert>
 
 namespace ncio::core
 {
@@ -99,7 +102,7 @@ void DataDescriptor::Get(const std::string &entryName, std::vector<T> &data,
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Entries[threadID][entryName].emplace_back(
-        helper::types::ToDataTypeEnum<T>(), ContainerType::std_vector, data,
+        helper::types::ToDataTypeEnum<T>(), ContainerType::std_vector, &data,
         box, ShapeType::array, Parameters(), nullptr);
 }
 
@@ -111,7 +114,10 @@ void DataDescriptor::Get(const std::string &entryName, std::vector<T> &data,
                                                                                \
     template void DataDescriptor::Get(const std::string &, T *, const int);    \
     template void DataDescriptor::Get(const std::string &, T *, const Box &,   \
-                                      const int);
+                                      const int);                              \
+                                                                               \
+    template void DataDescriptor::Get(const std::string &, std::vector<T> &,   \
+                                      const Box &, const int);
 
 NCIO_PRIMITIVE_TYPES(declare_ncio_type)
 #undef declare_ncio_type
@@ -179,23 +185,59 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
     switch (entry.shapeType)
     {
     case (ShapeType::value): {
-        T *data = std::any_cast<T>(&entry.data);
+        T *data = std::any_cast<T *>(entry.data);
+
         // TODO: rethink when backends allow truly threaded code
         std::lock_guard<std::mutex> lock(m_Mutex);
         {
-            m_Transport->Get(entryName, data, DimensionsValue, threadID);
+            m_Transport->Get(entryName, data, BoxValue, threadID);
         }
         break;
     }
     case (ShapeType::array): {
-        // TODO some checks on Dimensions
-        T *data = std::any_cast<T *>(entry.data);
-        // TODO: rethink when backends allow truly threaded code
-        std::lock_guard<std::mutex> lock(m_Mutex);
+
+        switch (entry.containerType)
         {
-            m_Transport->Get(entryName, data, std::get<Box>(entry.query),
-                             threadID);
+        case (ContainerType::pointer): {
+            // TODO some checks on Dimensions
+            T *data = std::any_cast<T *>(entry.data);
+            // TODO: rethink when backends allow truly threaded code
+            std::lock_guard<std::mutex> lock(m_Mutex);
+            {
+                m_Transport->Get(entryName, data, std::get<Box>(entry.query),
+                                 threadID);
+            }
+            break;
         }
+        case (ContainerType::std_vector): {
+
+            // must resize
+            // TODO some checks on Dimensions
+            std::vector<T> &data = *std::any_cast<std::vector<T> *>(entry.data);
+            // TODO: rethink when backends allow truly threaded code
+            std::lock_guard<std::mutex> lock(m_Mutex);
+            {
+                const Box box = std::get<Box>(entry.query); // box request
+                // dimensions array for the corresponding box selection
+                const Count count =
+                    (box == ncio::BoxAll)
+                        ? m_Transport->GetShape(
+                              entryName)    // get the entire array shape
+                        : std::get<1>(box); // get the box count
+
+                const std::size_t totalElements = helper::math::Product(count);
+                data.resize(totalElements);
+                m_Transport->Get(entryName, data.data(), box, threadID);
+            }
+            break;
+        }
+
+        default: {
+            assert(entry.containerType != ContainerType::reference);
+        }
+
+        } // end containerType switch
+
         break;
     }
     }

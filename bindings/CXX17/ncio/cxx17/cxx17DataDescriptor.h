@@ -12,6 +12,7 @@
 
 #include <any>
 #include <future>
+#include <vector>
 
 namespace ncio
 {
@@ -108,7 +109,10 @@ public:
      *   - if data is nullptr
      */
     template <auto entry, class T>
-    void Get(std::vector<T> &data, const Box &box, const int threadID = 0);
+    void Get(std::vector<T> &data, const Box &box);
+
+    template <auto entry>
+    Shape GetShape() const;
 
     /**
      * GetMetadata provides an application specific in-memory index.
@@ -170,7 +174,7 @@ private:
      * @throws std::logic_error if m_ImplDataDescriptor is invalid (e.g. empty
      * constructor, after Close)
      */
-    void CheckImpl(const std::string &functionName);
+    void CheckImpl(const std::string &functionName) const;
 
     /**
      * Non-owning pimpl core object placeholder, using pointer to allow empty

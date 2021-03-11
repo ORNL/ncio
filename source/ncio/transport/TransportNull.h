@@ -21,6 +21,8 @@ public:
     ~TransportNull() = default;
 
 private:
+    Shape DoGetShape(const std::string &entryName) const;
+
 #define declare_ncio_type(T)                                                   \
     void DoPutAttribute(const std::string &entryName, const T *data,           \
                         const Dimensions &dimensions, const int threadID)      \

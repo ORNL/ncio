@@ -26,6 +26,11 @@ void Transport::Close()
     m_IsOpen = false;
 }
 
+Shape Transport::GetShape(const std::string &entryName) const
+{
+    return DoGetShape(entryName);
+}
+
 std::any Transport::GetNativeHandler() noexcept { return DoGetNativeHandler(); }
 
 }

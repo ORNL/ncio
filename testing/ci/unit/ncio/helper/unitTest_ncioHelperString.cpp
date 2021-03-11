@@ -5,6 +5,7 @@
  *      Author: William F Godoy godoywf@ornl.gov
  *     License: BSD-3-Clause
  */
+
 #include "ncio-doctest.h"
 
 #include "ncio/helper/ncioHelperString.h"

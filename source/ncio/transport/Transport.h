@@ -47,6 +47,10 @@ public:
     template <class Enum, Enum indexModel, class T>
     T GetMetadata(const Parameters &parameters);
 
+    // this could be expanded to getting more entry info, for now dimensions as
+    // it's used for reallocating memory
+    Shape GetShape(const std::string &entryName) const;
+
     template <class T>
     void PutAttribute(const std::string &entryName, const T *data,
                       const Dimensions &dimensions, const int threadID);
@@ -86,6 +90,8 @@ protected:
 
     /** flag to check if m_File is open and close it in destructor (RAII) */
     bool m_IsOpen = false;
+
+    virtual Shape DoGetShape(const std::string &entryName) const = 0;
 
 #define declare_ncio_type(T)                                                   \
     virtual void DoPutAttribute(const std::string &attributeName,              \

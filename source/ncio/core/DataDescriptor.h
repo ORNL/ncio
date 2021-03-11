@@ -60,6 +60,8 @@ public:
     void Get(const std::string &entryName, std::vector<T> &data, const Box &box,
              const int threadID);
 
+    Shape GetShape(const std::string &entryName) const;
+
     template <class Enum, Enum indexModel, class T>
     T GetMetadata(const Parameters &parameters);
 

@@ -76,13 +76,21 @@ void DataDescriptor::Get(T *data, const Box &box, const int threadID)
 }
 
 template <auto entry, class T>
-void DataDescriptor::Get(std::vector<T> &data, const Box &box,
-                         const int threadID)
+void DataDescriptor::Get(std::vector<T> &data, const Box &box)
 {
     CheckImpl("Get");
     const std::string entryName =
         m_ImplDataDescriptor->ToString<decltype(entry), entry>();
-    m_ImplDataDescriptor->Get(entryName, data, box, threadID);
+    m_ImplDataDescriptor->Get(entryName, data, box, 0);
+}
+
+template <auto entry>
+Shape DataDescriptor::GetShape() const
+{
+    CheckImpl("GetShape");
+    const std::string entryName =
+        m_ImplDataDescriptor->ToString<decltype(entry), entry>();
+    return m_ImplDataDescriptor->GetShape(entryName);
 }
 
 template <auto indexModel, class T>

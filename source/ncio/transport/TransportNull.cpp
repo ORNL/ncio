@@ -45,6 +45,11 @@ NCIO_PRIMITIVE_TYPES(declare_ncio_types)
 
 void TransportNull::DoClose() {}
 
+Shape TransportNull::DoGetShape(const std::string &entryName) const
+{
+    return Shape();
+}
+
 std::any TransportNull::DoGetNativeHandler() noexcept { return std::any(); }
 
 } // end namespace ncio::transport

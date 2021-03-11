@@ -34,6 +34,8 @@ private:
     /** generated Id for top level group "/" */
     hid_t m_TopGroupID = -1;
 
+    Shape DoGetShape(const std::string &entryName) const;
+
 #define declare_ncio_type(T)                                                   \
     void DoPutAttribute(const std::string &attributeName, const T *data,       \
                         const Dimensions &dimensions, const int threadID)      \
