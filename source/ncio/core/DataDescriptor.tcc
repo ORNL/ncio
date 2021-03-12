@@ -226,6 +226,9 @@ void DataDescriptor::GetEntry(const std::string &entryName, Entry &entry,
                         : std::get<1>(box); // get the box count
 
                 const std::size_t totalElements = helper::math::Product(count);
+                // add reserve before resize to prevent exponential growth
+                data.reserve(totalElements);
+                // some cost in memory initialization
                 data.resize(totalElements);
                 m_Transport->Get(entryName, data.data(), box, threadID);
             }
