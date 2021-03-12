@@ -72,6 +72,29 @@ TransportHDF5::~TransportHDF5()
 }
 
 // PRIVATE
+Shape TransportHDF5::DoGetShape(const std::string &entryName) const
+{
+    hid_t dataSetID = H5Dopen(m_File, entryName.c_str(), H5P_DEFAULT);
+    hid_t dataspaceID = H5Dget_space(dataSetID);
+    const std::size_t nDimensions =
+        static_cast<std::size_t>(H5Sget_simple_extent_ndims(dataspaceID));
+
+    std::vector<unsigned long long int> shapeInt(nDimensions);
+    H5Sget_simple_extent_dims(dataspaceID, shapeInt.data(), NULL);
+
+    Shape shape;
+    shape.reserve(nDimensions);
+
+    for (const auto dimension : shapeInt)
+    {
+        shape.push_back(dimension);
+    }
+
+    H5Sclose(dataspaceID);
+    H5Dclose(dataSetID);
+
+    return shape;
+}
 
 #define declare_ncio_type(T)                                                   \
     void TransportHDF5::DoPutAttribute(                                        \

@@ -30,11 +30,13 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
             ncio.Open("data_async.h5", ncio::OpenMode::write);
 
         fw.PutAttribute<ncio::schema::nexus::entry::NX_class, std::string>();
-        // attributes are immutable, already created
-        fw.PutAttribute<ncio::schema::nexus::entry::NX_class, std::string>();
-
         fw.PutAttribute<ncio::schema::nexus::entry::bank1_events::NX_class,
                         std::string>();
+        fw.PutAttribute<ncio::schema::nexus::entry::bank2_events::NX_class,
+                        std::string>();
+
+        // attributes are immutable, already created
+        fw.PutAttribute<ncio::schema::nexus::entry::NX_class, std::string>();
 
         // put a single value
         constexpr float totalCounts = 10;
@@ -75,7 +77,6 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
     {
         float totalCounts = 0;
         std::vector<std::uint64_t> eventIndex(3);
-        std::vector<double> eventTimeZero(3);
 
         ncio::DataDescriptor fr =
             ncio.Open("data_async.h5", ncio::OpenMode::read);
@@ -85,12 +86,46 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         fr.Get<ncio::schema::nexus::entry::bank1_events::event_index>(
             eventIndex.data(), ncio::BoxAll);
 
+        ncio::Shape bank2_eventTimeZeroShape = fr.GetShape<
+            ncio::schema::nexus::entry::bank2_events::event_time_zero>();
+
+        // currently 1D, TODO generalize to any shape
+        std::vector<double> eventTimeZero;
+        eventTimeZero.resize(bank2_eventTimeZeroShape.front());
+
         fr.Get<ncio::schema::nexus::entry::bank2_events::event_time_zero>(
             eventTimeZero.data(), ncio::BoxAll);
 
         std::future future = fr.ExecuteAsync(std::launch::async);
         future.get();
 
+        fr.Close();
+
+        CHECK_EQ(totalCounts, 10);
+        CHECK_EQ(eventIndex, std::vector<std::uint64_t>{1, 2, 3});
+        CHECK_EQ(eventTimeZero,
+                 std::vector<double>{0.016667, 0.033335, 0.050003});
+    }
+
+    SUBCASE("ReadHDF5_vector")
+    {
+        float totalCounts = 0;
+        // ncio would reallocate
+        std::vector<std::uint64_t> eventIndex;
+        std::vector<double> eventTimeZero;
+
+        ncio::DataDescriptor fr =
+            ncio.Open("data_async.h5", ncio::OpenMode::read);
+
+        fr.Get<ncio::schema::nexus::entry::bank1_events::total_counts>(
+            totalCounts);
+        fr.Get<ncio::schema::nexus::entry::bank1_events::event_index>(
+            eventIndex, ncio::BoxAll);
+
+        fr.Get<ncio::schema::nexus::entry::bank2_events::event_time_zero>(
+            eventTimeZero, ncio::BoxAll);
+
+        fr.Execute();
         fr.Close();
 
         CHECK_EQ(totalCounts, 10);
@@ -263,14 +298,16 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
                            ncio::schema::nexus::model1_t>();
 
         const std::map<std::string, std::set<std::string>>
-            expectedNxClassIndex = {{"NXentry", {"/entry"}},
-                                    {"NXevent_data", {"/entry/bank1_events"}},
-                                    {"SDS",
-                                     {"/entry/bank1_events/event_id",
-                                      "/entry/bank1_events/event_index",
-                                      "/entry/bank1_events/event_time_offset",
-                                      "/entry/bank1_events/total_counts",
-                                      "/entry/bank2_events/event_time_zero"}}};
+            expectedNxClassIndex = {
+                {"NXentry", {"/entry"}},
+                {"NXevent_data",
+                 {"/entry/bank1_events", "/entry/bank2_events"}},
+                {"SDS",
+                 {"/entry/bank1_events/event_id",
+                  "/entry/bank1_events/event_index",
+                  "/entry/bank1_events/event_time_offset",
+                  "/entry/bank1_events/total_counts",
+                  "/entry/bank2_events/event_time_zero"}}};
 
         for (const auto &entryPair : nxClassIndex)
         {

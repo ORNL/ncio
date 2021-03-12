@@ -56,6 +56,12 @@ public:
     void Get(const std::string &entryName, T *data, const Box &box,
              const int threadID);
 
+    template <class T>
+    void Get(const std::string &entryName, std::vector<T> &data, const Box &box,
+             const int threadID);
+
+    Shape GetShape(const std::string &entryName) const;
+
     template <class Enum, Enum indexModel, class T>
     T GetMetadata(const Parameters &parameters);
 
@@ -126,15 +132,16 @@ private:
      */
     struct Entry
     {
-        const DataType dataType; ///< data type
+        const DataType dataType;           ///< fixed width data type
+        const ContainerType containerType; ///< reference, pointer, vector
         std::any data; ///< hold data pointer or value from application
         const std::variant<Dimensions, Box> query; ///< request query
         const ShapeType shapeType;
         const Parameters parameters; ///< optional parameters (e.g. compression)
         Info *info;                  // TODO
 
-        Entry(const DataType dataType, std::any data,
-              const std::variant<Dimensions, Box> &query,
+        Entry(const DataType dataType, const ContainerType containerType,
+              std::any data, const std::variant<Dimensions, Box> &query,
               const ShapeType shapeType, const Parameters &parameters,
               Info *info);
     };

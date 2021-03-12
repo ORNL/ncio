@@ -12,6 +12,7 @@
 
 #include <any>
 #include <future>
+#include <vector>
 
 namespace ncio
 {
@@ -93,6 +94,27 @@ public:
     void Get(T *data, const Box &box, const int threadID = 0);
 
     /**
+     * Read prefetch operation on std::vector. Cheap lazy evaluation function.
+     * Register std::vector for a particular array entry.
+     * std::vector is not populated or resized until Execute
+     * @tparam entry
+     * @tparam T
+     * @param data input data pointer to be registered, must not go out of scope
+     * of be modified until Execute
+     * @param box input dimensions selection box
+     * @param threadID
+     * @throws std::exception
+     * - std::system_error: if low-level error detected
+     * - std::invalid_argument:
+     *   - if data is nullptr
+     */
+    template <auto entry, class T>
+    void Get(std::vector<T> &data, const Box &box);
+
+    template <auto entry>
+    Shape GetShape() const;
+
+    /**
      * GetMetadata provides an application specific in-memory index.
      * @tparam schema type
      * @tparam T application specific data structure type for the metadata index
@@ -152,7 +174,7 @@ private:
      * @throws std::logic_error if m_ImplDataDescriptor is invalid (e.g. empty
      * constructor, after Close)
      */
-    void CheckImpl(const std::string &functionName);
+    void CheckImpl(const std::string &functionName) const;
 
     /**
      * Non-owning pimpl core object placeholder, using pointer to allow empty

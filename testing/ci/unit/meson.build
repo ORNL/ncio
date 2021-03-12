@@ -1,7 +1,7 @@
 
 # key: suite, value: list of tests
 unit_tests = { 'core' : ['NCIO'], 
-               'helper' : ['ncioHelperString']
+               'helper' : ['ncioHelperString', 'ncioHelperTypes', 'ncioHelperMath']
              }
 
 foreach key, value: unit_tests

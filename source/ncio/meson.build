@@ -47,6 +47,7 @@ ncio_sources = ['core/NCIO.cpp',
                 
                 'helper/ncioHelperString.cpp',
                 'helper/ncioHelperTypes.cpp',
+                'helper/ncioHelperMath.cpp',
                 
                 'transport/Transport.cpp',
                 'transport/TransportNull.cpp']

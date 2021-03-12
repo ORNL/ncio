@@ -51,7 +51,7 @@ void DataDescriptor::Close()
 }
 
 // PRIVATE
-void DataDescriptor::CheckImpl(const std::string &functionName)
+void DataDescriptor::CheckImpl(const std::string &functionName) const
 {
     if (!*this)
     {

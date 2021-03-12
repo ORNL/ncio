@@ -34,6 +34,18 @@ DataDescriptor::DataDescriptor(const std::string &descriptorName,
     InitTransport(descriptorName, openMode, parameters);
 }
 
+Shape DataDescriptor::GetShape(const std::string &entryName) const
+{
+    if (m_OpenMode != OpenMode::read)
+    {
+        throw std::logic_error(
+            "ncio ERROR: DataDescriptor::GetShape function can only be called "
+            "in a DataDescriptor created with OpenMode::read\n");
+    }
+
+    return m_Transport->GetShape(entryName);
+}
+
 void DataDescriptor::Execute(const int threadID)
 {
     auto lf_ExecutePutAttributes =
@@ -101,10 +113,10 @@ void DataDescriptor::Execute(const int threadID)
                         // avoid warning
                     case (DataType::string):
                         break;
+                    // FIXME: use GetEntry
 #define declare_ncio_types(T, L)                                               \
     case (T):                                                                  \
-        m_Transport->Get<L>(entryName, std::any_cast<L *>(request.data), box,  \
-                            threadID);                                         \
+        GetEntry<L>(entryName, request, threadID);                             \
         break;
 
                         NCIO_PRIMITIVE_DATATYPES_2ARGS(declare_ncio_types)
@@ -159,12 +171,13 @@ std::any DataDescriptor::GetNativeHandler() noexcept
 bool DataDescriptor::IsOpen() const noexcept { return m_IsOpen; }
 
 // PRIVATE
-DataDescriptor::Entry::Entry(const DataType dataType, std::any data,
+DataDescriptor::Entry::Entry(const DataType dataType,
+                             const ContainerType containerType, std::any data,
                              const std::variant<Dimensions, Box> &query,
                              const ShapeType shapeType,
                              const Parameters &parameters, Info *info)
-: dataType(dataType), data(data), query(query), shapeType(shapeType),
-  parameters(parameters), info(info)
+: dataType(dataType), containerType(containerType), data(data), query(query),
+  shapeType(shapeType), parameters(parameters), info(info)
 {
 }
 
