@@ -19,6 +19,29 @@ namespace ncio::testing::regression
 std::string testInfo::ncioDataDir = "";
 
 #ifdef NCIO_HAVE_HDF5
+TEST_CASE_FIXTURE(testInfo, "Regression nightly tests for nexus HDF5 data")
+{
+    ncio::NCIO ncio;
+    SUBCASE("CG2_8179")
+    {
+        const std::string fileName =
+            testInfo::ncioDataDir + "/data/nexus/hdf5/" + "CG2_8179.nxs.h5";
+        ncio::DataDescriptor fr = ncio.Open(fileName, ncio::OpenMode::read);
+
+        std::vector<std::uint32_t> event_id(1000);
+
+        fr.Get<ncio::schema::nexus::entry::bank1_events::event_id>(
+            event_id.data(), ncio::BoxAll);
+        fr.Execute();
+
+        std::vector<std::uint32_t> expected_event_id =
+            testInfo::expectedData::GetArray<std::uint32_t>(
+                fileName, "/entry/bank1_events/event_id");
+
+        fr.Close();
+    }
+}
+
 TEST_CASE_FIXTURE(testInfo,
                   "Regression nightly tests for nexus HDF5 data index "
                   "DataDescriptor::GetMetadata cases")

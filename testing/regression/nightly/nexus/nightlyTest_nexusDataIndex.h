@@ -42,8 +42,8 @@ struct testInfo
         // TODO expand to other files
 
         template <class T>
-        std::vector<T> GetArray(const std::string &hdf5FileName,
-                                const std::string &arrayDataset);
+        static std::vector<T> GetArray(const std::string &hdf5FileName,
+                                       const std::string &arrayDataset);
     };
 
     /** Holds the expected index (at compile time) for the each NeXus file */
