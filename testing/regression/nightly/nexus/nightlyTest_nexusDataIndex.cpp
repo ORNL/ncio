@@ -12,6 +12,8 @@
 
 #include <ncio.h>
 
+#include <nlohmann/json.hpp>
+
 namespace ncio::testing::regression
 {
 
@@ -28,14 +30,14 @@ TEST_CASE_FIXTURE(testInfo, "Regression nightly tests for nexus HDF5 data")
             testInfo::ncioDataDir + "/data/nexus/hdf5/" + "CG2_8179.nxs.h5";
         ncio::DataDescriptor fr = ncio.Open(fileName, ncio::OpenMode::read);
 
-        std::vector<std::uint32_t> event_id(1000);
+        std::vector<std::uint64_t> event_id(1000);
 
         fr.Get<ncio::schema::nexus::entry::bank1_events::event_id>(
             event_id.data(), ncio::BoxAll);
         fr.Execute();
 
-        std::vector<std::uint32_t> expected_event_id =
-            testInfo::expectedData::GetArray<std::uint32_t>(
+        std::vector<std::uint64_t> expected_event_id =
+            testInfo::expectedData::GetArray<std::uint64_t>(
                 fileName, "/entry/bank1_events/event_id");
 
         fr.Close();
@@ -58,21 +60,25 @@ TEST_CASE_FIXTURE(testInfo,
         {
             CHECK_EQ(index, expectedIndex);
         }
-        else // generate the map<string,set<string>> NX_class based index
+        else // generate the json file for map<string,set<string>> NX_class
+             // based index
         {
-            std::cout << "{ ";
+            nlohmann::json jsonIndex;
 
             for (const auto &indexPair : index)
             {
-                std::cout << "{ \"" << indexPair.first << "\", {";
+                const std::string &nxClass = indexPair.first;
+                jsonIndex[nxClass] = nlohmann::json::array();
 
-                for (const auto &entry : indexPair.second)
+                for (const std::string &entry : indexPair.second)
                 {
-                    std::cout << "\"" << entry << "\", ";
+                    jsonIndex[nxClass].push_back(entry);
                 }
-                std::cout << "} }, ";
             }
-            std::cout << "};";
+
+            std::ofstream o("pretty.json");
+            o << std::setw(4) << jsonIndex << "\n";
+            o.close();
         }
 
         fr.Close();
@@ -81,14 +87,7 @@ TEST_CASE_FIXTURE(testInfo,
     std::cout << "Nexus-Data location: " << testInfo::ncioDataDir << "\n";
 
     const std::map<std::string, const ncio::schema::nexus::model1_t &>
-        fileIndices = {
-            {"CG2_8179.nxs.h5", testInfo::expectedIndex::CG2_8179},
-            {"CG2_8953.nxs.h5", testInfo::expectedIndex::CG2_8953},
-            {"CG3_1545.nxs.h5", testInfo::expectedIndex::CG3_1545},
-            {"CG3_943.nxs.h5", testInfo::expectedIndex::CG3_943},
-            {"EQSANS_112296.nxs.h5", testInfo::expectedIndex::EQSANS_112296},
-            {"EQSANS_112307.nxs.h5", testInfo::expectedIndex::EQSANS_112307},
-            {"NOM_78106.nxs.h5", testInfo::expectedIndex::NOM_7816}};
+        fileIndices = {{"NOM_78106.nxs.h5", testInfo::expectedIndex::NOM_7816}};
 
     ncio::NCIO ncio;
 
@@ -99,7 +98,7 @@ TEST_CASE_FIXTURE(testInfo,
 
         // log the current input data file on doctest
         CAPTURE(fileName);
-        lf_CheckIndex(ncio, fileName, fileIndexPair.second);
+        lf_CheckIndex(ncio, fileName, fileIndexPair.second, true);
     }
 #endif
 }

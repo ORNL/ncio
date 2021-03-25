@@ -22,7 +22,7 @@ foreach test: nightly_tests_nexus
                      file_name,
                      include_directories:  ncio_doctest_inc,
                      link_with: nexusindex_lib, 
-                     dependencies: [ncio_cxx17_dep, doctest_dep, ncio_data_dep, threads_dep])
+                     dependencies: [ncio_cxx17_dep, doctest_dep, ncio_data_dep, nlohmann_json_dep, threads_dep])
   
   ncio_data_dir = meson.source_root() / 'subprojects' / 'ncio-data'
   

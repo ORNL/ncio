@@ -50,6 +50,7 @@ if get_option('build-tests')
   
   if get_option('build-tests-regression')
     ncio_data_dep = dependency('ncio-data', fallback: ['ncio-data', 'ncio_data_dep'])
+    nlohmann_json_dep = dependency('nlohmann_json', fallback: ['nlohmann_json', 'nlohmann_json_dep'])
   endif
   
   subdir('testing')

@@ -75,4 +75,8 @@ template std::vector<std::uint32_t>
 testInfo::expectedData::GetArray<std::uint32_t>(const std::string &,
                                                 const std::string &);
 
+template std::vector<std::uint64_t>
+testInfo::expectedData::GetArray<std::uint64_t>(const std::string &,
+                                                const std::string &);
+
 } // end namespace
