@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "nightlyTest_nexusDataIndex.h"
+#include "nightlyTest_NexusData.h"
 
 #include <fstream>
 #include <iostream>
@@ -16,8 +16,9 @@ namespace ncio::testing::regression
 {
 
 template <class T>
-std::vector<T> testInfo::expectedData::GetArray(const std::string &hdf5FileName,
-                                                const std::string &arrayDataset)
+std::vector<T>
+NexusData::ExpectedData::GetArray(const std::string &hdf5FileName,
+                                  const std::string &arrayDataset)
 {
     const std::string h5dumpCommand =
         "h5dump -y -d " + arrayDataset + " " + hdf5FileName + " > temp.dat";
@@ -72,11 +73,11 @@ std::vector<T> testInfo::expectedData::GetArray(const std::string &hdf5FileName,
 }
 
 template std::vector<std::uint32_t>
-testInfo::expectedData::GetArray<std::uint32_t>(const std::string &,
-                                                const std::string &);
+NexusData::ExpectedData::GetArray<std::uint32_t>(const std::string &,
+                                                 const std::string &);
 
 template std::vector<std::uint64_t>
-testInfo::expectedData::GetArray<std::uint64_t>(const std::string &,
-                                                const std::string &);
+NexusData::ExpectedData::GetArray<std::uint64_t>(const std::string &,
+                                                 const std::string &);
 
 } // end namespace
