@@ -55,7 +55,7 @@ TEST_CASE("Functional tests for ncio::DataDescriptor C++17 bindings class")
         fw.Put<ncio::schema::nexus::entry::bank1_events::event_index>(
             eventIndex.data(), {{nx}, {0}, {nx}});
 
-        const std::vector<std::uint64_t> eventID = {194, 335, 353};
+        const std::vector<std::uint32_t> eventID = {194, 335, 353};
         fw.Put<ncio::schema::nexus::entry::bank1_events::event_id>(
             eventID.data(), {{nx}, {0}, {nx}});
 

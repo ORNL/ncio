@@ -36,7 +36,7 @@ NCIO_MACRO_NEXUS_FOREACH_BANK_ID(declare_ncio_types)
 #define declare_ncio_types(T)                                                  \
     template void                                                              \
     DataDescriptor::Put<schema::nexus::entry::bank##T##_events::event_id>(     \
-        const std::uint64_t *, const Dimensions &, const int);                 \
+        const std::uint32_t *, const Dimensions &, const int);                 \
                                                                                \
     template void                                                              \
     DataDescriptor::Put<schema::nexus::entry::bank##T##_events::event_index>(  \

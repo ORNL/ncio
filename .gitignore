@@ -55,4 +55,5 @@ CMakeSettings.json
 # Meson subprojects
 subprojects/doctest
 subprojects/ncio-data
+subprojects/nlohmann_json
 
