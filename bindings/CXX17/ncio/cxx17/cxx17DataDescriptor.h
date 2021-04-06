@@ -105,11 +105,24 @@ public:
      * @param threadID
      * @throws std::exception
      * - std::system_error: if low-level error detected
-     * - std::invalid_argument:
-     *   - if data is nullptr
      */
     template <auto entry, class T>
     void Get(std::vector<T> &data, const Box &box);
+
+    /**
+     * Get runtime variable name signature
+     * @tparam T
+     * @param entryName
+     * @param data
+     * @param box
+     * @throws std::exception
+     * - std::system_error: if low-level error detected
+     * - std::invalid_argument:
+     *   - if entryName is not valid
+     */
+    template <class T>
+    void Get(const std::string &entryName, std::vector<T> &data,
+             const Box &box);
 
     template <auto entry>
     Shape GetShape() const;

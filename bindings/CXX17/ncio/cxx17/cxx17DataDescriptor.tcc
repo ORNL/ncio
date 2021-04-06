@@ -10,6 +10,7 @@
 
 #include "cxx17DataDescriptor.h"
 
+#include "ncio/common/ncioMacros.h"
 #include "ncio/core/DataDescriptor.h"
 #include "ncio/ncioConfig.h" // #ifdef NCIO_HAVE_SCHEMA_XXX
 
@@ -83,6 +84,21 @@ void DataDescriptor::Get(std::vector<T> &data, const Box &box)
         m_ImplDataDescriptor->ToString<decltype(entry), entry>();
     m_ImplDataDescriptor->Get(entryName, data, box, 0);
 }
+
+template <class T>
+void DataDescriptor::Get(const std::string &entryName, std::vector<T> &data,
+                         const Box &box)
+{
+    CheckImpl("Get");
+    m_ImplDataDescriptor->Get(entryName, data, box, 0);
+}
+
+#define declare_ncio_type(T)                                                   \
+    template void DataDescriptor::Get(const std::string &, std::vector<T> &,   \
+                                      const Box &);
+
+NCIO_PRIMITIVE_TYPES(declare_ncio_type)
+#undef declare_ncio_type
 
 template <auto entry>
 Shape DataDescriptor::GetShape() const

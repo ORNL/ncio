@@ -30,16 +30,6 @@ public:
      */
     struct ExpectedData
     {
-        struct CG2_8179
-        {
-            std::vector<std::uint32_t> bank_event_id;
-            std::vector<std::uint64_t> bank_event_index;
-            std::vector<float> bank_event_time_offset;
-            std::vector<std::uint32_t> bank_event_time_zero;
-            std::vector<std::uint64_t> bank_total_counts;
-        };
-        // TODO expand to other files
-
         template <class T>
         static std::vector<T> GetArray(const std::string &hdf5FileName,
                                        const std::string &arrayDataset);

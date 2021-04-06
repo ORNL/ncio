@@ -22,7 +22,14 @@ NexusData::ExpectedData::GetArray(const std::string &hdf5FileName,
 {
     const std::string h5dumpCommand =
         "h5dump -y -d " + arrayDataset + " " + hdf5FileName + " > temp.dat";
-    std::system(h5dumpCommand.c_str());
+
+    int status = std::system(h5dumpCommand.c_str());
+    if (status)
+    {
+        throw std::runtime_error(
+            "ncio ERROR test: could not run h5dump on file " + hdf5FileName +
+            "\n");
+    }
 
     // advance "nrecords"
     auto lf_Advance = [](std::ifstream &stream, const std::size_t nrecords) {
@@ -62,13 +69,6 @@ NexusData::ExpectedData::GetArray(const std::string &hdf5FileName,
         data.push_back(datum);
     }
 
-    // Just for verification
-    std::cout << "Read data:\n";
-    for (const auto datum : data)
-    {
-        std::cout << datum << "\n";
-    }
-
     return data;
 }
 
@@ -79,5 +79,9 @@ NexusData::ExpectedData::GetArray<std::uint32_t>(const std::string &,
 template std::vector<std::uint64_t>
 NexusData::ExpectedData::GetArray<std::uint64_t>(const std::string &,
                                                  const std::string &);
+
+template std::vector<float>
+NexusData::ExpectedData::GetArray<float>(const std::string &,
+                                         const std::string &);
 
 } // end namespace
