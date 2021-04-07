@@ -13,6 +13,6 @@ foreach test: nightly_tests_nexus
   ncio_data_dir = meson.source_root() / 'subprojects' / 'ncio-data'
   
   # longer tests, timeout must be one minute or larger
-  test(test, exe, args: [ncio_data_dir], timeout: 60, 
+  test(test, exe, args: [ncio_data_dir], timeout: 1000, 
        suite: ['regression', 'nightlytest', 'nexus'] )
 endforeach

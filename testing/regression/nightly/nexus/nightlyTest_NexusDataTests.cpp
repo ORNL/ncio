@@ -20,25 +20,27 @@ namespace ncio::testing::regression
 #ifdef NCIO_HAVE_HDF5
 TEST_CASE_FIXTURE(NexusData, "Regression nightly tests for nexus HDF5 data")
 {
+    // data containers
+    std::vector<std::uint64_t> bank_event_id;
+    std::vector<std::uint64_t> bank_event_index;
+    std::vector<float> bank_event_time_offset;
+    std::vector<double> bank_event_time_zero;
+    std::vector<std::uint64_t> bank_total_counts;
+
     ncio::NCIO ncio;
-    SUBCASE("CG2_8179")
-    {
-        const std::string fileName = NexusData::m_DataDirectory +
-                                     "/data/nexus/hdf5/" + "CG2_8179.nxs.h5";
+
+    std::chrono::milliseconds ncioTime(0);
+    std::chrono::milliseconds h5dumpTime(0);
+
+    auto lf_CheckBankData = [&](const std::string &fileName,
+                                const std::uint32_t nBanks) {
+        std::cout << "Testing file " << fileName << "\n";
         ncio::DataDescriptor fr = ncio.Open(fileName, ncio::OpenMode::read);
 
-        std::vector<std::uint64_t> bank_event_id;
-        std::vector<std::uint64_t> bank_event_index;
-        std::vector<float> bank_event_time_offset;
-        std::vector<std::uint32_t> bank_event_time_zero;
-        std::vector<std::uint64_t> bank_total_counts;
-
-        std::chrono::milliseconds ncioTime(0);
-        std::chrono::milliseconds h5dumpTime(0);
-
-        for (std::size_t b = 1; b < 40; ++b)
+        std::cout << "bank: ";
+        for (std::uint32_t b = 1; b <= nBanks; ++b)
         {
-            auto t0 = std::chrono::high_resolution_clock::now();
+            std::cout << b << " ";
             const std::string bankGroup =
                 "/entry/bank" + std::to_string(b) + "_events/";
 
@@ -49,6 +51,8 @@ TEST_CASE_FIXTURE(NexusData, "Regression nightly tests for nexus HDF5 data")
             const std::string entryEventTimeZero =
                 bankGroup + "event_time_zero";
             const std::string entryTotalCounts = bankGroup + "total_counts";
+
+            auto t0 = std::chrono::high_resolution_clock::now();
 
             fr.Get(entryEventID, bank_event_id, ncio::BoxAll);
             fr.Get(entryEventIndex, bank_event_index, ncio::BoxAll);
@@ -70,9 +74,8 @@ TEST_CASE_FIXTURE(NexusData, "Regression nightly tests for nexus HDF5 data")
             std::vector<float> expected_bank_event_time_offset =
                 m_ExpectedData.GetArray<float>(fileName, entryEventTimeOffset);
 
-            std::vector<std::uint32_t> expected_bank_event_time_zero =
-                m_ExpectedData.GetArray<std::uint32_t>(fileName,
-                                                       entryEventTimeZero);
+            std::vector<double> expected_bank_event_time_zero =
+                m_ExpectedData.GetArray<double>(fileName, entryEventTimeZero);
 
             std::vector<std::uint64_t> expected_bank_total_counts =
                 m_ExpectedData.GetArray<std::uint64_t>(fileName,
@@ -80,8 +83,24 @@ TEST_CASE_FIXTURE(NexusData, "Regression nightly tests for nexus HDF5 data")
 
             CHECK_EQ(bank_event_id, expected_bank_event_id);
             CHECK_EQ(bank_event_index, expected_bank_event_index);
-            CHECK_EQ(bank_event_time_offset, expected_bank_event_time_offset);
-            CHECK_EQ(bank_event_time_zero, expected_bank_event_time_zero);
+
+            // float approximate comparison
+            CHECK_EQ(bank_event_time_offset.size(),
+                     expected_bank_event_time_offset.size());
+            for (std::size_t i = 0; i < bank_event_time_offset.size(); ++i)
+            {
+                CHECK_EQ(bank_event_time_offset[i],
+                         doctest::Approx(expected_bank_event_time_offset[i]));
+            }
+
+            CHECK_EQ(bank_event_time_zero.size(),
+                     expected_bank_event_time_zero.size());
+            for (std::size_t i = 0; i < bank_event_time_zero.size(); ++i)
+            {
+                CHECK_EQ(bank_event_time_zero[i],
+                         doctest::Approx(expected_bank_event_time_zero[i]));
+            }
+
             CHECK_EQ(bank_total_counts, expected_bank_total_counts);
 
             auto t2 = std::chrono::high_resolution_clock::now();
@@ -91,14 +110,33 @@ TEST_CASE_FIXTURE(NexusData, "Regression nightly tests for nexus HDF5 data")
             h5dumpTime +=
                 std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
         }
-
         fr.Close();
+        std::cout << "\n";
+    };
 
-        std::cout << "NCIO time: " << ncioTime.count() << " ms";
-        std::cout << "\n";
-        std::cout << "h5dump time: " << h5dumpTime.count() << " ms";
-        std::cout << "\n";
+    // file indices and number of banks
+    std::map<std::string, std::uint32_t> fileNBanks = {
+        {"CG2_8179.nxs", 48},      {"CG2_8953.nxs", 48},
+        {"CG3_1545.nxs", 88},      {"CG3_943.nxs", 88},
+        {"EQSANS_112296.nxs", 48}, {"EQSANS_112307.nxs", 48},
+        {"NOM_78106.nxs", 99}};
+
+    for (const auto pair : fileNBanks)
+    {
+        const std::string nexusFile = pair.first;
+        const std::uint32_t nBanks = pair.second;
+
+        const std::string fileName = NexusData::m_DataDirectory +
+                                     "/data/nexus/hdf5/" + nexusFile + ".h5";
+
+        CAPTURE(fileName);
+        lf_CheckBankData(fileName, nBanks);
     }
+
+    std::cout << "NCIO time: " << ncioTime.count() << " ms";
+    std::cout << "\n";
+    std::cout << "h5dump time: " << h5dumpTime.count() << " ms";
+    std::cout << "\n";
 }
 
 TEST_CASE_FIXTURE(NexusData,

@@ -84,4 +84,8 @@ template std::vector<float>
 NexusData::ExpectedData::GetArray<float>(const std::string &,
                                          const std::string &);
 
+template std::vector<double>
+NexusData::ExpectedData::GetArray<double>(const std::string &,
+                                          const std::string &);
+
 } // end namespace
