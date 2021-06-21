@@ -18,9 +18,10 @@ jobs:
     # only run on pull request comments and merge
     if: | 
         github.repository_owner == 'ORNL' &&
-        ( github.event.issue.pull_request || github.event_name == 'push' ) &&
         github.actor == 'williamfgc' &&
-        contains(github.event.comment.body, 'Test this please')
+        ( ( github.event.issue.pull_request && 
+            contains(github.event.comment.body, 'Test this please') ) ||
+          github.event_name == 'push' )
 
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
