@@ -16,7 +16,7 @@ jobs:
     if: | 
         github.repository_owner == 'ORNL' &&
         ${{ github.event.issue.pull_request }} &&
-        contains(github.event.issue.comment, 'Test this please') &&
+        contains(github.event.comment.body, 'Test this please') &&
         github.actor == 'williamfgc'
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
@@ -38,10 +38,10 @@ jobs:
     steps:
     - name: PR info
       run:  |
-            echo "Comment on PR #${{ github.event.issue.number }}" \
-            echo "Comment: ${{ github.event.issue.comment }}" \
-            echo "Comment sender: ${{ github.event.issue.comment.sender }}" \
-            echo "GitHub action: ${{ github.actor }}"
+            echo -e "Comment on PR #${{ github.event.issue.number }}\n" \
+            echo -e "Comment: ${{ github.event.comment.body }}\n" \
+            echo -e "Comment sender: ${{ github.event.sender }}\n" \
+            echo -e "GitHub actor: ${{ github.actor }}\n"
              
     - name: Checkout Action
       uses: actions/checkout@v2
