@@ -2,9 +2,6 @@
 name: GitHub Actions manual CI
 
 on:
-  pull_request:
-    types: [opened]
-  
   issue_comment:
     types: [created]
   
@@ -13,7 +10,9 @@ jobs:
   linux_pr_comment:
     if: | 
         github.repository_owner == 'ORNL' &&
-        github.actor == 'williamfgc'
+        github.actor == 'williamfgc' &&
+        contains(github.event.comment.body, 'Test this please') &&
+        ${{ github.event.issue.pull_request }}
 
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
@@ -33,19 +32,21 @@ jobs:
             options: -u root
        
     steps:
-    - uses: khan/pull-request-comment-trigger@master
-      id: check
-      with:
-        trigger: 'Test this please'
     
-    - name: PR info
-      run:  |
-            echo -e "Comment on PR #${{ github.event.issue.number }}\n" \
-            echo -e "Comment: ${{ github.event.comment.body }}\n" \
-            echo -e "GitHub actor: ${{ github.actor }}\n" \
-            echo -e "Event name: ${{ github.event_name }}\n"
- 
-    - name: GitHub API Request
+    - name: Create comment
+      if: steps.check.outputs.triggered == 'true'
+      env:
+        URL: ${{ github.event.issue.comments_url }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+          curl \
+            -X POST \
+            $URL \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            --data '{ "body": ":test_tube: [starting ci integration job]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')" }'
+    
+    - name: Github API Request
       if: steps.check.outputs.triggered == 'true'
       id: request
       uses: octokit/request-action@v2.0.0
@@ -53,27 +54,24 @@ jobs:
         route: ${{ github.event.issue.pull_request.url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          
     - name: Get PR informations
       if: steps.check.outputs.triggered == 'true'
       id: pr_data
       run: |
           echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
-          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).base.repo.full_name }}"
-          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
-          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
-    
-    - name: Checkout Action
+          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).head.repo.full_name }}"
+          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).head.repo.clone_url }}"
+          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).head.repo.ssh_url }}"
+          
+    - name: Checkout PR Branch
       if: steps.check.outputs.triggered == 'true'
       uses: actions/checkout@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        repository: ${{ fromJson(steps.request.outputs.data).head.repo.full_name }}
         ref: ${{ steps.pr_data.outputs.branch }}
         
-    - name: Save comment in file
-      if: steps.check.outputs.triggered == 'true'
-      run: echo ${{ github.event.comment.body }} > comments/$(date +"%s").txt
-
     - name: Configure
       run: scripts/ci/github-actions/bash/run_step.sh configure
 
