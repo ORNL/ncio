@@ -11,7 +11,6 @@ on:
 jobs:
 
   linux_pr_comment:
-    # only run on pull request comments and merge
     if: | 
         github.repository_owner == 'ORNL' &&
         github.actor == 'williamfgc' &&
