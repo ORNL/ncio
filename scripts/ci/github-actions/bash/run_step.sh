@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# centos7 only
+# centOS7 only
 if test -f /root/.bash_profile; then
   source /root/.bash_profile
 fi
