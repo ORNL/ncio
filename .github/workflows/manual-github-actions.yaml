@@ -11,7 +11,7 @@ on:
   
 jobs:
 
-  linux:
+  linux_pr_comment:
     # only run on pull request comments
     if: | 
         github.repository_owner == 'ORNL' &&
@@ -37,10 +37,10 @@ jobs:
        
     steps:
     - name: PR info
-    - run: |
-            echo "Comment on PR #${{ github.event.issue.number }}"
-            echo "Comment: ${{ github.event.issue.comment }}"
-            echo "Comment sender: ${{ github.event.issue.comment.sender }}"
+      run:  |
+            echo "Comment on PR #${{ github.event.issue.number }}" \
+            echo "Comment: ${{ github.event.issue.comment }}" \
+            echo "Comment sender: ${{ github.event.issue.comment.sender }}" \
             echo "GitHub action: ${{ github.actor }}"
              
     - name: Checkout Action
