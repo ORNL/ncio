@@ -15,9 +15,10 @@ jobs:
     # only run on pull request comments
     if: | 
         github.repository_owner == 'ORNL' &&
-        ${{ github.event.issue.pull_request }} &&
-        contains(github.event.comment.body, 'Test this please') &&
-        github.actor == 'williamfgc'
+        github.event.issue.pull_request &&
+        github.actor == 'williamfgc' &&
+        contains(github.event.comment.body, 'Test this please')
+
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     env:
@@ -40,7 +41,6 @@ jobs:
       run:  |
             echo -e "Comment on PR #${{ github.event.issue.number }}\n" \
             echo -e "Comment: ${{ github.event.comment.body }}\n" \
-            echo -e "Comment sender: ${{ github.event.sender }}\n" \
             echo -e "GitHub actor: ${{ github.actor }}\n"
              
     - name: Checkout Action
