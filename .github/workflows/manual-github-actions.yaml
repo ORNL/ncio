@@ -57,9 +57,9 @@ jobs:
     - name: Checkout Action
       uses: actions/checkout@v2
       with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{fromJson(steps.request.outputs.data).head.repo.full_name}}
-          ref: ${{fromJson(steps.request.outputs.data).head.ref}}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        repository: ${{fromJson(steps.request.outputs.data).head.repo.full_name}}
+        ref: ${{fromJson(steps.request.outputs.data).head.ref}}
 
     - name: Configure
       run: scripts/ci/github-actions/bash/run_step.sh configure
