@@ -11,7 +11,7 @@ If($step -eq "configure")
   cd $Env:GITHUB_WORKSPACE\..
   mkdir ncio-build
   cd ncio-build
-  C:\hostedtoolcache\windows\Python\3.9.2\x64\Scripts\meson.exe --prefix=$Env:GITHUB_WORKSPACE\..\ncio-install --default-library=static $Env:GITHUB_WORKSPACE
+  C:\hostedtoolcache\windows\Python\3.9.5\x64\Scripts\meson.exe --prefix=$Env:GITHUB_WORKSPACE\..\ncio-install --default-library=static $Env:GITHUB_WORKSPACE
   Write-Host "End configuration"
 }
 ElseIf($step -eq "build")
