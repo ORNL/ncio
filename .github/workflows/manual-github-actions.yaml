@@ -47,8 +47,7 @@ jobs:
             echo -e "Comment: ${{ github.event.comment.body }}\n" \
             echo -e "GitHub actor: ${{ github.actor }}\n" \
             echo -e "Event name: ${{ github.event_name }}\n"
-            
-             
+ 
     - name: Github API Request
       id: request
       uses: octokit/request-action@v2.0.2
@@ -56,6 +55,13 @@ jobs:
         route: ${{ github.event.issue.pull_request.url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get PR informations
+        id: pr_data
+        run: |
+          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).head.repo.full_name }}"
+          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).head.repo.clone_url }}"
+          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).head.repo.ssh_url }}"
 
     - name: Checkout Action
       uses: actions/checkout@v2
