@@ -18,7 +18,7 @@ jobs:
     # only run on pull request comments and merge
     if: | 
         github.repository_owner == 'ORNL' &&
-        ( github.event.issue.pull_request || github.event.action == 'push' ) &&
+        ( github.event.issue.pull_request || github.event_name == 'push' ) &&
         github.actor == 'williamfgc' &&
         contains(github.event.comment.body, 'Test this please')
 
@@ -44,7 +44,9 @@ jobs:
       run:  |
             echo -e "Comment on PR #${{ github.event.issue.number }}\n" \
             echo -e "Comment: ${{ github.event.comment.body }}\n" \
-            echo -e "GitHub actor: ${{ github.actor }}\n"
+            echo -e "GitHub actor: ${{ github.actor }}\n" \
+            echo -e "Event name: ${{ githhub.event_name }}\n"
+            
              
     - name: Github API Request
       id: request
