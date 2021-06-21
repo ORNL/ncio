@@ -34,9 +34,9 @@ jobs:
        
     steps:
     - uses: khan/pull-request-comment-trigger@master
-        id: check
-        with:
-          trigger: 'Test this please'
+      id: check
+      with:
+        trigger: 'Test this please'
     
     - name: PR info
       run:  |
