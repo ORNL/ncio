@@ -47,12 +47,12 @@ jobs:
             echo -e "GitHub actor: ${{ github.actor }}\n"
              
     - name: Github API Request
-        id: request
-        uses: octokit/request-action@v2.0.2
-        with:
-          route: ${{ github.event.issue.pull_request.url }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: request
+      uses: octokit/request-action@v2.0.2
+      with:
+        route: ${{ github.event.issue.pull_request.url }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Checkout Action
       uses: actions/checkout@v2
