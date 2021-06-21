@@ -13,9 +13,7 @@ jobs:
   linux_pr_comment:
     if: | 
         github.repository_owner == 'ORNL' &&
-        github.actor == 'williamfgc' &&
-        contains(github.event.comment.body, 'Test this please') &&
-        github.event.issue.pull_request
+        github.actor == 'williamfgc'
 
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
@@ -36,18 +34,14 @@ jobs:
        
     steps:
     
-    - name: Create comment
+    - name: Comment on PR
+      uses: khan/pull-request-comment-trigger@master
+      id: check
+      with:
+        trigger: 'Test this please'
       env:
-        URL: ${{ github.event.issue.comments_url }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": ":test_tube: [starting ci integration job]( https://github.com/'"$GITHUB_REPOSITORY"'/actions/runs/'"$GITHUB_RUN_ID"')" }'
-    
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        
     - name: Github API Request
       id: request
       uses: octokit/request-action@v2.0.0
