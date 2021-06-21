@@ -2,6 +2,9 @@
 name: GitHub Actions manual CI
 
 on:
+  pull_request:
+    types: [opened]
+  
   issue_comment:
     types: [created]
   
