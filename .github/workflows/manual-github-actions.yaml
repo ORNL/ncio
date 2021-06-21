@@ -2,6 +2,9 @@
 name: GitHub Actions manual CI
 
 on: 
+  pull_request:
+    types: [opened]
+  
   issue_comment:
     types: [created]
   
@@ -15,7 +18,7 @@ jobs:
     # only run on pull request comments
     if: | 
         github.repository_owner == 'ORNL' &&
-        github.event.issue.pull_request &&
+        ( github.event.issue.pull_request || github.event.action == 'push' ) &&
         github.actor == 'williamfgc' &&
         contains(github.event.comment.body, 'Test this please')
 
