@@ -45,27 +45,34 @@ jobs:
             echo -e "GitHub actor: ${{ github.actor }}\n" \
             echo -e "Event name: ${{ github.event_name }}\n"
  
-    - name: Github API Request
+    - name: GitHub API Request
+      if: steps.check.outputs.triggered == 'true'
       id: request
-      uses: octokit/request-action@v2.0.2
+      uses: octokit/request-action@v2.0.0
       with:
         route: ${{ github.event.issue.pull_request.url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Get PR informations
+      if: steps.check.outputs.triggered == 'true'
       id: pr_data
       run: |
-          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).head.repo.full_name }}"
-          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).head.repo.clone_url }}"
-          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).head.repo.ssh_url }}"
-
+          echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
+          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).base.repo.full_name }}"
+          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
+          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
+    
     - name: Checkout Action
+      if: steps.check.outputs.triggered == 'true'
       uses: actions/checkout@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        repository: ${{fromJson(steps.request.outputs.data).head.repo.full_name}}
-        ref: ${{fromJson(steps.request.outputs.data).head.ref}}
+        ref: ${{ steps.pr_data.outputs.branch }}
+        
+    - name: Save comment in file
+      if: steps.check.outputs.triggered == 'true'
+      run: echo ${{ github.event.comment.body }} > comments/$(date +"%s").txt
 
     - name: Configure
       run: scripts/ci/github-actions/bash/run_step.sh configure
