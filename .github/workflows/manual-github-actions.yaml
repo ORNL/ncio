@@ -1,10 +1,7 @@
 
 name: GitHub Actions manual CI
 
-on: 
-  pull_request:
-    types: [opened]
-  
+on:
   issue_comment:
     types: [created]
   
