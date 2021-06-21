@@ -15,7 +15,7 @@ on:
 jobs:
 
   linux_pr_comment:
-    # only run on pull request comments
+    # only run on pull request comments and merge
     if: | 
         github.repository_owner == 'ORNL' &&
         ( github.event.issue.pull_request || github.event.action == 'push' ) &&
@@ -46,8 +46,20 @@ jobs:
             echo -e "Comment: ${{ github.event.comment.body }}\n" \
             echo -e "GitHub actor: ${{ github.actor }}\n"
              
+    - name: Github API Request
+        id: request
+        uses: octokit/request-action@v2.0.2
+        with:
+          route: ${{ github.event.issue.pull_request.url }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Checkout Action
       uses: actions/checkout@v2
+      with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{fromJson(steps.request.outputs.data).head.repo.full_name}}
+          ref: ${{fromJson(steps.request.outputs.data).head.ref}}
 
     - name: Configure
       run: scripts/ci/github-actions/bash/run_step.sh configure
