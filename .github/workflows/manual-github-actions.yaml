@@ -15,7 +15,7 @@ jobs:
         github.repository_owner == 'ORNL' &&
         github.actor == 'williamfgc' &&
         contains(github.event.comment.body, 'Test this please') &&
-        ${{ github.event.issue.pull_request }}
+        github.event.issue.pull_request
 
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
