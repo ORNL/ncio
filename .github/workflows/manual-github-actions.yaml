@@ -45,7 +45,7 @@ jobs:
             echo -e "Comment on PR #${{ github.event.issue.number }}\n" \
             echo -e "Comment: ${{ github.event.comment.body }}\n" \
             echo -e "GitHub actor: ${{ github.actor }}\n" \
-            echo -e "Event name: ${{ githhub.event_name }}\n"
+            echo -e "Event name: ${{ github.event_name }}\n"
             
              
     - name: Github API Request
