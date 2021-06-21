@@ -8,7 +8,7 @@ fi
 echo -e "\nCheck gcc and clang compilers\n"
 gcc --version
 clang --version
-echo -e "\nCheck meson build\n"
+echo -e "\nCheck meson build \n"
 meson --version
 
 case "$1" in 
