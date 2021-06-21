@@ -13,7 +13,7 @@ jobs:
   linux_pr_comment:
     if: | 
         github.repository_owner == 'ORNL' &&
-        github.actor == 'williamfgc' &&
+        github.actor == 'williamfgc'
 
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
