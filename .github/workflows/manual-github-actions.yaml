@@ -2,18 +2,15 @@
 name: GitHub Actions manual CI
 
 on:
+  pull_request:
+    types: [opened]
   issue_comment:
     types: [created]
   
 jobs:
 
   linux_pr_comment:
-    if: | 
-        github.repository_owner == 'ORNL' &&
-        github.actor == 'williamfgc' &&
-        contains(github.event.comment.body, 'Test this please') &&
-        github.event.issue.pull_request
-
+    if: github.repository_owner == 'ORNL'
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     env:
@@ -32,8 +29,14 @@ jobs:
             options: -u root
        
     steps:
+    - uses: khan/pull-request-comment-trigger@master
+      id: check
+      if: github.actor == 'williamfgc'
+      with:
+        trigger: 'Test this please'
     
     - name: Github API Request
+      if: steps.check.outputs.triggered == 'true'
       id: request
       uses: octokit/request-action@v2.0.0
       with:
@@ -42,6 +45,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
     - name: Get PR informations
+      if: steps.check.outputs.triggered == 'true'
       id: pr_data
       run: |
           echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
@@ -50,6 +54,7 @@ jobs:
           echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).head.repo.ssh_url }}"
           
     - name: Checkout PR Branch
+      if: steps.check.outputs.triggered == 'true'
       uses: actions/checkout@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -57,13 +62,17 @@ jobs:
         ref: ${{ steps.pr_data.outputs.branch }}
         
     - name: Configure
+      if: steps.check.outputs.triggered == 'true'
       run: scripts/ci/github-actions/bash/run_step.sh configure
 
     - name: Build
+      if: steps.check.outputs.triggered == 'true'
       run: scripts/ci/github-actions/bash/run_step.sh build
 
     - name: Test
+      if: steps.check.outputs.triggered == 'true'
       run: scripts/ci/github-actions/bash/run_step.sh test
 
     - name: Install
+      if: steps.check.outputs.triggered == 'true'
       run: scripts/ci/github-actions/bash/run_step.sh install
