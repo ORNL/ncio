@@ -31,10 +31,10 @@ jobs:
       if: always()
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        name: Test Manual Start
+        name: Test Manual
         conclusion: ${{ job.status }}
-        sha: ${GITHUB_SHA}
-    
+        sha: ${{ github.sha }}
+        
     - uses: khan/pull-request-comment-trigger@master
       id: check
       if: github.actor == 'williamfgc'
@@ -82,5 +82,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: Test Manual
         conclusion: ${{ job.status }}
-        sha: ${GITHUB_SHA}
+        sha: ${{ github.sha }}
     
