@@ -27,14 +27,6 @@ jobs:
             options: -u root
        
     steps:
-    - uses: LouisBrunner/checks-action@v1.1.1
-      if: always()
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        name: Test Manual
-        conclusion: ${{ job.status }}
-        sha: ${{ github.sha }}
-        
     - uses: khan/pull-request-comment-trigger@master
       id: check
       if: github.actor == 'williamfgc'
@@ -48,7 +40,15 @@ jobs:
         route: ${{ github.event.issue.pull_request.url }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+    
+    - uses: LouisBrunner/checks-action@v1.1.1
+      if: always()
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Test Manual
+        status: queued
+        sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
+        
     - name: Get PR informations
       id: pr_data
       run: |
@@ -82,5 +82,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: Test Manual
         conclusion: ${{ job.status }}
-        sha: ${{ github.sha }}
+        sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
     
