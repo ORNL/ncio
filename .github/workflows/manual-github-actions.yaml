@@ -2,8 +2,6 @@
 name: GitHub Actions manual CI
 
 on:
-  pull_request:
-    types: [opened]
   issue_comment:
     types: [created]
   
@@ -20,10 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         jobname: [
-          ubuntu18-gcc8
+          ubuntu18-gcc8-manual
         ]
         include:
-        - jobname: ubuntu18-gcc8
+        - jobname: ubuntu18-gcc8-manual
           container: 
             image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
             options: -u root
