@@ -76,3 +76,10 @@ jobs:
     - name: Install
       if: steps.check.outputs.triggered == 'true'
       run: scripts/ci/github-actions/bash/run_step.sh install
+    
+    - uses: LouisBrunner/checks-action@v1.1.1
+      if: always()
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Test Manual
+        conclusion: ${{ job.status }}
