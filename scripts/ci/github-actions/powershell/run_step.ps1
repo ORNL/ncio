@@ -2,7 +2,7 @@ param(
   [string]$step=""
 )
 
-# Run specific steps based on input
+# Run specific steps based on input 
 
 If($step -eq "configure")
 {
