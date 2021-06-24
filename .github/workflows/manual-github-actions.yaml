@@ -41,14 +41,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - uses: LouisBrunner/checks-action@v1.1.1
-      if: always()
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        name: Test Manual
-        status: queued
+    - name: Test Manual
+      uses: Sibz/github-status-action@v1
+      with: 
+        authToken: ${{secrets.GITHUB_TOKEN}}
+        context: 'Test Manual'
+        state: 'pending'
         sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
-        details_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+        target_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
         
     - name: Get PR informations
       id: pr_data
@@ -77,12 +77,12 @@ jobs:
     - name: Install
       run: scripts/ci/github-actions/bash/run_step.sh install
     
-    - uses: LouisBrunner/checks-action@v1.1.1
-      if: always()
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        name: Test Manual
-        conclusion: ${{ job.status }}
+    - name: Test Manual
+      uses: Sibz/github-status-action@v1
+      with: 
+        authToken: ${{secrets.GITHUB_TOKEN}}
+        context: 'Test Manual'
+        state: ${{ job.status }} 
         sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
-        details_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
-    
+        target_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+
