@@ -2,8 +2,6 @@
 name: GitHub Actions manual CI
 
 on:
-  pull_request:
-    types: [opened]
   issue_comment:
     types: [created]
   
@@ -28,15 +26,7 @@ jobs:
             image: williamfgc/ncio-ci:ubuntu18-gcc8-clang6
             options: -u root
        
-    steps:
-    - uses: Sibz/github-status-action@v1
-      with: 
-        authToken: ${{secrets.GITHUB_TOKEN}}
-        context: 'Test Manual'
-        state: 'pending'
-        sha: ${{ github.event.pull_request.head.sha }}
-        target_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
-    
+    steps:    
     - uses: khan/pull-request-comment-trigger@master
       id: check
       if: github.actor == 'williamfgc'
@@ -52,6 +42,16 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
+    - name: Test Manual
+      if: steps.check.outputs.triggered == 'true'
+      uses: Sibz/github-status-action@v1
+      with: 
+        authToken: ${{secrets.GITHUB_TOKEN}}
+        context: 'Test Manual'
+        state: 'pending'
+        sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
+        target_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+        
     - name: Get PR informations
       if: steps.check.outputs.triggered == 'true'
       id: pr_data
