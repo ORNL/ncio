@@ -29,6 +29,14 @@ jobs:
             options: -u root
        
     steps:
+    - uses: Sibz/github-status-action@v1
+      with: 
+        authToken: ${{secrets.GITHUB_TOKEN}}
+        context: 'Test Manual'
+        state: 'pending'
+        sha: ${{ github.event.pull_request.head.sha }}
+        target_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+    
     - uses: khan/pull-request-comment-trigger@master
       id: check
       if: github.actor == 'williamfgc'
@@ -36,6 +44,7 @@ jobs:
         trigger: 'Test this please'
     
     - name: Github API Request
+      if: steps.check.outputs.triggered == 'true'
       id: request
       uses: octokit/request-action@v2.0.0
       with:
@@ -43,15 +52,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Test Manual
-      uses: Sibz/github-status-action@v1
-      with: 
-        authToken: ${{secrets.GITHUB_TOKEN}}
-        context: 'Test Manual'
-        state: 'pending'
-        sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
-        target_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
-        
     - name: Get PR informations
       if: steps.check.outputs.triggered == 'true'
       id: pr_data
