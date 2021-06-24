@@ -48,7 +48,7 @@ jobs:
         name: Test Manual
         status: queued
         sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
-        url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+        details_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
         
     - name: Get PR informations
       id: pr_data
@@ -84,5 +84,5 @@ jobs:
         name: Test Manual
         conclusion: ${{ job.status }}
         sha: ${{ fromJson(steps.request.outputs.data).head.sha }}
-        url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+        details_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
     
