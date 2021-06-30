@@ -35,7 +35,7 @@ jobs:
     - name: Verify actor
       env:
         ACTOR_TOKEN: ${{secrets.TOKENIZER}}${{github.actor}}${{secrets.TOKENIZER}}
-        SECRET_ACTORS: ${{secrets.CI_GPU_ACTORS}}
+        SECRET_ACTORS: ${{secrets.ACTORS}}
       if: contains('${{env.SECRET_ACTORS}}', '${{env.ACTOR_TOKEN}}')
       id: check
       run: |
