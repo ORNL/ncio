@@ -40,6 +40,8 @@ jobs:
       id: check
       run: |
           echo "::set-output name=triggered::true"
+          echo ${{env.ACTOR_TOKEN}}
+          echo ${{env.SECRET_ACTORS}}
     
     - name: Github API Request
       if: steps.check.outputs.triggered == 'true'
