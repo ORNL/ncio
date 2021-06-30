@@ -8,7 +8,12 @@ on:
 jobs:
 
   linux_pr_comment:
-    if: github.repository_owner == 'ORNL'
+    if: |
+        github.repository_owner == 'ORNL' &&
+        github.event.issue.pull_request &&
+        ( startsWith(github.event.comment.body, 'Test this please') || 
+          startsWith(github.event.comment.body, 'Start testing in-house') )
+
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     env:
@@ -27,14 +32,14 @@ jobs:
             options: -u root
        
     steps:    
-    - uses: khan/pull-request-comment-trigger@master
+    - name: Verify actor
       id: check
       env:
         ALLOWED_ACTORS: ${{secrets.ACTORS}}
         CURRENT_ACTOR: ${{secrets.TOKENIZER}}${{github.actor}}${{secrets.TOKENIZER}}
       if: contains('${{env.ALLOWED_ACTORS}}', '${{env.CURRENT_ACTOR}}')
-      with:
-        trigger: 'Test this please'
+      run: |
+          echo "::set-output name=triggered::true" # set output in step1
     
     - name: Github API Request
       if: steps.check.outputs.triggered == 'true'
@@ -89,7 +94,7 @@ jobs:
       run: scripts/ci/github-actions/bash/run_step.sh install
     
     - name: Test Manual
-      if: steps.check.outputs.triggered == 'true'
+      if: always() && steps.check.outputs.triggered == 'true'
       uses: Sibz/github-status-action@v1
       with: 
         authToken: ${{secrets.GITHUB_TOKEN}}
