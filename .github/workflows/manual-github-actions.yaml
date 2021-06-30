@@ -33,13 +33,13 @@ jobs:
        
     steps:    
     - name: Verify actor
-      id: check
       env:
-        ALLOWED_ACTORS: ${{secrets.ACTORS}}
-        CURRENT_ACTOR: ${{secrets.TOKENIZER}}${{github.actor}}${{secrets.TOKENIZER}}
-      if: contains(${{env.ALLOWED_ACTORS}}, ${{env.CURRENT_ACTOR}})
+        ACTOR_TOKEN: ${{secrets.TOKENIZER}}${{github.actor}}${{secrets.TOKENIZER}}
+        SECRET_ACTORS: ${{secrets.CI_GPU_ACTORS}}
+      if: contains('${{env.SECRET_ACTORS}}', '${{env.ACTOR_TOKEN}}')
+      id: check
       run: |
-          echo "::set-output name=triggered::true" # set output in step1
+          echo "::set-output name=triggered::true"
     
     - name: Github API Request
       if: steps.check.outputs.triggered == 'true'
