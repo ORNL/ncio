@@ -37,7 +37,7 @@ jobs:
       env:
         ALLOWED_ACTORS: ${{secrets.ACTORS}}
         CURRENT_ACTOR: ${{secrets.TOKENIZER}}${{github.actor}}${{secrets.TOKENIZER}}
-      if: contains('${{env.ALLOWED_ACTORS}}', '${{env.CURRENT_ACTOR}}')
+      if: contains(${{env.ALLOWED_ACTORS}}, ${{env.CURRENT_ACTOR}})
       run: |
           echo "::set-output name=triggered::true" # set output in step1
     
