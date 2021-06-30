@@ -36,12 +36,12 @@ jobs:
       env:
         ACTOR_TOKEN: ${{secrets.TOKENIZER}}${{github.actor}}${{secrets.TOKENIZER}}
         SECRET_ACTORS: ${{secrets.ACTORS}}
-      if: !contains('${{env.SECRET_ACTORS}}', '${{env.ACTOR_TOKEN}}')
+      if: contains('${{env.SECRET_ACTORS}}', '${{env.ACTOR_TOKEN}}')
       id: check
       run: |
           echo "::set-output name=triggered::true"
-          echo ${{env.ACTOR_TOKEN}}
-          echo ${{env.SECRET_ACTORS}}
+          echo '${{env.ACTOR_TOKEN}}'
+          echo '${{env.SECRET_ACTORS}}'
     
     - name: Github API Request
       if: steps.check.outputs.triggered == 'true'
